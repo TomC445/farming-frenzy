@@ -21,5 +21,10 @@ public class LevelManager : MonoBehaviour
         AsyncOperation loadLevel = SceneManager.LoadSceneAsync(levelName);
         yield return null;
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
     #endregion
 }
