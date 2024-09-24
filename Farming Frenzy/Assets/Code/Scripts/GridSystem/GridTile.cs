@@ -39,7 +39,6 @@ public class GridTile : MonoBehaviour
         {
             OnTileClicked(this);
         }
-        SelectTile();
     }
 
     public void SelectTile()
@@ -55,6 +54,11 @@ public class GridTile : MonoBehaviour
     {
         _selectedHighlight.SetActive(false);
         _isSelected = false;
+    }
+
+    public void ChangeTile(Sprite tile)
+    {
+        _renderer.sprite = tile;
     }
     #endregion
 }
