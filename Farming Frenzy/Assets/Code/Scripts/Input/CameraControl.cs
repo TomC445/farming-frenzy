@@ -1,0 +1,86 @@
+using UnityEngine;
+using UnityEngine.Tilemaps;
+
+public class CameraControl : MonoBehaviour
+{
+    #region Editor Fields
+    [Header("Camera Properties")]
+    [SerializeField] private float _dragSpeed = 2.0f;
+    [SerializeField] private float _scrollSpeed = 2.0f;
+    [SerializeField] private float _smoothSpeed = 0.125f;
+
+    [Header("Zoom Properties")]
+    [SerializeField] private float _minZoom = 5f;
+    [SerializeField] private float _maxZoom = 12f;
+
+    [Header("Camera Bounds")]
+    [SerializeField] private Tilemap _tilemap;
+    #endregion
+
+    #region Properties
+    private Vector3 _dragOrigin;
+    private Camera _attachedCamera;
+    private Vector3 _minBounds;
+    private Vector3 _maxBounds;
+    #endregion
+
+    #region Methods
+    public void Start()
+    {
+        _attachedCamera = GetComponent<Camera>();
+        UpdateCameraBounds();
+    }
+    private void Update()
+    {
+        HandleDrag();
+        HandleZoom();
+        ClampCameraPosition();
+    }
+
+    private void HandleZoom()
+    {
+        var scrollData = Input.GetAxis("Mouse ScrollWheel");
+        if(scrollData != 0)
+        {
+            _attachedCamera.orthographicSize = Mathf.Clamp(_attachedCamera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * _scrollSpeed, _minZoom, _maxZoom);
+            UpdateCameraBounds();
+        }
+    }
+
+    private void HandleDrag()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            _dragOrigin = Input.mousePosition;
+            return;
+        }
+
+        if (Input.GetMouseButton(1))
+        {
+            var currentMousePos = Input.mousePosition;
+            var difference = Camera.main.ScreenToViewportPoint(_dragOrigin - currentMousePos);
+            var move = new Vector3(difference.x, difference.y, 0) * _dragSpeed;
+            transform.Translate(move, Space.World);
+            _dragOrigin = currentMousePos;
+        }
+    }
+
+    private void UpdateCameraBounds()
+    {
+        var tilemapBounds = _tilemap.localBounds;
+        var camHeight = _attachedCamera.orthographicSize;
+        var camWidth = camHeight * _attachedCamera.aspect;
+
+        _minBounds = tilemapBounds.min + new Vector3(camWidth, camHeight, 0);
+        _maxBounds = tilemapBounds.max - new Vector3(camWidth, camHeight, 0);
+    }
+
+    private void ClampCameraPosition()
+    {
+        var cameraPosition = transform.position;
+        cameraPosition.x = Mathf.Clamp(cameraPosition.x, _minBounds.x, _maxBounds.x);
+        cameraPosition.y = Mathf.Clamp(cameraPosition.y, _minBounds.y, _maxBounds.y);
+        transform.position = Vector3.Lerp(transform.position, cameraPosition, _smoothSpeed);
+    }
+    #endregion
+}
