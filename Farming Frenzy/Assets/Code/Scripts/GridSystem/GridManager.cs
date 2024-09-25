@@ -15,6 +15,7 @@ public class GridManager : MonoBehaviour
     [Header("Tiles")]
     [SerializeField] private Transform _tilesContainer;
     [SerializeField] private List<Sprite> _excludedTiles;
+    [SerializeField] private List<Sprite> _starterTiles;
     [Header("Obstacles")]
     [SerializeField] private Transform _trees;
     [SerializeField] private Transform _rocks;
@@ -24,13 +25,16 @@ public class GridManager : MonoBehaviour
     private Dictionary<Vector2, GridTile> _tiles;
     private GridTile _selectedTile;
     private List<string> _excludedTilesNames;
+    private List<string> _starterTilesNames;
     private List<BoxCollider2D> _obstacleColliders = new List<BoxCollider2D>();
+    private List<GridTile> _purchasedTiles = new List<GridTile>();
     #endregion
 
     #region Methods
     private void Start()
     {
         _excludedTilesNames = _excludedTiles.Select(x => x.name).ToList();
+        _starterTilesNames = _starterTiles.Select(x => x.name).ToList();
         InitObstacles();
         GenerateGrid();
     }
@@ -88,6 +92,13 @@ public class GridManager : MonoBehaviour
 
                 _tiles[new Vector2(x,y)] = spawnedTile;
 
+                if(_starterTilesNames.Contains(tileBase.name))
+                {
+                    spawnedTile.ChangeTile(PlayerController.Instance.GroundSprite);
+                    _purchasedTiles.Add(spawnedTile);
+                    UpdateSurroundingTiles(spawnedTile);
+                }
+
                 spawnedTile.OnTileClicked += HandleTileClicked;
             }
         }
@@ -112,7 +123,13 @@ public class GridManager : MonoBehaviour
         }
 
         _selectedTile = clickedTile;
+        if(!_selectedTile.CanBePurchased)
+        {
+            return;
+        }
         _selectedTile.ChangeTile(PlayerController.Instance.GroundSprite);
+        _purchasedTiles.Add(_selectedTile);
+        UpdateSurroundingTiles(_selectedTile);
     }
 
     private bool IsPositionValid(Vector2 pos)
@@ -126,6 +143,33 @@ public class GridManager : MonoBehaviour
             }
         }
         return true;
+    }
+
+    private void UpdateSurroundingTiles(GridTile selectedTile)
+    {
+        if(selectedTile == null)
+        {
+            return;
+        }
+
+        var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == selectedTile).Key;
+        Vector2[] directions = new Vector2[]
+        {
+            Vector2.up, Vector2.down, Vector2.left, Vector2.right, new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
+        };
+
+        foreach (var direction in directions)
+        {
+            var surroundingPos = selectedTilePos + direction;
+            var surroundingTile = GetTile(surroundingPos);
+            if (surroundingTile != null)
+            {
+                if (!surroundingTile.IsPurchased)
+                {
+                    surroundingTile.ChangeTileColor(Color.red);
+                }
+            }
+        }
     }
     #endregion
 }

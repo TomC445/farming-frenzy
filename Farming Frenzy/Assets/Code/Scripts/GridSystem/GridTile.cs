@@ -13,6 +13,10 @@ public class GridTile : MonoBehaviour
 
     #region Properties
     private bool _isSelected;
+    private bool _isPurchased;
+    private bool _canBePurchased;
+    public bool IsPurchased => _isPurchased;
+    public bool CanBePurchased => _canBePurchased;
     public delegate void TileClicked(GridTile tile);
     public event TileClicked OnTileClicked;
     #endregion
@@ -58,7 +62,15 @@ public class GridTile : MonoBehaviour
 
     public void ChangeTile(Sprite tile)
     {
+        _renderer.color = Color.white;
         _renderer.sprite = tile;
+        _isPurchased = true;
+    }
+
+    public void ChangeTileColor(Color colour)
+    {
+        _renderer.color = colour;
+        _canBePurchased = true;
     }
     #endregion
 }
