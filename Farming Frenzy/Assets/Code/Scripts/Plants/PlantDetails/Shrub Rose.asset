@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _plantSprites: []
   _maturationRate: 1
-  _fruitingRate: 1
+  _fruitingRate: -1
   _goldGenerationFactor: 0
   _dryoutRate: 0
   _maturationCycle: 15
@@ -22,4 +22,4 @@ MonoBehaviour:
   _tier: 3
   _goldGenerated: 0
   _health: 150
-  _isIndestructible: 0
+  _indestructible: 0
