@@ -10,16 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
-  m_Name: Apple Tree
+  m_Name: Tomato
   m_EditorClassIdentifier: 
-  _plantSprites: []
+  _plantSprites:
+  - {fileID: -4568182936169405915, guid: 44de3c3efb2df15b8ac593ad66e6aafb, type: 3}
+  - {fileID: -1817192974506506566, guid: 44de3c3efb2df15b8ac593ad66e6aafb, type: 3}
+  - {fileID: 1881030146588201190, guid: 44de3c3efb2df15b8ac593ad66e6aafb, type: 3}
   _maturationRate: 1
   _fruitingRate: 1
   _goldGenerationFactor: 1
   _dryoutRate: 0
-  _maturationCycle: 20
-  _fruitingCycle: 8
-  _tier: 3
-  _goldGenerated: 10
-  _health: 0
-  _indestructible: 1
+  _maturationCycle: 6
+  _fruitingCycle: 6
+  _name: Tomato
+  _flavourText: 
+  _powerDescription: 
+  _tier: 1
+  _goldGenerated: 3
+  _health: 20
+  _indestructible: 0
+  _price: 0

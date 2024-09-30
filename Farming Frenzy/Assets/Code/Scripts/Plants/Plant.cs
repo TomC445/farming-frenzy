@@ -1,53 +1,54 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Plant : MonoBehaviour, IPointerClickHandler
+namespace Code.Scripts.Plants
 {
-    private PlantData data;
-    private Sprite currentSprite;
-    private float time;
-    private int currentState; //0 = seedling, 1 = mature, 2 = fruiting
-
-    public Plant(PlantData _pdata) {
-        data = _pdata;
-        currentSprite = data._plantSprites[0];
-        currentState = 0;
-        time = Time.time;
-    }
-
-    void Update()
+    public class Plant : MonoBehaviour, IPointerClickHandler
     {
-        UpdateState();
-    }
+        private readonly PlantData _data;
+        private Sprite _currentSprite;
+        private float _time;
+        private int _currentState; // 0 = seedling, 1 = mature, 2 = fruiting
 
-    private void UpdateState() {
-        float currTime = Time.time;
-        float seconds = currTime-time;
-        switch (currentState) {
-            case 0:
-                if(data._maturationRate*seconds > data._maturationCycle) {
-                    currentState = 1;
-                    currentSprite =  data._plantSprites[1];
-                    time = Time.time;
-                }
-            break;
-            case 1:
-                if(data._fruitingRate*seconds > data._fruitingCycle) {
-                    currentState = 2;
-                    currentSprite = data._plantSprites[2];
-                }
-            break;
+        public Plant(PlantData pdata) {
+            _data = pdata;
+            _currentSprite = _data._plantSprites[0];
+            _currentState = 0;
+            _time = Time.time;
         }
-    }
 
-    public void OnPointerClick(PointerEventData eventData) {
-        if(currentState == 2) {
+        private void Update()
+        {
+            UpdateState();
+        }
+
+        private void UpdateState() {
+            var currTime = Time.time;
+            var seconds = currTime-_time;
+            switch (_currentState) {
+                case 0:
+                    if(_data._maturationRate * seconds > _data._maturationCycle) {
+                        _currentState = 1;
+                        _currentSprite =  _data._plantSprites[1];
+                        _time = Time.time;
+                    }
+                    break;
+                case 1:
+                    if(_data._fruitingRate * seconds > _data._fruitingCycle) {
+                        _currentState = 2;
+                        _currentSprite = _data._plantSprites[2];
+                    }
+                    break;
+            }
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (_currentState != 2) return;
             //HARVEST AND UPDATE GOLD IN GAME MANAGER
-            currentState = 1;
-            currentSprite = data._plantSprites[1];
-            time = Time.time; 
+            _currentState = 1;
+            _currentSprite = _data._plantSprites[1];
+            _time = Time.time;
         }
     }
-
-
 }
