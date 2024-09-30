@@ -3,10 +3,13 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     #region Editor Fields
-    [SerializeField] public Sprite GroundSprite;
+    [SerializeField] private Sprite _groundSprite;
+    [SerializeField] private int _money;
     #endregion
 
     #region Properties
+    public Sprite GroundSprite => _groundSprite;
+    public int Money => _money;
     #endregion
 
     #region Singleton
@@ -25,5 +28,9 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Methods
+    public void Purchase(int amount)
+    {
+        _money -= amount;
+    }
     #endregion
 }

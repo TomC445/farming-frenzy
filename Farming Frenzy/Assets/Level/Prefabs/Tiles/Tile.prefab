@@ -241,6 +241,7 @@ MonoBehaviour:
   _renderer: {fileID: 5154196224293100628}
   _highlight: {fileID: 8571974738013697907}
   _selectedHighlight: {fileID: 1020744233527937580}
+  _cost: 10
 --- !u!1 &8571974738013697907
 GameObject:
   m_ObjectHideFlags: 0

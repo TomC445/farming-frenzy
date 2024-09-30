@@ -28,6 +28,24 @@ public class GridManager : MonoBehaviour
     private List<string> _starterTilesNames;
     private List<BoxCollider2D> _obstacleColliders = new List<BoxCollider2D>();
     private List<GridTile> _purchasedTiles = new List<GridTile>();
+    private List<GridTile> _groundTiles = new List<GridTile>();
+    private List<GridTile> _obstructedTiles = new List<GridTile>();
+    #endregion
+
+    #region Singleton
+    public static GridManager Instance;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     #endregion
 
     #region Methods
@@ -79,11 +97,6 @@ public class GridManager : MonoBehaviour
                     continue;
                 }
 
-                if (!IsPositionValid(instantiatePosition))
-                {
-                    continue;
-                }
-
                 var spawnedTile = Instantiate(_tilePrefab, instantiatePosition, Quaternion.identity, _tilesContainer);
                 spawnedTile.name = $"Tile {x} {y}";
 
@@ -92,15 +105,30 @@ public class GridManager : MonoBehaviour
 
                 _tiles[new Vector2(x,y)] = spawnedTile;
 
-                if(_starterTilesNames.Contains(tileBase.name))
+                if (!IsPositionValid(instantiatePosition))
                 {
-                    spawnedTile.ChangeTile(PlayerController.Instance.GroundSprite);
-                    _purchasedTiles.Add(spawnedTile);
-                    UpdateSurroundingTiles(spawnedTile);
+                    _obstructedTiles.Add(spawnedTile);
+                }
+
+                if (_starterTilesNames.Contains(tileBase.name))
+                {
+                    _groundTiles.Add(spawnedTile);
                 }
 
                 spawnedTile.OnTileClicked += HandleTileClicked;
             }
+        }
+
+        foreach (var groundTile in _groundTiles)
+        {
+            groundTile.ChangeTile(PlayerController.Instance.GroundSprite);
+            _purchasedTiles.Add(groundTile);
+            UpdateSurroundingTiles(groundTile);
+        }
+
+        foreach (var tile in _obstructedTiles)
+        {
+            tile.LockTile();
         }
 
         _camera.transform.position = new Vector3((float)_width/2 - 0.5f, (float)_height/2 - 0.5f, -10);
@@ -123,10 +151,20 @@ public class GridManager : MonoBehaviour
         }
 
         _selectedTile = clickedTile;
+        
+        if (_selectedTile.IsLocked)
+        {
+            return;
+        }
         if(!_selectedTile.CanBePurchased)
         {
             return;
         }
+        if (PlayerController.Instance.Money < _selectedTile.Cost)
+        {
+            return;
+        }
+        PlayerController.Instance.Purchase(_selectedTile.Cost);
         _selectedTile.ChangeTile(PlayerController.Instance.GroundSprite);
         _purchasedTiles.Add(_selectedTile);
         UpdateSurroundingTiles(_selectedTile);
@@ -168,6 +206,21 @@ public class GridManager : MonoBehaviour
                 {
                     surroundingTile.ChangeTileColor(Color.red);
                 }
+            }
+        }
+    }
+
+    public void UnlockTiles(Bounds obstacleBounds)
+    {
+        int xStart = Mathf.FloorToInt(obstacleBounds.center.x - obstacleBounds.extents.x);
+        int xEnd = Mathf.FloorToInt(obstacleBounds.center.x + obstacleBounds.extents.x);
+        int yStart = Mathf.FloorToInt(obstacleBounds.center.y - obstacleBounds.extents.y);
+        int yEnd = Mathf.FloorToInt(obstacleBounds.center.y + obstacleBounds.extents.y);
+        for (int x = xStart; x <= xEnd; x++)
+        {
+            for (int y = yStart; y <= yEnd; y++)
+            {
+                _tiles[new Vector2(x, y)].UnlockTile();
             }
         }
     }

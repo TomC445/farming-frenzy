@@ -1309,7 +1309,55 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      trees-green_0: 4790858691901537091
+      trees-green_1: -7295728717901685241
+      trees-green_10: 957255703294289983
+      trees-green_11: 1504165260791940027
+      trees-green_12: -877459976734085722
+      trees-green_13: -747283239916507548
+      trees-green_14: 7571075582098304681
+      trees-green_15: 2373434841962439112
+      trees-green_16: 235853928169530644
+      trees-green_17: -2069859579928643765
+      trees-green_18: -5442989690765369901
+      trees-green_19: 1935427199496477141
+      trees-green_2: -4910609603565370137
+      trees-green_20: -3848913839453092537
+      trees-green_21: -3893300993636556
+      trees-green_22: 3521814584352124291
+      trees-green_23: -6809381278936653802
+      trees-green_24: -4104803671978805606
+      trees-green_25: -5831907675340403388
+      trees-green_26: 6309948322473864042
+      trees-green_27: -6044774327258418687
+      trees-green_28: 5637901591207828638
+      trees-green_29: -4018550448351420778
+      trees-green_3: -4463174510440210404
+      trees-green_30: -366414198044478951
+      trees-green_31: 6598973516037626519
+      trees-green_32: 6869102023945282869
+      trees-green_33: 530231746178640020
+      trees-green_34: -8504932127740313001
+      trees-green_35: -7704454644219150869
+      trees-green_36: 1548960445904730713
+      trees-green_37: -1407604714306573694
+      trees-green_38: 5800569951546052200
+      trees-green_39: 5442219716030987512
+      trees-green_4: -1682356911230091404
+      trees-green_40: 2721121911488054800
+      trees-green_41: -820022750522121312
+      trees-green_42: 5679573300512248641
+      trees-green_43: -3076824622679832114
+      trees-green_44: 925168218900901222
+      trees-green_45: -7770515465606892580
+      trees-green_46: 8349176548930992407
+      trees-green_47: 1540467824524960494
+      trees-green_5: 3182378085272899497
+      trees-green_6: 4173911163362345368
+      trees-green_7: -3074912118333767235
+      trees-green_8: 1050715312601883421
+      trees-green_9: -8882879805331274448
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
