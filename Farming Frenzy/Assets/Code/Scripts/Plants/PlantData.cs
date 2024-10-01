@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlantData : ScriptableObject
 {
     [Header("Sprites")]
-    public Sprite _startSprite;
+    public Sprite[] _maturationSprite;
     public Sprite[] _growthSprite;
     public Sprite _harvestedSprite;
     

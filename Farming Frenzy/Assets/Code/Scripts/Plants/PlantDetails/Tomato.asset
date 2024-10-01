@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
   m_Name: Tomato
   m_EditorClassIdentifier: 
-  _plantSprites: []
+  _maturationSprite:
+  - {fileID: 6680097552400053695, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  - {fileID: 2620515183342644627, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _growthSprite:
+  - {fileID: 3566356438213040338, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  - {fileID: 1881030146588201190, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _harvestedSprite: {fileID: -1817192974506506566, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _maturationRate: 1
   _fruitingRate: 1
   _goldGenerationFactor: 1
@@ -22,4 +28,4 @@ MonoBehaviour:
   _tier: 1
   _goldGenerated: 3
   _health: 20
-  _isIndestructible: 0
+  _indestructible: 0

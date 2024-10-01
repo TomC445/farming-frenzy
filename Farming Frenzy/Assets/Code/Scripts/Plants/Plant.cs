@@ -18,7 +18,7 @@ public class Plant : MonoBehaviour
     #endregion
 
     #region Methods
-    private void Start()
+    private void Awake()
     {
         _plantSpriteRenderer = GetComponent<SpriteRenderer>();   
     }
@@ -31,8 +31,6 @@ public class Plant : MonoBehaviour
     public void InitPlant(PlantData _pdata)
     {
         data = _pdata;
-        currentSprite = data._startSprite;
-        _plantSpriteRenderer.sprite = currentSprite;
         state = GrowthState.Start;
         time = Time.time;
     }
@@ -44,7 +42,11 @@ public class Plant : MonoBehaviour
         switch (state)
         {
             case GrowthState.Start:
-                if (data._maturationRate * seconds > data._maturationCycle)
+                if (data._maturationRate * seconds <= data._maturationCycle)
+                {
+                    var spriteIndex = Mathf.FloorToInt((data._maturationRate * seconds * data._maturationSprite.Length) / data._maturationCycle);
+                    _plantSpriteRenderer.sprite = data._maturationSprite[spriteIndex];
+                } else 
                 {
                     state = GrowthState.Growing;
                     time = Time.time;

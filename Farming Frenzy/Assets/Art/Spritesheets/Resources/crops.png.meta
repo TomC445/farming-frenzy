@@ -5017,7 +5017,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_180
+      name: tomato0
       rect:
         serializedVersion: 2
         x: 905
@@ -5083,7 +5083,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_183
+      name: beans0
       rect:
         serializedVersion: 2
         x: 991
@@ -5743,7 +5743,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_213
+      name: tomato1
       rect:
         serializedVersion: 2
         x: 900
@@ -5809,7 +5809,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_216
+      name: beans1
       rect:
         serializedVersion: 2
         x: 991
@@ -6447,7 +6447,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_245
+      name: tomato2
       rect:
         serializedVersion: 2
         x: 897
@@ -6513,7 +6513,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_248
+      name: beans2
       rect:
         serializedVersion: 2
         x: 991
@@ -7129,7 +7129,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_276
+      name: tomato3
       rect:
         serializedVersion: 2
         x: 896
@@ -7195,7 +7195,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_279
+      name: beans3
       rect:
         serializedVersion: 2
         x: 991
@@ -7767,7 +7767,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_305
+      name: tomato4
       rect:
         serializedVersion: 2
         x: 897
@@ -7833,7 +7833,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_308
+      name: beans4
       rect:
         serializedVersion: 2
         x: 991
@@ -8176,11 +8176,21 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      beans0: -8216661362464132121
+      beans1: 473276348246646460
+      beans2: -6567478624175301841
+      beans3: 7713437065039133689
+      beans4: -4244828190509259554
       pumpkin1: -1859848445360167127
       pumpkin2: -3085945388132976002
       pumpkin3: -2061787868
       pumpkin4: -898734505
       pumpkin5: 1010362334
+      tomato0: 6680097552400053695
+      tomato1: 2620515183342644627
+      tomato2: 3566356438213040338
+      tomato3: 1881030146588201190
+      tomato4: -1817192974506506566
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

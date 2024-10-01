@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
   m_Name: Pumpkin
   m_EditorClassIdentifier: 
-  _startSprite: {fileID: -1859848445360167127, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _maturationSprite:
+  - {fileID: -1859848445360167127, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _growthSprite:
   - {fileID: -3085945388132976002, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   - {fileID: -2061787868, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}

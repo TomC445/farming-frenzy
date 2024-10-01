@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
   m_Name: Stinging Nettle
   m_EditorClassIdentifier: 
-  _plantSprites: []
+  _maturationSprite: []
+  _growthSprite: []
+  _harvestedSprite: {fileID: 0}
   _maturationRate: 1
   _fruitingRate: -1
   _goldGenerationFactor: 0
