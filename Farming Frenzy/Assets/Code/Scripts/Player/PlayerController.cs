@@ -32,5 +32,10 @@ public class PlayerController : MonoBehaviour
     {
         _money -= amount;
     }
+
+    public void IncreaseMoney(int amount)
+    {
+        _money += amount;
+    }
     #endregion
 }

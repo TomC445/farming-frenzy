@@ -3,7 +3,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Farming Frenzy/PlantData")]
 public class PlantData : ScriptableObject
 {
-    public Sprite[] _plantSprites;
+    [Header("Sprites")]
+    public Sprite _startSprite;
+    public Sprite[] _growthSprite;
+    public Sprite _harvestedSprite;
+    
+    [Header("Config")]
     public float _maturationRate = 1;
     public float _fruitingRate = 1;
     public float _goldGenerationFactor = 1;

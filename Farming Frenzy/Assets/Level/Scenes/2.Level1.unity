@@ -76091,6 +76091,7 @@ MonoBehaviour:
   - {fileID: 1127701438, guid: fbe97388bbd0efd429abe88df1b592f6, type: 3}
   _trees: {fileID: 554150539}
   _rocks: {fileID: 60141673}
+  _plant: {fileID: 581491179377338265, guid: 53d6a981d86211b4a9ca73cb7ddb628a, type: 3}
 --- !u!4 &1659707308
 Transform:
   m_ObjectHideFlags: 0
