@@ -160,6 +160,10 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
+        if (_selectedTile.IsPurchased)
+        {
+            return;
+        }
         if (PlayerController.Instance.Money < _selectedTile.Cost)
         {
             return;
