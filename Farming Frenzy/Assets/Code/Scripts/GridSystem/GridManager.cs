@@ -201,7 +201,7 @@ public class GridManager : MonoBehaviour
         var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == selectedTile).Key;
         Vector2[] directions = new Vector2[]
         {
-            Vector2.up, Vector2.down, Vector2.left, Vector2.right, new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
+            Vector2.up, Vector2.down, Vector2.left, Vector2.right
         };
 
         foreach (var direction in directions)
