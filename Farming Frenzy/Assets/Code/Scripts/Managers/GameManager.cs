@@ -9,10 +9,13 @@ public class GameManager : MonoBehaviour
     [Header("Menus")]
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private TextMeshProUGUI _timerText;
-    [SerializeField] private TextMeshProUGUI _dateText;
+    [SerializeField] private TextMeshProUGUI _dayText;
+    [SerializeField] private TextMeshProUGUI _weekText;
+    [SerializeField] private TextMeshProUGUI _quotaText;
     [SerializeField] private Image _clockHand;
     [Header("Game Options")]
     [SerializeField] private int _quota;
+    [SerializeField] private int _quotaIncreaseRate;
     [SerializeField] private float _timerRate;
     [SerializeField] private float _dayTime; [Tooltip("Daytime in Seconds")]
     #endregion
@@ -23,14 +26,16 @@ public class GameManager : MonoBehaviour
     private float _time;
     private int _dayCount;
     private int _weekCount;
+    private int _currentQuotaPayment;
     public int Quota => _quota;
     public bool IsTimerRunning => _isTimerRunning;
-    private string[] _days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    private string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     #endregion
 
     private void Start()
     {
         _isTimerRunning = true;
+        _quotaText.text = string.Format("0/{0}", _quota);
     }
 
     #region Methods
@@ -65,12 +70,14 @@ public class GameManager : MonoBehaviour
             if (_dayCount % 7 == 0)
             {
                 _weekCount++;
+                CheckGameOver();
             }
         }
 
         var _clockFaceAngle = (Mathf.FloorToInt(_time) / _dayTime) * 360;
         _clockHand.transform.eulerAngles = new Vector3(0, 0, -_clockFaceAngle);
-        _dateText.text = string.Format("{0}\nWeek:{1:0}", _days[_dayCount], _weekCount+1);
+        _dayText.text = string.Format("{0}", _days[_dayCount%7]);
+        _weekText.text = string.Format("Week:{0:0}",_weekCount+1);
     }
 
     public void PauseGame()
@@ -85,6 +92,31 @@ public class GameManager : MonoBehaviour
         _pauseMenu.gameObject.SetActive(false);
         Time.timeScale = 1f;
         _isPaused = false;
+    }
+
+    public void PayQuota(int amount)
+    {
+        if(PlayerController.Instance.Money < amount)
+        {
+            return;
+        }
+        _currentQuotaPayment += amount;
+        PlayerController.Instance.Purchase(amount);
+        _quotaText.text = string.Format("{0}/{1}", _currentQuotaPayment, _quota);
+    }
+
+    public void CheckGameOver()
+    {
+        if (_currentQuotaPayment < _quota)
+        {
+            Debug.Log("Game Over");
+        }
+        else
+        {
+            _quota *= _quotaIncreaseRate;
+            _currentQuotaPayment = 0;
+            _quotaText.text = string.Format("{0}/{1}", _currentQuotaPayment, _quota);
+        }
     }
     #endregion
 }
