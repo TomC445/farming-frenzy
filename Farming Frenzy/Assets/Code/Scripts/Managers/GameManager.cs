@@ -8,11 +8,13 @@ public class GameManager : MonoBehaviour
     #region Editor Fields
     [Header("Menus")]
     [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private GameObject _gameOverMenu;
     [SerializeField] private TextMeshProUGUI _timerText;
     [SerializeField] private TextMeshProUGUI _dayText;
     [SerializeField] private TextMeshProUGUI _weekText;
     [SerializeField] private TextMeshProUGUI _quotaText;
     [SerializeField] private Image _clockHand;
+    [SerializeField] private Animator _dayNightAnimator;
     [Header("Game Options")]
     [SerializeField] private int _quota;
     [SerializeField] private int _quotaIncreaseRate;
@@ -66,6 +68,7 @@ public class GameManager : MonoBehaviour
     {
         if (_time >= (_dayCount + 1) * _dayTime)
         {
+            _dayNightAnimator.SetTrigger("NightTime");
             _dayCount++;
             if (_dayCount % 7 == 0)
             {
@@ -109,7 +112,8 @@ public class GameManager : MonoBehaviour
     {
         if (_currentQuotaPayment < _quota)
         {
-            Debug.Log("Game Over");
+            Time.timeScale = 0f;
+            _gameOverMenu.SetActive(true);
         }
         else
         {
