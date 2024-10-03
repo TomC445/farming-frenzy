@@ -19,6 +19,9 @@ public class GridManager : MonoBehaviour
     [Header("Obstacles")]
     [SerializeField] private Transform _trees;
     [SerializeField] private Transform _rocks;
+    [Header("Plants")]
+    [SerializeField] private GameObject _plant;
+    [SerializeField] private string _plantName;
     #endregion
 
     #region Properties
@@ -162,6 +165,7 @@ public class GridManager : MonoBehaviour
         }
         if (_selectedTile.IsPurchased)
         {
+            InstantiatePlant(_selectedTile.transform.position);
             return;
         }
         if (PlayerController.Instance.Money < _selectedTile.Cost)
@@ -227,6 +231,12 @@ public class GridManager : MonoBehaviour
                 _tiles[new Vector2(x, y)].UnlockTile();
             }
         }
+    }
+
+    private void InstantiatePlant(Vector3 tilePosition)
+    {
+        var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
+        plant.GetComponent<Plant>().InitPlant(PlantManager.Instance.GetPlantData(_plantName));
     }
     #endregion
 }
