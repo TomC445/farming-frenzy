@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Code.GrowthRateExtension;
 using UnityEditor;
@@ -18,78 +19,64 @@ namespace Code.Scripts.Menus
             _root = ((UIDocument)gameObject.GetComponent(typeof(UIDocument))).rootVisualElement;
             _itemTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/shop_item.uxml");
             _itemTooltipTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/shop_item_tooltip.uxml");
-            var sprites = Resources.LoadAll<Sprite>("crops");
-
             _tooltipManipulator = new ShopContainerTooltipManipulator();
             _root.AddManipulator(_tooltipManipulator);
 
-            AddShopItem(
-                sprites.First(s => s.name == "crops_83"),
-                "Watermelon", 
-                103, 
-                50,
-                "",
-                "Juicy and sweet!",
-                GrowthRate.Slow, 
-                GrowthRate.Slow
-            );
-            AddShopItem(
-                sprites.First(s => s.name == "crops_113"),
-                "Chilli",
-                12,
-                2,
-                "Deters animals when eaten",
-                "A spicy treat for some, and a world of pain for others.",
-                GrowthRate.Medium,
-                GrowthRate.Fast
-            );
-            AddShopItem(
-                sprites.First(s => s.name == "crops_195"),
-                "Cauliflower", 
-                103,
-                30,
-                "",
-                "Delicious when oven-roasted with cheese.",
-                GrowthRate.Medium,
-                GrowthRate.Medium
-            );
+            var defaultSprite = Resources.Load<Sprite>("Placeholder");
+            
+            var plants = new List<string>
+            {
+                // Tier 1
+                "Tomato", "Corn", "Clover", "Stinging Nettle",
+                
+                // Tier 2
+                "Marigold", "Pumpkin", "Banana", // "Scarecrow",
+                
+                // Tier 3
+                "Beans", "Shrub Rose", "Tall Grass", "Apple Tree", // "Sprinkler",
+            };
+
+            foreach (var plant in plants)
+            {
+                AddShopItem(Resources.Load<PlantData>(plant), defaultSprite);
+            }
+
             Resources.UnloadUnusedAssets();
         }
 
-        private void AddShopItem(
-            Sprite icon, string itemName, int price, int yield, string power, string flavourText, GrowthRate growthRate,
-            GrowthRate fruitingRate)
+        private void AddShopItem(PlantData data, Sprite defaultSprite)
         {
             // Set up item template
             VisualElement ui = _itemTemplate.Instantiate();
-            ui.Q("plant_icon").style.backgroundImage = new StyleBackground(icon);
-            ui.Q<Label>("plant_name").text = itemName;
-            ui.Q<Label>("price").text = $"${price}";
+            var sprite = data._growthSprite?.LastOrDefault() ?? defaultSprite;
+            ui.Q("plant_icon").style.backgroundImage = new StyleBackground(sprite);
+            ui.Q<Label>("plant_name").text = data.name;
+            ui.Q<Label>("price").text = $"${data._price}";
             ui.RegisterCallback<ClickEvent>(_ =>
             {
                 // TODO(placeables): begin placing
-                print($"Clicked on a {itemName}");
+                print($"Clicked on a {data.name}");
             });
 
             // Set up tooltip
             VisualElement tooltip = _itemTooltipTemplate.Instantiate();
-            tooltip.Q<Label>("plant_name").text = itemName;
-            tooltip.Q<Label>("cost").text = $"${price}";
-            tooltip.Q<Label>("yield").text = $"${yield}";
-            tooltip.Q<Label>("flavour").text = flavourText;
+            tooltip.Q<Label>("plant_name").text = data.name;
+            tooltip.Q<Label>("cost").text = $"${data._price}";
+            tooltip.Q<Label>("yield").text = $"${data._goldGenerated}";
+            tooltip.Q<Label>("flavour").text = data.flavorText;
 
             var powerLabel = tooltip.Q<Label>("power");
             powerLabel.enableRichText = true;
             
-            powerLabel.text = power.Length > 0 ? $"<u>{power}</u>" : "";
+            powerLabel.text = (data.powerText?.Length ?? 0) > 0 ? $"<u>{data.powerText}</u>" : "";
 
             var growth = tooltip.Q<Label>("growth");
-            growth.text = growthRate.Text();
-            growth.style.color = growthRate.Color();
+            growth.text = data.GrowthRateBand.Text();
+            growth.style.color = data.GrowthRateBand.Color();
 
             var fruiting = tooltip.Q<Label>("fruiting");
-            fruiting.text = fruitingRate.Text();
-            fruiting.style.color = fruitingRate.Color();
+            fruiting.text = data.FruitingRateBand.Text();
+            fruiting.style.color = data.FruitingRateBand.Color();
 
             // Add tooltip to item, and item to list
             ui.AddManipulator(new ShopItemTooltipManipulator(_tooltipManipulator, tooltip));

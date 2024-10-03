@@ -1,3 +1,4 @@
+using Code;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Farming Frenzy/PlantData")]
@@ -15,11 +16,38 @@ public class PlantData : ScriptableObject
     public float _dryoutRate;
     public float _maturationCycle;
     public float _fruitingCycle;
+    public string flavorText;
+    public string powerText;
 
     [Range(1,3)]
     public int _tier;
 
+    public int _price;
     public int _goldGenerated;
     public float _health;
     public bool _indestructible;
+    
+    public GrowthRate GrowthRateBand
+    {
+        // Just some example values
+        get {
+            if (_maturationCycle <= 5)
+            {
+                return GrowthRate.Fast;
+            }
+            return _maturationCycle <= 15 ? GrowthRate.Medium : GrowthRate.Slow;
+        }
+    }
+
+    public GrowthRate FruitingRateBand
+    {
+        // Just some example values
+        get {
+            if (_fruitingCycle <= 3)
+            {
+                return GrowthRate.Fast;
+            }
+            return _maturationCycle <= 7 ? GrowthRate.Medium : GrowthRate.Slow;
+        }
+    }
 }
