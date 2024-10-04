@@ -15,6 +15,9 @@ namespace Code.Scripts.Menus
         private VisualElement _root;
         public bool MouseInShop => _tooltipManipulator.MouseInShop;
 
+        private static ShopUI _instance;
+        public static ShopUI Instance => _instance ??= GameObject.Find("Shop").GetComponent<ShopUI>();
+
         private void Start()
         {
             _root = ((UIDocument)gameObject.GetComponent(typeof(UIDocument))).rootVisualElement;

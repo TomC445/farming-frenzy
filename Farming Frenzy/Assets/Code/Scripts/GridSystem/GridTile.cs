@@ -22,7 +22,13 @@ public class GridTile : MonoBehaviour
     public bool IsLocked => _isLocked;
     public int Cost => _cost;
     public delegate void TileClicked(GridTile tile);
+
+    public delegate void TileHoverIn(GridTile tile);
+
+    public delegate void TileHoverOut(GridTile tile);
     public event TileClicked OnTileClicked;
+    public event TileHoverIn OnTileHoverIn;
+    public event TileHoverOut OnTileHoverOut;
     #endregion
 
     #region Methods
@@ -34,11 +40,13 @@ public class GridTile : MonoBehaviour
     private void OnMouseEnter()
     {
         _highlight.SetActive(true);
+        OnTileHoverIn?.Invoke(this);
     }
 
     private void OnMouseExit()
     {
         _highlight.SetActive(false);
+        OnTileHoverOut?.Invoke(this);
     }
 
     private void OnMouseDown()

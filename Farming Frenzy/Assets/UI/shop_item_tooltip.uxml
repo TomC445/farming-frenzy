@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0.66);">
+    <ui:VisualElement style="flex-grow: 1; color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0.66); position: absolute;">
         <ui:Label text="Label" name="plant_name" style="-unity-font-style: bold; font-size: 14px;" />
         <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
             <ui:VisualElement style="flex-grow: 1; flex-direction: row;">

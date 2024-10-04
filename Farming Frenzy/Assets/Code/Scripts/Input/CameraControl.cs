@@ -24,14 +24,12 @@ public class CameraControl : MonoBehaviour
     private Camera _attachedCamera;
     private Vector3 _minBounds;
     private Vector3 _maxBounds;
-    private ShopUI _shopUi;
     #endregion
 
     #region Methods
     public void Start()
     {
         _attachedCamera = GetComponent<Camera>();
-        _shopUi = (ShopUI)GameObject.Find("Shop").GetComponent(typeof(ShopUI));
         UpdateCameraBounds();
     }
     private void Update()
@@ -46,7 +44,7 @@ public class CameraControl : MonoBehaviour
         var scrollData = Input.GetAxis("Mouse ScrollWheel");
 
         // Don't zoom if in shop
-        if (_shopUi.MouseInShop)
+        if (ShopUI.Instance.MouseInShop)
         {
             return;
         }
