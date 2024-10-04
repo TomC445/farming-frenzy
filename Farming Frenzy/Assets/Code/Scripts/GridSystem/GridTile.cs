@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GridTile : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class GridTile : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         _highlight.SetActive(true);
     }
 
@@ -43,6 +48,10 @@ public class GridTile : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         if (OnTileClicked != null)
         {
             OnTileClicked(this);

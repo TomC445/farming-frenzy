@@ -27,7 +27,7 @@ namespace Code.Scripts.Menus
             var plants = new List<string>
             {
                 // Tier 1
-                "Tomato", "Corn", "Clover", "Stinging Nettle",
+                "Tomato", "Corn", "Clover", "Nettle",
                 
                 // Tier 2
                 "Marigold", "Pumpkin", "Banana", // "Scarecrow",
@@ -55,6 +55,7 @@ namespace Code.Scripts.Menus
             ui.RegisterCallback<ClickEvent>(_ =>
             {
                 // TODO(placeables): begin placing
+                GridManager.Instance.SetActivePlant(data.name);
                 print($"Clicked on a {data.name}");
             });
 

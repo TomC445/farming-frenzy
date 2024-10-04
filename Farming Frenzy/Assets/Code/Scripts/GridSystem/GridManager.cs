@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
 public class GridManager : MonoBehaviour
@@ -163,7 +164,7 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
-        if (_selectedTile.IsPurchased)
+        if (_selectedTile.IsPurchased && _plantName != "")
         {
             InstantiatePlant(_selectedTile.transform.position);
             return;
@@ -231,6 +232,11 @@ public class GridManager : MonoBehaviour
                 _tiles[new Vector2(x, y)].UnlockTile();
             }
         }
+    }
+
+    public void SetActivePlant(string plantName)
+    {
+        _plantName = plantName;
     }
 
     private void InstantiatePlant(Vector3 tilePosition)

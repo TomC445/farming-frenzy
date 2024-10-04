@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Obstacle : MonoBehaviour
 {
@@ -13,7 +14,11 @@ public class Obstacle : MonoBehaviour
     #region Methods
     void OnMouseDown()
     {
-        if(PlayerController.Instance.Money < _cost)
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+        if (PlayerController.Instance.Money < _cost)
         {
             return;
         }

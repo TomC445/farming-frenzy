@@ -12,14 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
   m_Name: Corn
   m_EditorClassIdentifier: 
-  _plantSprites: []
+  _maturationSprite:
+  - {fileID: -8463751307097313094, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  - {fileID: -7017202247838496533, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  - {fileID: 1280881287140897439, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _growthSprite:
+  - {fileID: 3389359819911840689, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  - {fileID: 3389359819911840689, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  - {fileID: 2409062927273309327, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _harvestedSprite: {fileID: 1280881287140897439, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _isTree: 0
+  _cannotHarvest: 0
   _maturationRate: 1
   _fruitingRate: 1
   _goldGenerationFactor: 1
   _dryoutRate: 0
   _maturationCycle: 7
   _fruitingCycle: 9
+  flavorText: 
+  powerText: 
   _tier: 1
+  _price: 0
   _goldGenerated: 6
   _health: 25
-  _isIndestructible: 0
+  _indestructible: 0

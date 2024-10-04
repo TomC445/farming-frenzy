@@ -12,14 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
   m_Name: Tall Grass
   m_EditorClassIdentifier: 
-  _plantSprites: []
+  _maturationSprite:
+  - {fileID: -2418569456398315354, guid: f5e99ddc9f6472f43ac0221139620b28, type: 3}
+  _growthSprite:
+  - {fileID: -2418569456398315354, guid: f5e99ddc9f6472f43ac0221139620b28, type: 3}
+  _harvestedSprite: {fileID: 0}
+  _isTree: 0
+  _cannotHarvest: 1
   _maturationRate: 1
   _fruitingRate: -1
   _goldGenerationFactor: 0
   _dryoutRate: 0
   _maturationCycle: 7
   _fruitingCycle: 0
+  flavorText: 
+  powerText: 
   _tier: 3
+  _price: 0
   _goldGenerated: 0
   _health: 10
   _indestructible: 0
