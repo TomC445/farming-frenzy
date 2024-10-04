@@ -71,6 +71,7 @@ public class GridManager : MonoBehaviour
             var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
             var roundedY = Mathf.Round(child.transform.position.y) + 0.5f;
             child.gameObject.transform.position = new Vector2(roundedX, roundedY);
+            _tooltipManager.SubscribeObstacleEvents(child.gameObject.GetComponent<Obstacle>(), "Tree");
             _obstacleColliders.Add(child.gameObject.GetComponent<BoxCollider2D>());
         }
 
@@ -79,6 +80,7 @@ public class GridManager : MonoBehaviour
             var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
             var roundedY = Mathf.Round(child.transform.position.y) + 0.5f;
             child.gameObject.transform.position = new Vector2(roundedX, roundedY);
+            _tooltipManager.SubscribeObstacleEvents(child.gameObject.GetComponent<Obstacle>(), "Rock");
             _obstacleColliders.Add(child.gameObject.GetComponent<BoxCollider2D>());
         }
 

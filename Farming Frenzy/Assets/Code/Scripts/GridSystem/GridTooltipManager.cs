@@ -29,18 +29,38 @@ namespace Code.Scripts.GridSystem
         public void SubscribeTileEvents(GridTile spawnedTile)
         {
             spawnedTile.OnTileHoverIn += HandleTileHoverIn;
-            spawnedTile.OnTileHoverOut += _ => HandleTileHoverOut();
+            spawnedTile.OnTileHoverOut += _ => HandleHoverOut();
+        }
+        
+        public void SubscribeObstacleEvents(Obstacle obstacle, string type)
+        {
+            obstacle.OnObstacleHoverIn += obs => HandleObstacleHoverIn(obs, type);
+            obstacle.OnObstacleHoverOut += _ => HandleHoverOut();
         }
 
         private void HandleTileHoverIn(GridTile tile)
         {
             _root.Q<Label>("name").text = "Grass";
             _root.Q<Label>("status").text = "Click to buy and till. Cost:";
+            _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
+            _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None; // TODO legumes
+            _root.Q<Label>("power").style.display = DisplayStyle.None;
             _root.Q<Label>("money").text = $" ${tile.Cost}";
             _startedHoverTime = Time.time;
         }
 
-        private void HandleTileHoverOut()
+        private void HandleObstacleHoverIn(Obstacle obstacle, string type)
+        {
+            _root.Q<Label>("name").text = type;
+            _root.Q<Label>("status").text = "Click to buy and remove. Cost:";
+            _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
+            _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None; // TODO legumes
+            _root.Q<Label>("power").style.display = DisplayStyle.None;
+            _root.Q<Label>("money").text = $" ${obstacle.Cost}";
+            _startedHoverTime = Time.time;
+        }
+        
+        private void HandleHoverOut()
         {
             _root.visible = false;
             _startedHoverTime = float.PositiveInfinity;
@@ -55,7 +75,7 @@ namespace Code.Scripts.GridSystem
 
             if (ShopUI.Instance.MouseInShop)
             {
-                HandleTileHoverOut();
+                HandleHoverOut();
                 return;
             }
 
