@@ -19,13 +19,18 @@ MonoBehaviour:
   - {fileID: 3566356438213040338, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   - {fileID: 1881030146588201190, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _harvestedSprite: {fileID: -1817192974506506566, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _isTree: 0
+  _cannotHarvest: 0
   _maturationRate: 1
   _fruitingRate: 1
   _goldGenerationFactor: 1
   _dryoutRate: 0
   _maturationCycle: 6
   _fruitingCycle: 6
+  flavorText: 
+  powerText: 
   _tier: 1
+  _price: 30
   _goldGenerated: 3
   _health: 20
   _indestructible: 0

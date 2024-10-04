@@ -36,13 +36,22 @@ public class GridTile : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
+            GridManager.Instance.HighlightTiles(this, false);
             return;
+        }
+        if(GridManager.Instance.PlantName != "")
+        {
+            GridManager.Instance.HighlightTiles(this, true);
         }
         _highlight.SetActive(true);
     }
 
     private void OnMouseExit()
     {
+        if (GridManager.Instance.PlantName != "")
+        {
+            GridManager.Instance.HighlightTiles(this, false);
+        }
         _highlight.SetActive(false);
     }
 
@@ -95,6 +104,16 @@ public class GridTile : MonoBehaviour
     {
         GetComponent<BoxCollider2D>().enabled = false;
         _isLocked = true;
+    }
+
+    public void HighlightTile()
+    {
+        _highlight.SetActive(true);
+    }
+
+    public void UnHighlightTile()
+    {
+        _highlight.SetActive(false);
     }
 
     public void UnlockTile()

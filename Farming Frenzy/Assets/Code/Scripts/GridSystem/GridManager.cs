@@ -34,6 +34,7 @@ public class GridManager : MonoBehaviour
     private List<GridTile> _purchasedTiles = new List<GridTile>();
     private List<GridTile> _groundTiles = new List<GridTile>();
     private List<GridTile> _obstructedTiles = new List<GridTile>();
+    public string PlantName => _plantName;
     #endregion
 
     #region Singleton
@@ -241,8 +242,52 @@ public class GridManager : MonoBehaviour
 
     private void InstantiatePlant(Vector3 tilePosition)
     {
-        var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
-        plant.GetComponent<Plant>().InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+        var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
+        if(PlayerController.Instance.Money >= plantAmount)
+        {
+            var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
+            plant.GetComponent<Plant>().InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+            PlayerController.Instance.Purchase(plantAmount);
+        }
+    }
+
+    public void HighlightTiles(GridTile gridTile, bool highlightOn)
+    {
+        var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == gridTile).Key;
+        var isTree = PlantManager.Instance.GetPlantData(_plantName)._isTree;
+        if (isTree)
+        {
+            for (int x = 0; x < 3; ++x)
+            {
+                for (int y = 0; y < 2; ++y)
+                {
+                    if (highlightOn)
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x - 1, selectedTilePos.y + y)].HighlightTile();
+                    } else
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x - 1, selectedTilePos.y + y)].UnHighlightTile();
+                    }
+                    
+                }
+            }
+        } else
+        {
+            for (int x = 0; x < 1; ++x)
+            {
+                for (int y = 0; y < 1; ++y)
+                {
+                    if (highlightOn)
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x, selectedTilePos.y + y)].HighlightTile();
+                    }
+                    else
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x, selectedTilePos.y + y)].UnHighlightTile();
+                    }
+                }
+            }
+        }        
     }
     #endregion
 }

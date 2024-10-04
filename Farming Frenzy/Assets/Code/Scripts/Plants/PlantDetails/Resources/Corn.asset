@@ -32,7 +32,7 @@ MonoBehaviour:
   flavorText: 
   powerText: 
   _tier: 1
-  _price: 0
+  _price: 35
   _goldGenerated: 6
   _health: 25
   _indestructible: 0
