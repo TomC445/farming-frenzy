@@ -170,6 +170,10 @@ public class GridManager : MonoBehaviour
             InstantiatePlant(_selectedTile.transform.position);
             return;
         }
+        if (_selectedTile.IsPurchased && _plantName == "")
+        {
+            return;
+        }
         if (PlayerController.Instance.Money < _selectedTile.Cost)
         {
             return;
@@ -254,7 +258,7 @@ public class GridManager : MonoBehaviour
     public void HighlightTiles(GridTile gridTile, bool highlightOn)
     {
         var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == gridTile).Key;
-        var isTree = PlantManager.Instance.GetPlantData(_plantName)._isTree;
+        var isTree = (_plantName != "") ? PlantManager.Instance.GetPlantData(_plantName)._isTree : false;
         if (isTree)
         {
             for (int x = 0; x < 3; ++x)
