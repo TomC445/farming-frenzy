@@ -1,6 +1,8 @@
+using Code.Scripts.Menus;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class CameraControl : MonoBehaviour
 {
@@ -23,12 +25,14 @@ public class CameraControl : MonoBehaviour
     private Camera _attachedCamera;
     private Vector3 _minBounds;
     private Vector3 _maxBounds;
+    private ShopUI _shopUi;
     #endregion
 
     #region Methods
     public void Start()
     {
         _attachedCamera = GetComponent<Camera>();
+        _shopUi = (ShopUI)GameObject.Find("Shop").GetComponent(typeof(ShopUI));
         UpdateCameraBounds();
     }
     private void Update()
@@ -45,6 +49,13 @@ public class CameraControl : MonoBehaviour
     private void HandleZoom()
     {
         var scrollData = Input.GetAxis("Mouse ScrollWheel");
+
+        // Don't zoom if in shop
+        if (_shopUi.MouseInShop)
+        {
+            return;
+        }
+
         if(scrollData != 0)
         {
             _attachedCamera.orthographicSize = Mathf.Clamp(_attachedCamera.orthographicSize - Input.GetAxis("Mouse ScrollWheel") * _scrollSpeed, _minZoom, _maxZoom);
