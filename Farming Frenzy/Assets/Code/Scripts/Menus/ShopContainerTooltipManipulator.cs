@@ -25,6 +25,8 @@ namespace Code.Scripts.Menus
         private VisualElement _currentTooltip;
         private bool _inRoot;
 
+        public bool MouseInShop => _inRoot;
+
         protected override void RegisterCallbacksOnTarget()
         {
             target.RegisterCallback<MouseEnterEvent>(MouseEnterRoot);

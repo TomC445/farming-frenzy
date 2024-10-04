@@ -13,6 +13,7 @@ namespace Code.Scripts.Menus
         private VisualTreeAsset _itemTooltipTemplate;
         private ShopContainerTooltipManipulator _tooltipManipulator;
         private VisualElement _root;
+        public bool MouseInShop => _tooltipManipulator.MouseInShop;
 
         private void Start()
         {
