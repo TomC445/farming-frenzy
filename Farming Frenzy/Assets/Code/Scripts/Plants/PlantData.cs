@@ -8,6 +8,7 @@ public class PlantData : ScriptableObject
     public Sprite[] _maturationSprite;
     public Sprite[] _growthSprite;
     public Sprite _harvestedSprite;
+    public Sprite _cursorSprite;
 
     [Header("Config")]
     public bool _isTree;

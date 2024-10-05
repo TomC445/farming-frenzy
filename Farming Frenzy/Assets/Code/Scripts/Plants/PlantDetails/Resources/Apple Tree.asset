@@ -22,6 +22,7 @@ MonoBehaviour:
   - {fileID: -7974913162274799005, guid: c5519abff8651d04fa5404486404ebad, type: 3}
   - {fileID: -9181436057599373210, guid: c5519abff8651d04fa5404486404ebad, type: 3}
   _harvestedSprite: {fileID: -7826722608917148170, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  _cursorSprite: {fileID: -9181436057599373210, guid: c5519abff8651d04fa5404486404ebad, type: 3}
   _isTree: 1
   _cannotHarvest: 0
   _maturationRate: 1

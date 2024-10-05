@@ -4,6 +4,7 @@ using System.Security.Claims;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tilemap _backgroundGrid;
     [Header("Camera")]
     [SerializeField] private Transform _camera;
+    [Header("Cursor")]
+    [SerializeField] private Image _cursorImage;
     [Header("Tiles")]
     [SerializeField] private Transform _tilesContainer;
     [SerializeField] private List<Sprite> _excludedTiles;
@@ -242,6 +245,8 @@ public class GridManager : MonoBehaviour
     public void SetActivePlant(string plantName)
     {
         _plantName = plantName;
+        _cursorImage.color = Color.white;
+        _cursorImage.sprite = PlantManager.Instance.GetPlantData(plantName)._cursorSprite;
     }
 
     private void InstantiatePlant(Vector3 tilePosition)

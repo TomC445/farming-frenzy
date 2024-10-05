@@ -17,6 +17,7 @@ MonoBehaviour:
   _growthSprite:
   - {fileID: 6863076723932258049, guid: f5e99ddc9f6472f43ac0221139620b28, type: 3}
   _harvestedSprite: {fileID: 0}
+  _cursorSprite: {fileID: 6863076723932258049, guid: f5e99ddc9f6472f43ac0221139620b28, type: 3}
   _isTree: 0
   _cannotHarvest: 1
   _maturationRate: 1
