@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -37,5 +38,9 @@ public class PlayerController : MonoBehaviour
     {
         _money += amount;
     }
+
+    
+
+    //FF000C
     #endregion
 }

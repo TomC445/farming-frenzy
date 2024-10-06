@@ -13,6 +13,7 @@ public class LevelManager : MonoBehaviour
     #region Methods
     public void LoadLevel(string levelName)
     {
+        Time.timeScale = 1.0f;
         StartCoroutine(LoadLevelAsync(levelName));
     }
 

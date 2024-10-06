@@ -12,14 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
   m_Name: Banana
   m_EditorClassIdentifier: 
-  _plantSprites: []
+  _maturationSprite:
+  - {fileID: 3330160694512000718, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  - {fileID: -3343925711248449768, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  - {fileID: 511082970857358728, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  - {fileID: 3062152818383019394, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  _growthSprite:
+  - {fileID: 382544896688895571, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  - {fileID: 5868369991173317504, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  - {fileID: -1159967808527262342, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  _harvestedSprite: {fileID: 3062152818383019394, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  _cursorSprite: {fileID: -1159967808527262342, guid: c5519abff8651d04fa5404486404ebad, type: 3}
+  _isTree: 1
+  _cannotHarvest: 0
   _maturationRate: 1
   _fruitingRate: 1
   _goldGenerationFactor: 1
   _dryoutRate: 0
   _maturationCycle: 17
   _fruitingCycle: 10
+  flavorText: 
+  powerText: 
   _tier: 2
+  _price: 75
   _goldGenerated: 8
   _health: 80
-  _isIndestructible: 0
+  _indestructible: 0

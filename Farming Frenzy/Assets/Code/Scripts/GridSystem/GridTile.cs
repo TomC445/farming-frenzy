@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GridTile : MonoBehaviour
 {
@@ -39,18 +40,35 @@ public class GridTile : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            GridManager.Instance.HighlightTiles(this, false);
+            return;
+        }
+        if(GridManager.Instance.PlantName != "")
+        {
+            GridManager.Instance.HighlightTiles(this, true);
+        }
         _highlight.SetActive(true);
         OnTileHoverIn?.Invoke(this);
     }
 
     private void OnMouseExit()
     {
+        if (GridManager.Instance.PlantName != "")
+        {
+            GridManager.Instance.HighlightTiles(this, false);
+        }
         _highlight.SetActive(false);
         OnTileHoverOut?.Invoke(this);
     }
 
     private void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         if (OnTileClicked != null)
         {
             OnTileClicked(this);
@@ -94,6 +112,16 @@ public class GridTile : MonoBehaviour
     {
         GetComponent<BoxCollider2D>().enabled = false;
         _isLocked = true;
+    }
+
+    public void HighlightTile()
+    {
+        _highlight.SetActive(true);
+    }
+
+    public void UnHighlightTile()
+    {
+        _highlight.SetActive(false);
     }
 
     public void UnlockTile()

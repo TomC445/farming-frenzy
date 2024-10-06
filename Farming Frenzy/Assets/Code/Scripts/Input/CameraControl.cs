@@ -1,5 +1,6 @@
 using Code.Scripts.Menus;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
@@ -34,6 +35,10 @@ public class CameraControl : MonoBehaviour
     }
     private void Update()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         HandleDrag();
         HandleZoom();
         ClampCameraPosition();
@@ -68,7 +73,7 @@ public class CameraControl : MonoBehaviour
         {
             var currentMousePos = Input.mousePosition;
             var difference = Camera.main.ScreenToViewportPoint(_dragOrigin - currentMousePos);
-            var move = new Vector3(difference.x, difference.y, 0) * _dragSpeed;
+            var move = new Vector3(difference.x, difference.y, 0) * _dragSpeed * _attachedCamera.orthographicSize;
             transform.Translate(move, Space.World);
             _dragOrigin = currentMousePos;
         }

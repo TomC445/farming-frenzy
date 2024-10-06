@@ -12,14 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db69ec2a93ddae479b55ca3c856ba60, type: 3}
   m_Name: Clover
   m_EditorClassIdentifier: 
-  _plantSprites: []
+  _maturationSprite:
+  - {fileID: 4980261937381015205, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _growthSprite:
+  - {fileID: -8536239421030836411, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _harvestedSprite: {fileID: 0}
+  _cursorSprite: {fileID: -8536239421030836411, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
+  _isTree: 0
+  _cannotHarvest: 1
   _maturationRate: 1
   _fruitingRate: -1
   _goldGenerationFactor: 1
   _dryoutRate: 0
   _maturationCycle: 3
   _fruitingCycle: 0
+  flavorText: 
+  powerText: 
   _tier: 1
+  _price: 10
   _goldGenerated: 0
   _health: 10
   _indestructible: 0

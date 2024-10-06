@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Plant : MonoBehaviour
 {
@@ -33,6 +34,13 @@ public class Plant : MonoBehaviour
         data = _pdata;
         state = GrowthState.Start;
         time = Time.time;
+        if(data._isTree)
+        {
+            GetComponent<BoxCollider2D>().size = new Vector2(3, 2);
+            GetComponent<BoxCollider2D>().offset = new Vector2(0, 0.5f);
+
+        }
+        GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
     }
 
     private void UpdateState()
@@ -72,6 +80,14 @@ public class Plant : MonoBehaviour
 
     public void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+        if (data._cannotHarvest)
+        {
+            return;
+        }
         if (state == GrowthState.Finished)
         {
             //HARVEST AND UPDATE GOLD IN GAME MANAGER
