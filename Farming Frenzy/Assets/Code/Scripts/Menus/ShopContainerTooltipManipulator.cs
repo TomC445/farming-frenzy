@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Code.Scripts.Menus
@@ -87,7 +88,7 @@ namespace Code.Scripts.Menus
             }
 
             _inRoot = true;
-            _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.contentRect.width;
+            _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.Q<VisualElement>("tooltip").resolvedStyle.width;
             _tooltipContainer.style.top = e.localMousePosition.y + 25;
             _tooltipContainer.style.visibility = Visibility.Visible;
             _tooltipContainer.BringToFront();
@@ -96,8 +97,7 @@ namespace Code.Scripts.Menus
         private void MouseMove(MouseMoveEvent e)
         {
             if (_tooltipContainer == null) return;
-            
-            _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.contentRect.width;
+            _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.Q<VisualElement>("tooltip").resolvedStyle.width;
             _tooltipContainer.style.top = e.localMousePosition.y + 25;
         }
 
