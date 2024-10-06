@@ -1,3 +1,5 @@
+using System;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -22,8 +24,8 @@ namespace Code.Scripts.Menus
     /// </summary>
     public class ShopContainerTooltipManipulator : Manipulator
     {
-        private VisualElement _tooltipContainer;
-        private VisualElement _currentTooltip;
+        [CanBeNull] private VisualElement _tooltipContainer;
+        [CanBeNull] private VisualElement _currentTooltip;
         private bool _inRoot;
 
         public bool MouseInShop => _inRoot;
@@ -71,6 +73,15 @@ namespace Code.Scripts.Menus
                 _tooltipContainer.Add(_currentTooltip);
             }
         }
+
+        private void UpdatePosition(Vector2 mousePos)
+        {
+            var tooltip = _tooltipContainer?.Q<VisualElement>("tooltip");
+            if (tooltip == null) return;
+
+            _tooltipContainer.style.left = mousePos.x - tooltip.resolvedStyle.width;
+            _tooltipContainer.style.top = Math.Min(mousePos.y + 25, Screen.currentResolution.height - tooltip.resolvedStyle.height);
+        }
         
         private void MouseEnterRoot(MouseEnterEvent e)
         {
@@ -88,23 +99,20 @@ namespace Code.Scripts.Menus
             }
 
             _inRoot = true;
-            _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.Q<VisualElement>("tooltip").resolvedStyle.width;
-            _tooltipContainer.style.top = e.localMousePosition.y + 25;
+            UpdatePosition(e.localMousePosition);
             _tooltipContainer.style.visibility = Visibility.Visible;
             _tooltipContainer.BringToFront();
         }
         
         private void MouseMove(MouseMoveEvent e)
         {
-            if (_tooltipContainer == null) return;
-            _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.Q<VisualElement>("tooltip").resolvedStyle.width;
-            _tooltipContainer.style.top = e.localMousePosition.y + 25;
+            UpdatePosition(e.localMousePosition);
         }
 
         private void MouseLeaveRoot(MouseLeaveEvent e)
         {
             _inRoot = false;
-            _tooltipContainer.style.visibility = Visibility.Hidden;
+            if (_tooltipContainer != null) _tooltipContainer.style.visibility = Visibility.Hidden;
         }
     }
 }
