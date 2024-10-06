@@ -16,7 +16,7 @@ namespace Code
 
     namespace GrowthRateExtension
     {
-        public static class Extensions
+        public static class GrowthRateExtensions
         {
             /// <summary>
             /// Format the growth rate as a text item for use in tooltips

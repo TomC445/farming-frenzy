@@ -24,12 +24,13 @@ public class GridTile : MonoBehaviour
     public int Cost => _cost;
     public delegate void TileClicked(GridTile tile);
 
+    public delegate void TilePurchased(GridTile tile);
     public delegate void TileHoverIn(GridTile tile);
-
     public delegate void TileHoverOut(GridTile tile);
     public event TileClicked OnTileClicked;
     public event TileHoverIn OnTileHoverIn;
     public event TileHoverOut OnTileHoverOut;
+    public event TilePurchased OnPurchase;
     #endregion
 
     #region Methods
@@ -69,10 +70,8 @@ public class GridTile : MonoBehaviour
         {
             return;
         }
-        if (OnTileClicked != null)
-        {
-            OnTileClicked(this);
-        }
+
+        OnTileClicked?.Invoke(this);
     }
 
     public void SelectTile()
@@ -95,6 +94,7 @@ public class GridTile : MonoBehaviour
         _renderer.color = Color.white;
         _renderer.sprite = tile;
         _isPurchased = true;
+        OnPurchase?.Invoke(this);
     }
 
     public void ChangeTileColor(Color colour)
