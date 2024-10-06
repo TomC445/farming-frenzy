@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Code.GrowthRateExtension;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -46,6 +47,7 @@ namespace Code.Scripts.Menus
             }
 
             Resources.UnloadUnusedAssets();
+            PlayerController.Instance.RefreshMoney();
         }
 
         private void AddShopItem(PlantData data, Sprite defaultSprite)
@@ -55,10 +57,12 @@ namespace Code.Scripts.Menus
             var sprite = data._growthSprite?.LastOrDefault() ?? defaultSprite;
             ui.Q("plant_icon").style.backgroundImage = new StyleBackground(sprite);
             ui.Q<Label>("plant_name").text = data.name;
-            ui.Q<Label>("price").text = $"${data._price}";
+
+            var shopEntryPrice = ui.Q<Label>("price");
+            shopEntryPrice.text = $"${data._price}";
+
             ui.RegisterCallback<ClickEvent>(_ =>
             {
-                // TODO(placeables): begin placing
                 GridManager.Instance.SetActivePlant(data.name);
                 print($"Clicked on a {data.name}");
             });
@@ -66,7 +70,8 @@ namespace Code.Scripts.Menus
             // Set up tooltip
             VisualElement tooltip = _itemTooltipTemplate.Instantiate();
             tooltip.Q<Label>("plant_name").text = data.name;
-            tooltip.Q<Label>("cost").text = $"${data._price}";
+            var tooltipPrice = tooltip.Q<Label>("cost");
+            tooltipPrice.text = $"${data._price}";
             tooltip.Q<Label>("yield").text = $"${data._goldGenerated}";
             tooltip.Q<Label>("flavour").text = data.flavorText;
 
@@ -86,6 +91,28 @@ namespace Code.Scripts.Menus
             // Add tooltip to item, and item to list
             ui.AddManipulator(new ShopItemTooltipManipulator(_tooltipManipulator, tooltip));
             _root.Q("shop_list").Add(ui);
+
+            var overlay = ui.Q<VisualElement>("overlay");
+            var tooExpensive = tooltip.Q<VisualElement>("too_expensive");
+
+            // Add event listeners
+            PlayerController.Instance.OnMoneyChange += amount =>
+            {
+                var color = FarmingFrenzyColors.PriceColor(data._price);
+                shopEntryPrice.style.color = color;
+                tooltipPrice.style.color = color;
+
+                if (data._price > amount)
+                {
+                    overlay.style.backgroundColor = FarmingFrenzyColors.DisabledOverlay;
+                    tooExpensive.style.display = DisplayStyle.Flex;
+                }
+                else
+                {
+                    overlay.style.backgroundColor = Color.white.WithAlpha(0);
+                    tooExpensive.style.display = DisplayStyle.None;
+                }
+            };
         }
     }
 }
