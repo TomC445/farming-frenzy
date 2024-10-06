@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,6 +10,13 @@ public class Obstacle : MonoBehaviour
 
     #region Properties
     public int Cost => _cost;
+    public delegate void ObstacleHoverIn(Obstacle tile);
+
+    public delegate void ObstacleHoverOut(Obstacle tile);
+
+    public event ObstacleHoverIn OnObstacleHoverIn;
+    public event ObstacleHoverOut OnObstacleHoverOut;
+
     #endregion
 
     #region Methods
@@ -26,5 +34,16 @@ public class Obstacle : MonoBehaviour
         GridManager.Instance.UnlockTiles(GetComponent<BoxCollider2D>().bounds);
         Destroy(gameObject);
     }
+
+    private void OnMouseEnter()
+    {
+        OnObstacleHoverIn?.Invoke(this);
+    }
+
+    private void OnMouseExit()
+    {
+        OnObstacleHoverOut?.Invoke(this);
+    }
+
     #endregion
 }

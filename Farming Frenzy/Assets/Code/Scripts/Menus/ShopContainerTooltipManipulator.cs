@@ -88,7 +88,7 @@ namespace Code.Scripts.Menus
 
             _inRoot = true;
             _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.contentRect.width;
-            _tooltipContainer.style.top = e.localMousePosition.y;
+            _tooltipContainer.style.top = e.localMousePosition.y + 25;
             _tooltipContainer.style.visibility = Visibility.Visible;
             _tooltipContainer.BringToFront();
         }
@@ -98,7 +98,7 @@ namespace Code.Scripts.Menus
             if (_tooltipContainer == null) return;
             
             _tooltipContainer.style.left = e.localMousePosition.x - _tooltipContainer.contentRect.width;
-            _tooltipContainer.style.top = e.localMousePosition.y;
+            _tooltipContainer.style.top = e.localMousePosition.y + 25;
         }
 
         private void MouseLeaveRoot(MouseLeaveEvent e)
