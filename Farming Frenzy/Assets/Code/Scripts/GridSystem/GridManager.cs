@@ -252,8 +252,8 @@ public class GridManager : MonoBehaviour
     public void SetActivePlant(string plantName)
     {
         _plantName = plantName;
-        _cursorImage.color = Color.white;
-        _cursorImage.sprite = PlantManager.Instance.GetPlantData(plantName)._cursorSprite;
+        // _cursorImage.color = Color.white;
+        // _cursorImage.sprite = PlantManager.Instance.GetPlantData(plantName)._cursorSprite;
     }
 
     private void InstantiatePlant(Vector3 tilePosition)
