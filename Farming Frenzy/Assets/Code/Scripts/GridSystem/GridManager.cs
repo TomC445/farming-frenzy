@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Code.Scripts.GridSystem;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -33,6 +35,7 @@ public class GridManager : MonoBehaviour
     private List<GridTile> _purchasedTiles = new List<GridTile>();
     private List<GridTile> _groundTiles = new List<GridTile>();
     private List<GridTile> _obstructedTiles = new List<GridTile>();
+    private GridTooltipManager _tooltipManager;
     #endregion
 
     #region Singleton
@@ -56,6 +59,7 @@ public class GridManager : MonoBehaviour
     {
         _excludedTilesNames = _excludedTiles.Select(x => x.name).ToList();
         _starterTilesNames = _starterTiles.Select(x => x.name).ToList();
+        _tooltipManager = GameObject.Find("Grid tooltip").GetComponent<GridTooltipManager>();
         InitObstacles();
         GenerateGrid();
     }
@@ -67,6 +71,7 @@ public class GridManager : MonoBehaviour
             var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
             var roundedY = Mathf.Round(child.transform.position.y) + 0.5f;
             child.gameObject.transform.position = new Vector2(roundedX, roundedY);
+            _tooltipManager.SubscribeObstacleEvents(child.gameObject.GetComponent<Obstacle>(), "Tree");
             _obstacleColliders.Add(child.gameObject.GetComponent<BoxCollider2D>());
         }
 
@@ -75,6 +80,7 @@ public class GridManager : MonoBehaviour
             var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
             var roundedY = Mathf.Round(child.transform.position.y) + 0.5f;
             child.gameObject.transform.position = new Vector2(roundedX, roundedY);
+            _tooltipManager.SubscribeObstacleEvents(child.gameObject.GetComponent<Obstacle>(), "Rock");
             _obstacleColliders.Add(child.gameObject.GetComponent<BoxCollider2D>());
         }
 
@@ -119,6 +125,7 @@ public class GridManager : MonoBehaviour
                 }
 
                 spawnedTile.OnTileClicked += HandleTileClicked;
+                _tooltipManager.SubscribeTileEvents(spawnedTile);
             }
         }
 
