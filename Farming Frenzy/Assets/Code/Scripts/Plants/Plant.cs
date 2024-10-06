@@ -1,21 +1,45 @@
+using System;
+using Code.Scripts.Plants;
+using Code.Scripts.Plants.GrowthStateExtension;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Plant : MonoBehaviour
 {
-    #region Editor Fields
-
-    #endregion
-
     #region Properties
     private PlantData data;
     private Sprite currentSprite;
     private float time;
-    private enum GrowthState {Start, Growing, Finished, Harvested};
     private GrowthState state;
     private SpriteRenderer _plantSpriteRenderer;
     private int _growthSpriteIndex;
     private bool _readyToHarvest;
+    
+    private int SecsToNextStage
+    {
+        get
+        {
+            var currTime = Time.time;
+            var seconds = currTime - time;
+
+            return state switch
+            {
+                GrowthState.Seedling => Math.Max(0, (int)(data._maturationCycle - data._maturationRate * seconds)),
+                GrowthState.Mature => data._fruitingRate < 0.0 ? -1 : Math.Max(0, (int)(data._fruitingCycle - data._fruitingRate * seconds)),
+                _ => 0
+            };
+        }
+    }
+
+    public string PlantName => data.name;
+
+    public string StatusRichText => state.StatusRichText(SecsToNextStage, data._goldGenerated);
+
+    public delegate void HoverInEvent(Plant plant);
+
+    public delegate void HoverOutEvent(Plant plant);
+    public event HoverInEvent OnHoverIn;
+    public event HoverOutEvent OnHoverOut;
     #endregion
 
     #region Methods
@@ -32,7 +56,7 @@ public class Plant : MonoBehaviour
     public void InitPlant(PlantData _pdata)
     {
         data = _pdata;
-        state = GrowthState.Start;
+        state = GrowthState.Seedling;
         time = Time.time;
         if(data._isTree)
         {
@@ -49,18 +73,24 @@ public class Plant : MonoBehaviour
         float seconds = currTime - time;
         switch (state)
         {
-            case GrowthState.Start:
+            case GrowthState.Seedling:
                 if (data._maturationRate * seconds <= data._maturationCycle)
                 {
                     var spriteIndex = Mathf.FloorToInt((data._maturationRate * seconds * data._maturationSprite.Length) / data._maturationCycle);
                     _plantSpriteRenderer.sprite = data._maturationSprite[spriteIndex];
                 } else 
                 {
-                    state = GrowthState.Growing;
+                    state = GrowthState.Mature;
                     time = Time.time;
                 }
                 break;
-            case GrowthState.Growing:
+            case GrowthState.Mature:
+                // This plant does not fruit
+                if (data._fruitingCycle < 0.0)
+                {
+                    break;
+                }
+                
                 if (data._fruitingRate * seconds <= data._fruitingCycle)
                 {
                     var spriteIndex = Mathf.FloorToInt((data._fruitingRate * seconds * data._growthSprite.Length) / data._fruitingCycle);
@@ -69,11 +99,11 @@ public class Plant : MonoBehaviour
                 else
                 {
                     _plantSpriteRenderer.sprite = data._growthSprite[data._growthSprite.Length-1];
-                    state = GrowthState.Finished;
+                    state = GrowthState.Fruited;
                 }
                 break;
             case GrowthState.Harvested:
-                state = GrowthState.Growing;
+                state = GrowthState.Mature;
                 break;
         }
     }
@@ -88,7 +118,7 @@ public class Plant : MonoBehaviour
         {
             return;
         }
-        if (state == GrowthState.Finished)
+        if (state == GrowthState.Fruited)
         {
             //HARVEST AND UPDATE GOLD IN GAME MANAGER
             PlayerController.Instance.IncreaseMoney(data._goldGenerated);
@@ -97,5 +127,17 @@ public class Plant : MonoBehaviour
             time = Time.time;
         }
     }
+    
+    private void OnMouseEnter()
+    {
+        OnHoverIn?.Invoke(this);
+    }
+
+    private void OnMouseExit()
+    {
+        OnHoverOut?.Invoke(this);
+    }
+
     #endregion
 }
+

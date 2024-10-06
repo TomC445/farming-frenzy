@@ -158,7 +158,7 @@ public class GridManager : MonoBehaviour
         return null;
     }
 
-    public void HandleTileClicked(GridTile clickedTile)
+    private void HandleTileClicked(GridTile clickedTile)
     {
         if(_selectedTile != null && _selectedTile != clickedTile)
         {
@@ -262,7 +262,9 @@ public class GridManager : MonoBehaviour
         if(PlayerController.Instance.Money >= plantAmount)
         {
             var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
-            plant.GetComponent<Plant>().InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+            var plantComponent = plant.GetComponent<Plant>();
+            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+            _tooltipManager.SubscribePlantEvents(plantComponent);
             PlayerController.Instance.Purchase(plantAmount);
         }
     }
