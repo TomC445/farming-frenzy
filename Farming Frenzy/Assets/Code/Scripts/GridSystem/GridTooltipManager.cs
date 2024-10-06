@@ -1,3 +1,4 @@
+using System;
 using Code.Scripts.Menus;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,7 +24,7 @@ namespace Code.Scripts.GridSystem
         private void UpdatePosition()
         {
             _tooltip.style.top = Screen.currentResolution.height - Input.mousePosition.y + 25;
-            _tooltip.style.left = Input.mousePosition.x;
+            _tooltip.style.left = Math.Max(0, Input.mousePosition.x - _tooltip.resolvedStyle.width);
         }
 
         public void SubscribeTileEvents(GridTile spawnedTile)
