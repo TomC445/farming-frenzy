@@ -33,6 +33,8 @@ public class GridManager : MonoBehaviour
     private List<GridTile> _purchasedTiles = new List<GridTile>();
     private List<GridTile> _groundTiles = new List<GridTile>();
     private List<GridTile> _obstructedTiles = new List<GridTile>();
+    [Header("Audio")]
+    [SerializeField] AudioManager audioManager;
     #endregion
 
     #region Singleton
@@ -172,6 +174,7 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
+        audioManager.PlaySFX("digMaybe");
         PlayerController.Instance.Purchase(_selectedTile.Cost);
         _selectedTile.ChangeTile(PlayerController.Instance.GroundSprite);
         _purchasedTiles.Add(_selectedTile);
