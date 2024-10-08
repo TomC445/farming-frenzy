@@ -14,10 +14,6 @@ public class GridManager : MonoBehaviour
     [Header("Grid Options")]
     [SerializeField] private GridTile _tilePrefab;
     [SerializeField] private Tilemap _backgroundGrid;
-    [Header("Camera")]
-    [SerializeField] private Transform _camera;
-    [Header("Cursor")]
-    [SerializeField] private Image _cursorImage;
     [Header("Tiles")]
     [SerializeField] private Transform _tilesContainer;
     [SerializeField] private List<Sprite> _excludedTiles;
@@ -26,8 +22,10 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Transform _trees;
     [SerializeField] private Transform _rocks;
     [Header("Plants")]
+    [SerializeField] private Transform _plants;
     [SerializeField] private GameObject _plant;
     [SerializeField] private string _plantName;
+
     #endregion
 
     #region Properties
@@ -145,8 +143,6 @@ public class GridManager : MonoBehaviour
         {
             tile.LockTile();
         }
-
-        _camera.transform.position = new Vector3((float)_width/2 - 0.5f, (float)_height/2 - 0.5f, -10);
     }
 
     public GridTile GetTile(Vector2 pos)
@@ -261,7 +257,7 @@ public class GridManager : MonoBehaviour
         var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
         if(PlayerController.Instance.Money >= plantAmount)
         {
-            var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
+            var plant = Instantiate(_plant, tilePosition, Quaternion.identity, _plants);
             plant.GetComponent<Plant>().InitPlant(PlantManager.Instance.GetPlantData(_plantName));
             PlayerController.Instance.Purchase(plantAmount);
         }

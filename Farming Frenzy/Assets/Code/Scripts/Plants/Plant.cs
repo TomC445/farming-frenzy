@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,7 +16,9 @@ public class Plant : MonoBehaviour
     private GrowthState state;
     private SpriteRenderer _plantSpriteRenderer;
     private int _growthSpriteIndex;
+    private float _health;
     private bool _readyToHarvest;
+    private Coroutine _damageCoroutine;
     #endregion
 
     #region Methods
@@ -27,6 +30,10 @@ public class Plant : MonoBehaviour
     void Update()
     {
         UpdateState();
+        if(_health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void InitPlant(PlantData _pdata)
@@ -34,6 +41,7 @@ public class Plant : MonoBehaviour
         data = _pdata;
         state = GrowthState.Start;
         time = Time.time;
+        _health = _pdata._health;
         if(data._isTree)
         {
             GetComponent<BoxCollider2D>().size = new Vector2(3, 2);
@@ -95,6 +103,42 @@ public class Plant : MonoBehaviour
             state = GrowthState.Harvested;
             _plantSpriteRenderer.sprite = data._harvestedSprite;
             time = Time.time;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("Enemy"))
+        {
+            if(_damageCoroutine != null)
+            {
+                StopCoroutine(_damageCoroutine);
+
+            }
+            _damageCoroutine = StartCoroutine(TakeAnimalDamage());
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            if (_damageCoroutine != null)
+            {
+                StopCoroutine(_damageCoroutine);
+
+            }
+            _damageCoroutine = StartCoroutine(TakeAnimalDamage());
+        }
+    }
+
+    private IEnumerator TakeAnimalDamage()
+    {
+        while(true)
+        {
+            Debug.Log($"Damage: {_health}");
+            _health -= 5;
+            yield return new WaitForSeconds(1f);
         }
     }
     #endregion
