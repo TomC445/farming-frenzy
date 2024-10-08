@@ -1,12 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class AudioSettings : MonoBehaviour
 {
     #region Editor Fields
-    [Header("Sliders")]
-    [SerializeField] private Slider _musicSlider;
-    [SerializeField] private Slider _sfxSlider;
+    [SerializeField] private AudioMixer audioMixer;
     #endregion
 
     #region Properties
@@ -14,24 +13,16 @@ public class AudioSettings : MonoBehaviour
     #endregion
 
     #region Methods
-    public void ToggleMusic()
-    {
-        AudioManager.Instance.ToggleMusic();
+    public void SetMasterVolume(float level) {
+        audioMixer.SetFloat("MasterVolume",Mathf.Log10(level)*20f);
     }
 
-    public void ToggleSFX()
-    {
-        AudioManager.Instance.ToggleSFX();
+    public void SetSoundFXVolume(float level) {
+        audioMixer.SetFloat("SoundFXVolume",Mathf.Log10(level)*20f);
     }
 
-    public void MusicVolume()
-    {
-        AudioManager.Instance.MusicVolume(_musicSlider.value);
-    }
-
-    public void SFXVolume()
-    {
-        AudioManager.Instance.SFXVolume(_sfxSlider.value);
+    public void SetMusicVolume(float level) {
+        audioMixer.SetFloat("MusicVolume",Mathf.Log10(level)*20f);
     }
     #endregion
 }

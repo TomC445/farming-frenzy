@@ -41,6 +41,8 @@ public class GridManager : MonoBehaviour
     private List<GridTile> _obstructedTiles = new List<GridTile>();
     public string PlantName => _plantName;
     private GridTooltipManager _tooltipManager;
+    [Header("Audio")]
+    [SerializeField] AudioManager audioManager;
     #endregion
 
     #region Singleton
@@ -188,6 +190,7 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
+        audioManager.PlaySFX("digMaybe");
         PlayerController.Instance.Purchase(_selectedTile.Cost);
         _selectedTile.ChangeTile(PlayerController.Instance.GroundSprite);
         _purchasedTiles.Add(_selectedTile);
