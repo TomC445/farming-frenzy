@@ -1032,7 +1032,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -1519,7 +1519,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_21
+      name: clover 2
       rect:
         serializedVersion: 2
         x: 902
@@ -1541,7 +1541,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_22
+      name: clover 1
       rect:
         serializedVersion: 2
         x: 934
@@ -1570,8 +1570,8 @@ TextureImporter:
         y: 961
         width: 20
         height: 18
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.4872284, y: 0.25870767}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1585,15 +1585,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_24
+      name: corn0
       rect:
         serializedVersion: 2
         x: 999
         y: 961
         width: 20
         height: 18
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -2340,8 +2340,8 @@ TextureImporter:
         y: 898
         width: 27
         height: 43
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.49053955, y: 0.078146294}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -2355,15 +2355,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_59
+      name: corn1
       rect:
         serializedVersion: 2
         x: 995
         y: 898
         width: 27
         height: 43
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5185185, y: 0.41860464}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -3022,8 +3022,8 @@ TextureImporter:
         y: 832
         width: 30
         height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.46593627, y: 0.084830284}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -3037,15 +3037,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_90
+      name: corn2
       rect:
         serializedVersion: 2
         x: 993
         y: 832
         width: 30
         height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3125}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -3682,8 +3682,8 @@ TextureImporter:
         y: 768
         width: 30
         height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.46593627, y: 0.07285404}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -3697,15 +3697,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_120
+      name: corn3
       rect:
         serializedVersion: 2
         x: 991
         y: 768
         width: 33
         height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5151515, y: 0.3125}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -4364,8 +4364,8 @@ TextureImporter:
         y: 704
         width: 30
         height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.4744527, y: 0.06886196}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -4379,15 +4379,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: crops_151
+      name: corn4
       rect:
         serializedVersion: 2
         x: 993
         y: 704
         width: 30
         height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3125}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -8181,6 +8181,13 @@ TextureImporter:
       beans2: -6567478624175301841
       beans3: 7713437065039133689
       beans4: -4244828190509259554
+      clover 1: 4980261937381015205
+      clover 2: -8536239421030836411
+      corn0: -8463751307097313094
+      corn1: -7017202247838496533
+      corn2: 3389359819911840689
+      corn3: 2409062927273309327
+      corn4: 1280881287140897439
       pumpkin1: -1859848445360167127
       pumpkin2: -3085945388132976002
       pumpkin3: -2061787868

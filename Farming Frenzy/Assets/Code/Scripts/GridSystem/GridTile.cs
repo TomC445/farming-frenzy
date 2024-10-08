@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GridTile : MonoBehaviour
 {
@@ -22,7 +23,14 @@ public class GridTile : MonoBehaviour
     public bool IsLocked => _isLocked;
     public int Cost => _cost;
     public delegate void TileClicked(GridTile tile);
+
+    public delegate void TilePurchased(GridTile tile);
+    public delegate void TileHoverIn(GridTile tile);
+    public delegate void TileHoverOut(GridTile tile);
     public event TileClicked OnTileClicked;
+    public event TileHoverIn OnTileHoverIn;
+    public event TileHoverOut OnTileHoverOut;
+    public event TilePurchased OnPurchase;
     #endregion
 
     #region Methods
@@ -33,20 +41,37 @@ public class GridTile : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            GridManager.Instance.HighlightTiles(this, false);
+            return;
+        }
+        if(GridManager.Instance.PlantName != "")
+        {
+            GridManager.Instance.HighlightTiles(this, true);
+        }
         _highlight.SetActive(true);
+        OnTileHoverIn?.Invoke(this);
     }
 
     private void OnMouseExit()
     {
+        if (GridManager.Instance.PlantName != "")
+        {
+            GridManager.Instance.HighlightTiles(this, false);
+        }
         _highlight.SetActive(false);
+        OnTileHoverOut?.Invoke(this);
     }
 
     private void OnMouseDown()
     {
-        if (OnTileClicked != null)
+        if (EventSystem.current.IsPointerOverGameObject())
         {
-            OnTileClicked(this);
+            return;
         }
+
+        OnTileClicked?.Invoke(this);
     }
 
     public void SelectTile()
@@ -69,6 +94,7 @@ public class GridTile : MonoBehaviour
         _renderer.color = Color.white;
         _renderer.sprite = tile;
         _isPurchased = true;
+        OnPurchase?.Invoke(this);
     }
 
     public void ChangeTileColor(Color colour)
@@ -86,6 +112,16 @@ public class GridTile : MonoBehaviour
     {
         GetComponent<BoxCollider2D>().enabled = false;
         _isLocked = true;
+    }
+
+    public void HighlightTile()
+    {
+        _highlight.SetActive(true);
+    }
+
+    public void UnHighlightTile()
+    {
+        _highlight.SetActive(false);
     }
 
     public void UnlockTile()

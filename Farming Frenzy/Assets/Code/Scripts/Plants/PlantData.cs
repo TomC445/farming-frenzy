@@ -8,8 +8,11 @@ public class PlantData : ScriptableObject
     public Sprite[] _maturationSprite;
     public Sprite[] _growthSprite;
     public Sprite _harvestedSprite;
-    
+    public Sprite _cursorSprite;
+
     [Header("Config")]
+    public bool _isTree;
+    public bool _cannotHarvest;
     public float _maturationRate = 1;
     public float _fruitingRate = 1;
     public float _goldGenerationFactor = 1;

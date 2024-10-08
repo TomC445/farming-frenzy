@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,6 +11,8 @@ public class PlayerController : MonoBehaviour
     #region Properties
     public Sprite GroundSprite => _groundSprite;
     public int Money => _money;
+    public delegate void MoneyChangeEvent(int newAmount);
+    public event MoneyChangeEvent OnMoneyChange;
     #endregion
 
     #region Singleton
@@ -31,11 +34,23 @@ public class PlayerController : MonoBehaviour
     public void Purchase(int amount)
     {
         _money -= amount;
+        OnMoneyChange?.Invoke(_money);
     }
 
     public void IncreaseMoney(int amount)
     {
         _money += amount;
+        OnMoneyChange?.Invoke(_money);
     }
+
+    /// <summary>
+    /// Sends out an OnMoneyChange event to refresh UI elements
+    /// </summary>
+    public void RefreshMoney()
+    {
+        OnMoneyChange?.Invoke(_money);
+    }
+
+    //FF000C
     #endregion
 }

@@ -1,8 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Code.Scripts.GridSystem;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
@@ -12,6 +16,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tilemap _backgroundGrid;
     [Header("Camera")]
     [SerializeField] private Transform _camera;
+    [Header("Cursor")]
+    [SerializeField] private Image _cursorImage;
     [Header("Tiles")]
     [SerializeField] private Transform _tilesContainer;
     [SerializeField] private List<Sprite> _excludedTiles;
@@ -33,6 +39,8 @@ public class GridManager : MonoBehaviour
     private List<GridTile> _purchasedTiles = new List<GridTile>();
     private List<GridTile> _groundTiles = new List<GridTile>();
     private List<GridTile> _obstructedTiles = new List<GridTile>();
+    public string PlantName => _plantName;
+    private GridTooltipManager _tooltipManager;
     [Header("Audio")]
     [SerializeField] AudioManager audioManager;
     #endregion
@@ -58,6 +66,7 @@ public class GridManager : MonoBehaviour
     {
         _excludedTilesNames = _excludedTiles.Select(x => x.name).ToList();
         _starterTilesNames = _starterTiles.Select(x => x.name).ToList();
+        _tooltipManager = GameObject.Find("Grid tooltip").GetComponent<GridTooltipManager>();
         InitObstacles();
         GenerateGrid();
     }
@@ -69,6 +78,7 @@ public class GridManager : MonoBehaviour
             var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
             var roundedY = Mathf.Round(child.transform.position.y) + 0.5f;
             child.gameObject.transform.position = new Vector2(roundedX, roundedY);
+            _tooltipManager.SubscribeObstacleEvents(child.gameObject.GetComponent<Obstacle>(), "Tree");
             _obstacleColliders.Add(child.gameObject.GetComponent<BoxCollider2D>());
         }
 
@@ -77,6 +87,7 @@ public class GridManager : MonoBehaviour
             var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
             var roundedY = Mathf.Round(child.transform.position.y) + 0.5f;
             child.gameObject.transform.position = new Vector2(roundedX, roundedY);
+            _tooltipManager.SubscribeObstacleEvents(child.gameObject.GetComponent<Obstacle>(), "Rock");
             _obstacleColliders.Add(child.gameObject.GetComponent<BoxCollider2D>());
         }
 
@@ -121,6 +132,7 @@ public class GridManager : MonoBehaviour
                 }
 
                 spawnedTile.OnTileClicked += HandleTileClicked;
+                _tooltipManager.SubscribeTileEvents(spawnedTile);
             }
         }
 
@@ -148,7 +160,7 @@ public class GridManager : MonoBehaviour
         return null;
     }
 
-    public void HandleTileClicked(GridTile clickedTile)
+    private void HandleTileClicked(GridTile clickedTile)
     {
         if(_selectedTile != null && _selectedTile != clickedTile)
         {
@@ -165,9 +177,13 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
-        if (_selectedTile.IsPurchased)
+        if (_selectedTile.IsPurchased && _plantName != "")
         {
             InstantiatePlant(_selectedTile.transform.position);
+            return;
+        }
+        if (_selectedTile.IsPurchased && _plantName == "")
+        {
             return;
         }
         if (PlayerController.Instance.Money < _selectedTile.Cost)
@@ -204,7 +220,7 @@ public class GridManager : MonoBehaviour
         var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == selectedTile).Key;
         Vector2[] directions = new Vector2[]
         {
-            Vector2.up, Vector2.down, Vector2.left, Vector2.right, new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1)
+            Vector2.up, Vector2.down, Vector2.left, Vector2.right
         };
 
         foreach (var direction in directions)
@@ -236,10 +252,63 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    public void SetActivePlant(string plantName)
+    {
+        _plantName = plantName;
+        // _cursorImage.color = Color.white;
+        // _cursorImage.sprite = PlantManager.Instance.GetPlantData(plantName)._cursorSprite;
+    }
+
     private void InstantiatePlant(Vector3 tilePosition)
     {
-        var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
-        plant.GetComponent<Plant>().InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+        var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
+        if(PlayerController.Instance.Money >= plantAmount)
+        {
+            var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
+            var plantComponent = plant.GetComponent<Plant>();
+            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+            _tooltipManager.SubscribePlantEvents(plantComponent);
+            PlayerController.Instance.Purchase(plantAmount);
+        }
+    }
+
+    public void HighlightTiles(GridTile gridTile, bool highlightOn)
+    {
+        var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == gridTile).Key;
+        var isTree = (_plantName != "") ? PlantManager.Instance.GetPlantData(_plantName)._isTree : false;
+        if (isTree)
+        {
+            for (int x = 0; x < 3; ++x)
+            {
+                for (int y = 0; y < 2; ++y)
+                {
+                    if (highlightOn)
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x - 1, selectedTilePos.y + y)].HighlightTile();
+                    } else
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x - 1, selectedTilePos.y + y)].UnHighlightTile();
+                    }
+                    
+                }
+            }
+        } else
+        {
+            for (int x = 0; x < 1; ++x)
+            {
+                for (int y = 0; y < 1; ++y)
+                {
+                    if (highlightOn)
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x, selectedTilePos.y + y)].HighlightTile();
+                    }
+                    else
+                    {
+                        _tiles[new Vector2(selectedTilePos.x + x, selectedTilePos.y + y)].UnHighlightTile();
+                    }
+                }
+            }
+        }        
     }
     #endregion
 }
