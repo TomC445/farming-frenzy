@@ -1,19 +1,14 @@
 using System;
 using UnityEngine;
-using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
     #region Editor Fields
     [Header("Sounds")]
-    [SerializeField] private AudioClip[] _musicSounds, _sfxSounds;
-
+    [SerializeField] private Sound[] _musicSounds, _sfxSounds;
     [Header("Audio Sources")]
     [SerializeField] private AudioSource _musicSource;
     [SerializeField] private AudioSource _sfxSource;
-
-    [Header("Audio Mixer")]
-    [SerializeField] private AudioMixer audioMixer;
     #endregion
 
     #region Properties
@@ -41,25 +36,27 @@ public class AudioManager : MonoBehaviour
     public void PlayMusic(string name)
     {
         var sound = Array.Find(_musicSounds, x => x.name == name);
-        if (sound == null)
+        if (sound != null)
         {
             Debug.LogError("Sound Not Found");
             return;
         }
-        _musicSource.PlayOneShot(sound);
+        _musicSource.clip = sound.AudioClip;
+        _musicSource.Play();
     }
 
     public void PlaySFX(string name)
     {
         var sound = Array.Find(_sfxSounds, x => x.name == name);
-        if (sound == null)
+        if (sound != null)
         {
             Debug.LogError("Sound Not Found");
             return;
         }
-        _musicSource.PlayOneShot(sound);
+        _musicSource.PlayOneShot(sound.AudioClip);
     }
-        public void ToggleMusic()
+
+    public void ToggleMusic()
     {
         _musicSource.mute = !_musicSource.mute;
     }
@@ -69,17 +66,14 @@ public class AudioManager : MonoBehaviour
         _sfxSource.mute = !_sfxSource.mute;
     }
 
-     public void SetMasterVolume(float level) {
-        audioMixer.SetFloat("MasterVolume",Mathf.Log10(level)*20f);
+    public void MusicVolume(float volume)
+    {
+        _musicSource.volume = volume;
     }
 
-    public void SetSoundFXVolume(float level) {
-        audioMixer.SetFloat("SoundFXVolume",Mathf.Log10(level)*20f);
+    public void SFXVolume(float volume)
+    {
+        _sfxSource.volume = volume;
     }
-
-    public void SetMusicVolume(float level) {
-        audioMixer.SetFloat("MusicVolume",Mathf.Log10(level)*20f);
-    }
-
     #endregion
 }
