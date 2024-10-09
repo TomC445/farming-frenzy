@@ -92,6 +92,7 @@ namespace Code.Scripts.Plants
                     else
                     {
                         _state = GrowthState.Mature;
+                        Debug.Log(_data.power);
                         _data.power.AddTo(gameObject); // Power only enabled when the plant is grown
                         _secsSinceGrowth = 0;
                     }
