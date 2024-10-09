@@ -3342,7 +3342,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.380005, y: 0.16308594}
+  m_AnchoredPosition: {x: -4.380127, y: 0.16308594}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &697990101
@@ -7486,7 +7486,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: ca9ee569112d1f64a87ddb64a60bc6fb, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: b801381d3838364dcae2148546236929, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: 464fa59525a64ac488817b8628d3d106, type: 3}
   m_SortingOrder: 1
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
@@ -80743,8 +80743,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f994145e5a68ca743be824bb27f3faa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _musicSlider: {fileID: 0}
-  _sfxSlider: {fileID: 0}
 --- !u!1001 &1863968200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81082,7 +81080,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _musicSounds: []
-  _sfxSounds: []
+  _sfxSounds:
+  - {fileID: 8300000, guid: 1d3eb7a10803dca4f8141e3940a40d4b, type: 3}
   _musicSource: {fileID: 1896792630}
   _sfxSource: {fileID: 1896792629}
   audioMixer: {fileID: 24100000, guid: 1aa7a43ee54e76f41bb3d0f2c8027585, type: 2}
