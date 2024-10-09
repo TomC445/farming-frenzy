@@ -3,6 +3,7 @@
         <ui:Label text="Label" name="name" style="-unity-font-style: bold; font-size: 28px;" />
         <ui:Label text="Status" name="status" />
         <ui:Label text="Water modifier" name="water_modifier" />
+        <ui:Label text="Corn Modifier" name="corn_modifier" style="color: rgb(255, 234, 0);" />
         <ui:Label text="Legume modifier" name="legume_modifier" style="color: rgb(0, 255, 0);" />
         <ui:Label text="&lt;u&gt;Power: lorem ipsum dolor sit amet&lt;/u&gt;" name="power" style="min-width: 0; min-height: 0; -unity-font-style: normal; color: rgb(221, 92, 198); white-space: normal; border-left-color: rgb(221, 92, 198); border-right-color: rgb(221, 92, 198); border-top-color: rgb(221, 92, 198); border-bottom-color: rgb(221, 92, 198); border-bottom-width: 0; flex-shrink: 1;" />
     </ui:VisualElement>

@@ -10,7 +10,9 @@ namespace Code.Scripts.Plants.Powers
     {
         private CircleCollider2D _aoe;
         protected abstract float Radius { get; }
-        public abstract float EffectStrength { get; }
+        protected abstract float EffectStrength { get; }
+
+        public const int MaxEffectPercent = 50;
 
         private void Start()
         {
@@ -43,7 +45,7 @@ namespace Code.Scripts.Plants.Powers
                 .Select(legume => legume.EffectStrength)
                 .Sum();
 
-            return Math.Min(1.5f, 1.0f + rate);
+            return Math.Min(1.0f + MaxEffectPercent / 100.0f, 1.0f + rate);
         }
     }
 }
