@@ -188,6 +188,7 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
+        AudioManager.Instance.PlaySFX("digMaybe");
         PlayerController.Instance.Purchase(_selectedTile.Cost);
         _selectedTile.ChangeTile(PlayerController.Instance.GroundSprite);
         _purchasedTiles.Add(_selectedTile);
