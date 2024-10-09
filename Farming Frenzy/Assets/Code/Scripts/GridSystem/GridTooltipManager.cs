@@ -142,7 +142,6 @@ namespace Code.Scripts.GridSystem
             _root.Q<Label>("name").text = plant.PlantName;
             _root.Q<Label>("status").text = plant.StatusRichText;
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
-            _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None; // TODO legumes
             _root.Q<Label>("power").style.display = DisplayStyle.None;
         }
 
