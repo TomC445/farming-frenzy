@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
             {
                 EnemySpawnManager.Instance.SpawnEnemies(Random.Range(_enemyDifficulty, _enemyDifficulty + 2));
             }
-            if (_dayCount % 7 == 0)
+            if (_dayCount % 2 == 0)
             {
                 _weekCount++;
                 CheckGameOver();
@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
         if (_currentQuotaPayment < _quota)
         {
             Time.timeScale = 0f;
+            AudioManager.Instance.ToggleMusic();
             AudioManager.Instance.PlaySFX("gameOver");
             _gameOverMenu.SetActive(true);
         }

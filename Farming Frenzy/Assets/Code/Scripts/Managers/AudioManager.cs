@@ -57,7 +57,7 @@ public class AudioManager : MonoBehaviour
             Debug.LogError("Sound Not Found");
             return;
         }
-        _musicSource.PlayOneShot(sound);
+        _sfxSource.PlayOneShot(sound);
     }
         public void ToggleMusic()
     {
@@ -68,7 +68,7 @@ public class AudioManager : MonoBehaviour
     {
         _sfxSource.mute = !_sfxSource.mute;
     }
-    
+
     #region SliderSettings
 
      public void SetMasterVolume(float level) {
