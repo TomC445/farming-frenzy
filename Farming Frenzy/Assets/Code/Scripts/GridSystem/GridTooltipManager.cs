@@ -70,9 +70,9 @@ namespace Code.Scripts.GridSystem
         private void AddLegumeModifier(Collider2D thing)
         {
             var growthModifier = LegumePower.CalculateGrowthModifier(thing);
-            if (growthModifier >= 1.0f)
+            var growthPercent = (int) Math.Round(growthModifier * 100.0f);
+            if (growthPercent > 100)
             {
-                var growthPercent = (int) Math.Round(growthModifier * 100.0f);
                 _root.Q<Label>("legume_modifier").text = $"Growth speed: <b>+{growthPercent - 100}%</b>";
                 _root.Q<Label>("legume_modifier").style.display = DisplayStyle.Flex;
             }
