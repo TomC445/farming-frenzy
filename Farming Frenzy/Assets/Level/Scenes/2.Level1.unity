@@ -5249,7 +5249,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyPrefab: {fileID: 1129200135312136792, guid: df8c8d82ae5faf649932dd8995a2f995, type: 3}
   _spawnPositions: {fileID: 2037112010}
-  _spawnEnemies: 0
 --- !u!1001 &1005050960
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83711,7 +83710,9 @@ MonoBehaviour:
   _quota: 100
   _quotaIncreaseRate: 2
   _timerRate: 3
-  _dayTime: 180
+  _dayTime: 30
+  _enemyDifficulty: 1
+  _enemySpawnFrequency: 1
 --- !u!1 &2087830138
 GameObject:
   m_ObjectHideFlags: 0

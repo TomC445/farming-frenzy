@@ -8,7 +8,8 @@ using UnityEngine.AI;
 public class EnemyAgent : MonoBehaviour
 {
     #region Editor Fields
-    
+    [SerializeField] private float _health = 3;
+    [SerializeField] private float _maxHealth = 3;
     #endregion
 
     #region Properties
@@ -19,6 +20,8 @@ public class EnemyAgent : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private BoxCollider2D _collider;
     public Transform _spawnPoints;
+    private enum State { Hungry, Eating, Scared}
+    private State _currentState;
     #endregion
 
     #region Methods
@@ -32,7 +35,7 @@ public class EnemyAgent : MonoBehaviour
         _agent.updateUpAxis = false;
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _collider = GetComponent<BoxCollider2D>();
-        AcquireTarget();
+        _currentState = State.Hungry; //when spawning in for the first time the animal is hungry
     }
 
 
@@ -48,30 +51,65 @@ public class EnemyAgent : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(_target == null);
         var direction = _agent.velocity.normalized;
         _agentAnimator.SetFloat("X", direction.x);
         _agentAnimator.SetFloat("Y", direction.y);
         _agentAnimator.SetBool("Movement", direction.magnitude > 0);
         _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
-        if (_target == null || !_target.gameObject.activeInHierarchy)
+        if (_currentState == State.Hungry)
         {
-            AcquireTarget();
+            AcquirePlantTarget();
+            if (_target == null)
+            {
+                _currentState = State.Scared;
+            } else
+            {
+                _agent.SetDestination(_target.position);
+                _currentState = State.Eating;
+            }
+        }
+        else if (_currentState == State.Eating)
+        {
+            if(_target == null)
+            {
+                _currentState = State.Hungry;
+            }
+        }
+        else if (_currentState == State.Scared)
+        {
+            if (_target != null)
+            {
+                if (_agent.remainingDistance <= 0.1f)
+                {
+                    _agent.isStopped = true;
+                    Destroy(gameObject);
+                }
+                return;
+            }
+
+            int randomIndex = Random.Range(0, _spawnPoints.childCount);
+            var _spawnPoint = _spawnPoints.GetChild(randomIndex);
+            _target = _spawnPoint;
+            _agent.SetDestination(_spawnPoint.position);
         }
     }
 
-    private void AcquireTarget()
+    private void AcquirePlantTarget()
     {
         _target = GetRandomChild(_plantTransform);
-        if (_target == null)
+    }
+
+    private void OnMouseDown()
+    {
+        _health -= 1;
+        if(_health <= 0)
         {
             int randomIndex = Random.Range(0, _spawnPoints.childCount);
             var _spawnPoint = _spawnPoints.GetChild(randomIndex);
             _target = _spawnPoint;
             _agent.SetDestination(_spawnPoint.position);
-            return;
+            _currentState = State.Scared;
         }
-        _agent.SetDestination(_target.position);
     }
     #endregion
 }

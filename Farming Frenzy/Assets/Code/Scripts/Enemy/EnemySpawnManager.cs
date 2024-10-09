@@ -13,25 +13,28 @@ public class EnemySpawnManager : MonoBehaviour
 
     #endregion
 
-    #region Debug
-    public bool _spawnEnemies;
+    #region Singleton
+    public static EnemySpawnManager Instance;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     #endregion
 
     #region Methods
-    private void Update()
-    {
-        if(_spawnEnemies)
-        {
-            _spawnEnemies = false;
-            SpawnEnemies();
-        }
-    }
 
-    public void SpawnEnemies()
+    public void SpawnEnemies(int enemyNumber)
     {
         var randomIndex = Random.Range(0, _spawnPositions.childCount);
         var spawnPosition = _spawnPositions.GetChild(randomIndex);
-        var enemyNumber = Random.Range(0, 4);
         for (int i = 0; i < enemyNumber; i++)
         {
             Instantiate(_enemyPrefab, spawnPosition.position, Quaternion.identity);
