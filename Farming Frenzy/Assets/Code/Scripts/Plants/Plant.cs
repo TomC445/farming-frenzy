@@ -1,143 +1,168 @@
 using System;
-using Code.Scripts.Plants;
+using System.Collections.Generic;
 using Code.Scripts.Plants.GrowthStateExtension;
+using Code.Scripts.Plants.Powers;
+using Code.Scripts.Plants.Powers.PowerExtension;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Plant : MonoBehaviour
+namespace Code.Scripts.Plants
 {
-    #region Properties
-    private PlantData data;
-    private Sprite currentSprite;
-    private float time;
-    private GrowthState state;
-    private SpriteRenderer _plantSpriteRenderer;
-    private int _growthSpriteIndex;
-    private bool _readyToHarvest;
+    public class Plant : MonoBehaviour
+    {
+        #region Properties
+        private PlantData _data;
+        private Sprite _currentSprite;
+        private float _secsSinceGrowth;
+        private GrowthState _state;
+        private SpriteRenderer _plantSpriteRenderer;
+        private int _growthSpriteIndex;
+        private bool _readyToHarvest;
+        private BoxCollider2D _collider;
+        private float _growthRate;
     
-    private int SecsToNextStage
-    {
-        get
+        private int SecsToNextStage
         {
-            var currTime = Time.time;
-            var seconds = currTime - time;
-
-            return state switch
+            get
             {
-                GrowthState.Seedling => Math.Max(0, (int)(data._maturationCycle - data._maturationRate * seconds)),
-                GrowthState.Mature => data._fruitingRate < 0.0 ? -1 : Math.Max(0, (int)(data._fruitingCycle - data._fruitingRate * seconds)),
-                _ => 0
-            };
-        }
-    }
-
-    public string PlantName => data.name;
-
-    public string StatusRichText => state.StatusRichText(SecsToNextStage, data._goldGenerated);
-
-    public delegate void HoverInEvent(Plant plant);
-
-    public delegate void HoverOutEvent(Plant plant);
-    public event HoverInEvent OnHoverIn;
-    public event HoverOutEvent OnHoverOut;
-    #endregion
-
-    #region Methods
-    private void Awake()
-    {
-        _plantSpriteRenderer = GetComponent<SpriteRenderer>();   
-    }
-
-    void Update()
-    {
-        UpdateState();
-    }
-
-    public void InitPlant(PlantData _pdata)
-    {
-        data = _pdata;
-        state = GrowthState.Seedling;
-        time = Time.time;
-        if(data._isTree)
-        {
-            GetComponent<BoxCollider2D>().size = new Vector2(3, 2);
-            GetComponent<BoxCollider2D>().offset = new Vector2(0, 0.5f);
-
-        }
-        GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
-    }
-
-    private void UpdateState()
-    {
-        float currTime = Time.time;
-        float seconds = currTime - time;
-        switch (state)
-        {
-            case GrowthState.Seedling:
-                if (data._maturationRate * seconds <= data._maturationCycle)
+                return _state switch
                 {
-                    var spriteIndex = Mathf.FloorToInt((data._maturationRate * seconds * data._maturationSprite.Length) / data._maturationCycle);
-                    _plantSpriteRenderer.sprite = data._maturationSprite[spriteIndex];
-                } else 
+                    GrowthState.Seedling => Math.Max(0, (int)((_data._maturationCycle - _secsSinceGrowth) / _growthRate)),
+                    GrowthState.Mature => _data._fruitingCycle < 0.0 ? -1 : Math.Max(0, (int)(_data._fruitingCycle - _secsSinceGrowth)),
+                    _ => 0
+                };
+            }
+        }
+
+        public string PlantName => _data.name;
+
+        public string StatusRichText => _state.StatusRichText(SecsToNextStage, _data._goldGenerated);
+
+        public delegate void HoverInEvent(Plant plant);
+
+        public delegate void HoverOutEvent(Plant plant);
+        public event HoverInEvent OnHoverIn;
+        public event HoverOutEvent OnHoverOut;
+        #endregion
+
+        #region Methods
+        private void Awake()
+        {
+            _plantSpriteRenderer = GetComponent<SpriteRenderer>();   
+        }
+
+        void Update()
+        {
+            UpdateState();
+        }
+
+        public void InitPlant(PlantData pdata)
+        {
+            _data = pdata;
+            _state = GrowthState.Seedling;
+            _secsSinceGrowth = 0.0f;
+            _collider = GetComponent<BoxCollider2D>();
+
+            if(_data._isTree)
+            {
+                _collider.size = new Vector2(3, 2);
+                _collider.offset = new Vector2(0, 0.5f);
+
+            }
+
+            GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
+        }
+
+        private void UpdateState()
+        {
+            _growthRate = 1.0f;
+            var collisions = new List<Collider2D>();
+            _collider.Overlap(collisions);
+
+            foreach (var other in collisions)
+            {
+                var legume = other.gameObject.GetComponent<LegumePower>();
+                if (legume)
                 {
-                    state = GrowthState.Mature;
-                    time = Time.time;
+                    _growthRate += legume.EffectStrength;
                 }
-                break;
-            case GrowthState.Mature:
-                // This plant does not fruit
-                if (data._fruitingCycle < 0.0)
+
+                if (Math.Abs(_growthRate - 1.5) < 0.01)
                 {
                     break;
                 }
+            }
+
+            switch (_state)
+            {
+                case GrowthState.Seedling:
+                    print($"secs since growth: {_secsSinceGrowth}. Dt: {Time.deltaTime}. Growth rate: {_growthRate}");
+                    _secsSinceGrowth += Time.deltaTime * _growthRate; 
+
+                    if (_secsSinceGrowth <= _data._maturationCycle)
+                    {
+                        var spriteIndex = Mathf.FloorToInt(_secsSinceGrowth * _data._maturationSprite.Length / _data._maturationCycle);
+                        _plantSpriteRenderer.sprite = _data._maturationSprite[spriteIndex];
+                    } else 
+                    {
+                        _state = GrowthState.Mature;
+                        _data.power.AddTo(gameObject); // Power only enabled when the plant is grown
+                        _secsSinceGrowth = 0; 
+                    }
+                    break;
+                case GrowthState.Mature:
+                    // This plant does not fruit
+                    if (_data._fruitingCycle <= 0.0)
+                    {
+                        break;
+                    }
                 
-                if (data._fruitingRate * seconds <= data._fruitingCycle)
-                {
-                    var spriteIndex = Mathf.FloorToInt((data._fruitingRate * seconds * data._growthSprite.Length) / data._fruitingCycle);
-                    if(spriteIndex > 0) { _plantSpriteRenderer.sprite = data._growthSprite[spriteIndex-1];}
-                }
-                else
-                {
-                    _plantSpriteRenderer.sprite = data._growthSprite[data._growthSprite.Length-1];
-                    state = GrowthState.Fruited;
-                }
-                break;
-            case GrowthState.Harvested:
-                state = GrowthState.Mature;
-                break;
-        }
-    }
+                    _secsSinceGrowth += Time.deltaTime; 
 
-    public void OnMouseDown()
-    {
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return;
+                    if (_secsSinceGrowth <= _data._fruitingCycle)
+                    {
+                        var spriteIndex = Mathf.FloorToInt(_secsSinceGrowth * _data._growthSprite.Length / _data._fruitingCycle);
+                        if(spriteIndex > 0) { _plantSpriteRenderer.sprite = _data._growthSprite[spriteIndex - 1];}
+                    }
+                    else
+                    {
+                        _plantSpriteRenderer.sprite = _data._growthSprite[^1];
+                        _state = GrowthState.Fruited;
+                        _secsSinceGrowth = 0;
+                    }
+                    break;
+                case GrowthState.Harvested:
+                    _state = GrowthState.Mature;
+                    break;
+                case GrowthState.Fruited:
+                default:
+                    break;
+            }
         }
-        if (data._cannotHarvest)
-        {
-            return;
-        }
-        if (state == GrowthState.Fruited)
-        {
-            //HARVEST AND UPDATE GOLD IN GAME MANAGER
-            PlayerController.Instance.IncreaseMoney(data._goldGenerated);
-            state = GrowthState.Harvested;
-            _plantSpriteRenderer.sprite = data._harvestedSprite;
-            time = Time.time;
-        }
-    }
-    
-    private void OnMouseEnter()
-    {
-        OnHoverIn?.Invoke(this);
-    }
 
-    private void OnMouseExit()
-    {
-        OnHoverOut?.Invoke(this);
-    }
+        public void OnMouseDown()
+        {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (_data._cannotHarvest) return;
+            if (_state != GrowthState.Fruited) return;
 
-    #endregion
+            // HARVEST AND UPDATE GOLD IN GAME MANAGER
+            PlayerController.Instance.IncreaseMoney(_data._goldGenerated);
+            _state = GrowthState.Harvested;
+            _plantSpriteRenderer.sprite = _data._harvestedSprite;
+            _secsSinceGrowth = 0.0f;
+        }
+
+        private void OnMouseEnter()
+        {
+            OnHoverIn?.Invoke(this);
+        }
+
+        private void OnMouseExit()
+        {
+            OnHoverOut?.Invoke(this);
+        }
+
+        #endregion
+    }
 }
-
