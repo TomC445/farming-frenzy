@@ -143,8 +143,6 @@ public class GridManager : MonoBehaviour
         {
             tile.LockTile();
         }
-
-        _camera.transform.position = new Vector3((float)_width/2 - 0.5f, (float)_height/2 - 0.5f, -10);
     }
 
     public GridTile GetTile(Vector2 pos)

@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _quotaIncreaseRate;
     [SerializeField] private float _timerRate;
     [SerializeField] private float _dayTime; [Tooltip("Daytime in Seconds")]
+    [SerializeField] private int _enemyDifficulty;
+    [SerializeField] private int _enemySpawnFrequency;
     #endregion
 
     #region Properties
@@ -70,6 +72,10 @@ public class GameManager : MonoBehaviour
         {
             _dayNightAnimator.SetTrigger("NightTime");
             _dayCount++;
+            if(_dayCount % _enemySpawnFrequency == 0)
+            {
+                EnemySpawnManager.Instance.SpawnEnemies(Random.Range(_enemyDifficulty, _enemyDifficulty + 2));
+            }
             if (_dayCount % 7 == 0)
             {
                 _weekCount++;
