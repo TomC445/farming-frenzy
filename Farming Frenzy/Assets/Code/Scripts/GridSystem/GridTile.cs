@@ -18,23 +18,27 @@ public class GridTile : MonoBehaviour
     private bool _isPurchased;
     private bool _canBePurchased;
     private bool _isLocked;
+    public Collider2D Collider { get; private set; }
+
     public bool IsPurchased => _isPurchased;
     public bool CanBePurchased => _canBePurchased;
     public bool IsLocked => _isLocked;
     public int Cost => _cost;
     public delegate void TileClicked(GridTile tile);
 
+    public delegate void TilePurchased(GridTile tile);
     public delegate void TileHoverIn(GridTile tile);
-
     public delegate void TileHoverOut(GridTile tile);
     public event TileClicked OnTileClicked;
     public event TileHoverIn OnTileHoverIn;
     public event TileHoverOut OnTileHoverOut;
+    public event TilePurchased OnPurchase;
     #endregion
 
     #region Methods
     public void Init(bool isOffset)
     {
+        Collider = GetComponent<BoxCollider2D>();
         _renderer.color = isOffset ? _baseColour : _offsetColour;
     }
 
@@ -69,10 +73,8 @@ public class GridTile : MonoBehaviour
         {
             return;
         }
-        if (OnTileClicked != null)
-        {
-            OnTileClicked(this);
-        }
+
+        OnTileClicked?.Invoke(this);
     }
 
     public void SelectTile()
@@ -95,6 +97,7 @@ public class GridTile : MonoBehaviour
         _renderer.color = Color.white;
         _renderer.sprite = tile;
         _isPurchased = true;
+        OnPurchase?.Invoke(this);
     }
 
     public void ChangeTileColor(Color colour)
@@ -110,7 +113,7 @@ public class GridTile : MonoBehaviour
 
     public void LockTile()
     {
-        GetComponent<BoxCollider2D>().enabled = false;
+        Collider.enabled = false;
         _isLocked = true;
     }
 
@@ -126,7 +129,7 @@ public class GridTile : MonoBehaviour
 
     public void UnlockTile()
     {
-        GetComponent<BoxCollider2D>().enabled = true;
+        Collider.enabled = true;
         _isLocked = false;
     }
     #endregion

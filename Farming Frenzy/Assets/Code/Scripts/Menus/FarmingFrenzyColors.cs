@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Code.Scripts.Menus
@@ -12,5 +13,8 @@ namespace Code.Scripts.Menus
         
         public static Color PriceColor(int price) =>
             PlayerController.Instance.Money >= price ? PurchasableGold : TooExpensiveGold;
+
+        public static string PriceRichText(int price) =>
+            $"<color=#{PriceColor(price).ToHexString()}>${price}</color>";
     }
 }
