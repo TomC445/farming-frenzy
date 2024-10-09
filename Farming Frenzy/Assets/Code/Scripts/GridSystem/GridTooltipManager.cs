@@ -67,6 +67,12 @@ namespace Code.Scripts.GridSystem
             else if (_currentPlant) BuildPlantTooltip(_currentPlant);
         }
 
+        private void AddTileModifiers(Collider2D thing, [CanBeNull] Plant plant) 
+        {
+            AddCornModifier(thing, plant);
+            AddLegumeModifier(thing);
+        }
+
         private void AddLegumeModifier(Collider2D thing)
         {
             var growthModifier = LegumePower.CalculateGrowthModifier(thing);
@@ -81,10 +87,26 @@ namespace Code.Scripts.GridSystem
                 _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None;
             }
         }
+        
+        private void AddCornModifier(Collider2D thing, [CanBeNull] Plant plant)
+        {
+            var cornModifier = CornPower.CalculateCornFruitingModifier(thing, plant);
+            var cornPercent = (int) Math.Round(cornModifier * 100.0f);
+            if (cornPercent > 100)
+            {
+                _root.Q<Label>("corn_modifier").text = $"Corn fruits <b>+{cornPercent - 100}% faster here</b>";
+                _root.Q<Label>("corn_modifier").style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                _root.Q<Label>("corn_modifier").style.display = DisplayStyle.None;
+            }
+        }
+
 
         private void BuildTileTooltip([NotNull] GridTile tile)
         {
-            AddLegumeModifier(tile.Collider);
+            AddTileModifiers(tile.Collider, null);
             if (tile.IsPurchased)
             {
                 BuildFarmlandTooltip(tile);
@@ -121,7 +143,7 @@ namespace Code.Scripts.GridSystem
 
         private void BuildObstacleTooltip([NotNull] Obstacle obstacle, string type)
         {
-            AddLegumeModifier(obstacle.Collider);
+            AddTileModifiers(obstacle.Collider, null);
             _root.Q<Label>("name").text = type;
             _root.Q<Label>("status").text = $"Click to buy and remove. Cost: {FarmingFrenzyColors.PriceRichText(obstacle.Cost)}";
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
@@ -138,7 +160,7 @@ namespace Code.Scripts.GridSystem
         
         private void BuildPlantTooltip([NotNull] Plant plant)
         {
-            AddLegumeModifier(plant.Collider);
+            AddTileModifiers(plant.Collider, plant);
             _root.Q<Label>("name").text = plant.PlantName;
             _root.Q<Label>("status").text = plant.StatusRichText;
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water

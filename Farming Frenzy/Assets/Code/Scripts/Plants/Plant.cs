@@ -20,6 +20,7 @@ namespace Code.Scripts.Plants
         private bool _readyToHarvest;
         public BoxCollider2D Collider { get; private set; }
         private float _growthRate;
+        private float _fruitingRate;
         private Coroutine _damageCoroutine;
         private float _health;
 
@@ -30,7 +31,7 @@ namespace Code.Scripts.Plants
                 return _state switch
                 {
                     GrowthState.Seedling => Math.Max(0, (int)((_data._maturationCycle - _secsSinceGrowth) / _growthRate)),
-                    GrowthState.Mature => _data._cannotHarvest ? -1 : Math.Max(0, (int)(_data._fruitingCycle - _secsSinceGrowth)),
+                    GrowthState.Mature => _data._cannotHarvest ? -1 : Math.Max(0, (int)((_data._fruitingCycle - _secsSinceGrowth) / _fruitingRate)),
                     _ => 0
                 };
             }
@@ -78,6 +79,7 @@ namespace Code.Scripts.Plants
         private void UpdateState()
         {
             _growthRate = LegumePower.CalculateGrowthModifier(Collider);
+            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(Collider, this) : 1.0f;
 
             switch (_state)
             {
@@ -104,7 +106,7 @@ namespace Code.Scripts.Plants
                         break;
                     }
 
-                    _secsSinceGrowth += Time.deltaTime;
+                    _secsSinceGrowth += Time.deltaTime * _fruitingRate;
 
                     if (_secsSinceGrowth <= _data._fruitingCycle)
                     {

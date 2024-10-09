@@ -30,12 +30,12 @@ namespace Code.Scripts.Plants
             public static string StatusRichText(this GrowthState state, int timeToNext, int harvestGold)
             {
                 // Don't show "will fruit" if the plant does not fruit
-                var fruitingText = timeToNext > -1 ? $"Will <color=#{GrowthState.Fruited.Color().ToHexString()}>fruit</color> in {timeToNext}s." : "";
+                var fruitingText = timeToNext > -1 ? $" Will <color=#{GrowthState.Fruited.Color().ToHexString()}>fruit</color> in {timeToNext}s." : "";
                 return state switch
                 {
                     GrowthState.Seedling => $"{GrowthState.Seedling.NameRichText()}. {GrowthState.Mature.NameRichText()} in {timeToNext}s.",
                     GrowthState.Mature or GrowthState.Harvested => $"{GrowthState.Mature.NameRichText()}.{fruitingText}",
-                    GrowthState.Fruited => $"has {GrowthState.Fruited.NameRichText()}! Left click to harvest it for" +
+                    GrowthState.Fruited => $"{GrowthState.Fruited.NameRichText()}! Left click to\n harvest it for" +
                                             $" <color=#{FarmingFrenzyColors.PurchasableGold.ToHexString()}>" +
                                                 $"${harvestGold}" +
                                             "</color>",
