@@ -20,14 +20,12 @@ MonoBehaviour:
   _cursorSprite: {fileID: 6863076723932258049, guid: f5e99ddc9f6472f43ac0221139620b28, type: 3}
   _isTree: 0
   _cannotHarvest: 1
-  _maturationRate: 1
-  _fruitingRate: -1
   _goldGenerationFactor: 0
   _dryoutRate: 0
   _maturationCycle: 15
-  _fruitingCycle: 0
+  _fruitingCycle: -1
   flavorText: 
-  powerText: 
+  power: 1
   _tier: 3
   _price: 20
   _goldGenerated: 0

@@ -18,6 +18,8 @@ public class GridTile : MonoBehaviour
     private bool _isPurchased;
     private bool _canBePurchased;
     private bool _isLocked;
+    public Collider2D Collider { get; private set; }
+
     public bool IsPurchased => _isPurchased;
     public bool CanBePurchased => _canBePurchased;
     public bool IsLocked => _isLocked;
@@ -36,6 +38,7 @@ public class GridTile : MonoBehaviour
     #region Methods
     public void Init(bool isOffset)
     {
+        Collider = GetComponent<BoxCollider2D>();
         _renderer.color = isOffset ? _baseColour : _offsetColour;
     }
 
@@ -110,7 +113,7 @@ public class GridTile : MonoBehaviour
 
     public void LockTile()
     {
-        GetComponent<BoxCollider2D>().enabled = false;
+        Collider.enabled = false;
         _isLocked = true;
     }
 
@@ -126,7 +129,7 @@ public class GridTile : MonoBehaviour
 
     public void UnlockTile()
     {
-        GetComponent<BoxCollider2D>().enabled = true;
+        Collider.enabled = true;
         _isLocked = false;
     }
     #endregion

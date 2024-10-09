@@ -1,4 +1,5 @@
 using Code;
+using Code.Scripts.Plants.Powers;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Farming Frenzy/PlantData")]
@@ -13,14 +14,12 @@ public class PlantData : ScriptableObject
     [Header("Config")]
     public bool _isTree;
     public bool _cannotHarvest;
-    public float _maturationRate = 1;
-    public float _fruitingRate = 1;
     public float _goldGenerationFactor = 1;
     public float _dryoutRate;
     public float _maturationCycle;
     public float _fruitingCycle;
     public string flavorText;
-    public string powerText;
+    public PowerKind power;
 
     [Range(1,3)]
     public int _tier;

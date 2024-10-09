@@ -31,7 +31,7 @@ MonoBehaviour:
   _maturationCycle: 7
   _fruitingCycle: 9
   flavorText: 
-  powerText: 
+  power: 1
   _tier: 1
   _price: 35
   _goldGenerated: 6

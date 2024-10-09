@@ -15,6 +15,6 @@ namespace Code.Scripts.Menus
             PlayerController.Instance.Money >= price ? PurchasableGold : TooExpensiveGold;
 
         public static string PriceRichText(int price) =>
-            $"$<color=#{PriceColor(price).ToHexString()}>${price}</color>";
+            $"<color=#{PriceColor(price).ToHexString()}>${price}</color>";
     }
 }

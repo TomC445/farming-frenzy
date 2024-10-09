@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Code.GrowthRateExtension;
+using Code.Scripts.Plants.Powers.PowerExtension;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace Code.Scripts.Menus
                 "Marigold", "Pumpkin", "Banana", // "Scarecrow",
                 
                 // Tier 3
-                "Beans", "Shrub Rose", "Tall Grass", "Apple Tree", // "Sprinkler",
+                "Beans", "Shrub Rose", "Tall Grass", "Apple Tree" // , "Sprinkler",
             };
 
             foreach (var plant in plants)
@@ -77,8 +78,9 @@ namespace Code.Scripts.Menus
 
             var powerLabel = tooltip.Q<Label>("power");
             powerLabel.enableRichText = true;
-            
-            powerLabel.text = (data.powerText?.Length ?? 0) > 0 ? $"<u>{data.powerText}</u>" : "";
+
+            var powerText = data.power.Text() ?? "";
+            powerLabel.text = powerText.Length > 0 ? $"<u>{powerText}</u>" : "";
 
             var growth = tooltip.Q<Label>("growth");
             growth.text = data.GrowthRateBand.Text();
