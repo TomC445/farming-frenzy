@@ -109,6 +109,7 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+        AudioManager.Instance.PlaySFX("kaching");
         _currentQuotaPayment += amount;
         PlayerController.Instance.Purchase(amount);
         _quotaText.text = string.Format("{0}/{1}", _currentQuotaPayment, _quota);
@@ -119,6 +120,7 @@ public class GameManager : MonoBehaviour
         if (_currentQuotaPayment < _quota)
         {
             Time.timeScale = 0f;
+            AudioManager.Instance.PlaySFX("gameOver");
             _gameOverMenu.SetActive(true);
         }
         else
