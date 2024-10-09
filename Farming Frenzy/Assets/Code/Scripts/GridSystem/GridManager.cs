@@ -173,6 +173,7 @@ public class GridManager : MonoBehaviour
         }
         if (_selectedTile.IsPurchased && _plantName != "")
         {
+            AudioManager.Instance.PlaySFX("planting");
             InstantiatePlant(_selectedTile.transform.position);
             return;
         }

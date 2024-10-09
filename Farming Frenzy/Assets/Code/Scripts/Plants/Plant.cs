@@ -136,6 +136,7 @@ namespace Code.Scripts.Plants
             if (_state != GrowthState.Fruited) return;
 
             // HARVEST AND UPDATE GOLD IN GAME MANAGER
+            AudioManager.Instance.PlaySFX("picking");
             PlayerController.Instance.IncreaseMoney(_data._goldGenerated);
             _state = GrowthState.Harvested;
             _plantSpriteRenderer.sprite = _data._harvestedSprite;
