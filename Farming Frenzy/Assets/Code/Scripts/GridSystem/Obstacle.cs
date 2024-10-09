@@ -1,49 +1,58 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Obstacle : MonoBehaviour
+namespace Code.Scripts.GridSystem
 {
-    #region Editor Fields
-    [SerializeField] private int _cost;
-    #endregion
-
-    #region Properties
-    public int Cost => _cost;
-    public delegate void ObstacleHoverIn(Obstacle tile);
-
-    public delegate void ObstacleHoverOut(Obstacle tile);
-
-    public event ObstacleHoverIn OnObstacleHoverIn;
-    public event ObstacleHoverOut OnObstacleHoverOut;
-
-    #endregion
-
-    #region Methods
-    void OnMouseDown()
+    public class Obstacle : MonoBehaviour
     {
-        if (EventSystem.current.IsPointerOverGameObject())
+        #region Editor Fields
+        [SerializeField] private int _cost;
+        #endregion
+
+        #region Properties
+        public int Cost => _cost;
+        public Collider2D Collider { get; private set; }
+        public delegate void ObstacleHoverIn(Obstacle tile);
+
+        public delegate void ObstacleHoverOut(Obstacle tile);
+
+        public event ObstacleHoverIn OnObstacleHoverIn;
+        public event ObstacleHoverOut OnObstacleHoverOut;
+
+        #endregion
+
+        #region Methods
+
+        private void Start()
         {
-            return;
+            Collider = GetComponent<BoxCollider2D>();
         }
-        if (PlayerController.Instance.Money < _cost)
+
+        void OnMouseDown()
         {
-            return;
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+            if (PlayerController.Instance.Money < _cost)
+            {
+                return;
+            }
+            PlayerController.Instance.Purchase(_cost);
+            GridManager.Instance.UnlockTiles(GetComponent<BoxCollider2D>().bounds);
+            Destroy(gameObject);
         }
-        PlayerController.Instance.Purchase(_cost);
-        GridManager.Instance.UnlockTiles(GetComponent<BoxCollider2D>().bounds);
-        Destroy(gameObject);
-    }
 
-    private void OnMouseEnter()
-    {
-        OnObstacleHoverIn?.Invoke(this);
-    }
+        private void OnMouseEnter()
+        {
+            OnObstacleHoverIn?.Invoke(this);
+        }
 
-    private void OnMouseExit()
-    {
-        OnObstacleHoverOut?.Invoke(this);
-    }
+        private void OnMouseExit()
+        {
+            OnObstacleHoverOut?.Invoke(this);
+        }
 
-    #endregion
+        #endregion
+    }
 }

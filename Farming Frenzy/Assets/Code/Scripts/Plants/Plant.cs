@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
 using Code.Scripts.Plants.Powers.PowerExtension;
@@ -18,7 +17,7 @@ namespace Code.Scripts.Plants
         private SpriteRenderer _plantSpriteRenderer;
         private int _growthSpriteIndex;
         private bool _readyToHarvest;
-        private BoxCollider2D _collider;
+        public BoxCollider2D Collider { get; private set; }
         private float _growthRate;
     
         private int SecsToNextStage
@@ -28,7 +27,7 @@ namespace Code.Scripts.Plants
                 return _state switch
                 {
                     GrowthState.Seedling => Math.Max(0, (int)((_data._maturationCycle - _secsSinceGrowth) / _growthRate)),
-                    GrowthState.Mature => _data._fruitingCycle < 0.0 ? -1 : Math.Max(0, (int)(_data._fruitingCycle - _secsSinceGrowth)),
+                    GrowthState.Mature => _data._cannotHarvest ? -1 : Math.Max(0, (int)(_data._fruitingCycle - _secsSinceGrowth)),
                     _ => 0
                 };
             }
@@ -61,12 +60,12 @@ namespace Code.Scripts.Plants
             _data = pdata;
             _state = GrowthState.Seedling;
             _secsSinceGrowth = 0.0f;
-            _collider = GetComponent<BoxCollider2D>();
+            Collider = GetComponent<BoxCollider2D>();
 
             if(_data._isTree)
             {
-                _collider.size = new Vector2(3, 2);
-                _collider.offset = new Vector2(0, 0.5f);
+                Collider.size = new Vector2(3, 2);
+                Collider.offset = new Vector2(0, 0.5f);
 
             }
 
@@ -75,28 +74,11 @@ namespace Code.Scripts.Plants
 
         private void UpdateState()
         {
-            _growthRate = 1.0f;
-            var collisions = new List<Collider2D>();
-            _collider.Overlap(collisions);
-
-            foreach (var other in collisions)
-            {
-                var legume = other.gameObject.GetComponent<LegumePower>();
-                if (legume)
-                {
-                    _growthRate += legume.EffectStrength;
-                }
-
-                if (Math.Abs(_growthRate - 1.5) < 0.01)
-                {
-                    break;
-                }
-            }
+            _growthRate = LegumePower.CalculateGrowthModifier(Collider);
 
             switch (_state)
             {
                 case GrowthState.Seedling:
-                    print($"secs since growth: {_secsSinceGrowth}. Dt: {Time.deltaTime}. Growth rate: {_growthRate}");
                     _secsSinceGrowth += Time.deltaTime * _growthRate; 
 
                     if (_secsSinceGrowth <= _data._maturationCycle)
@@ -112,11 +94,11 @@ namespace Code.Scripts.Plants
                     break;
                 case GrowthState.Mature:
                     // This plant does not fruit
-                    if (_data._fruitingCycle <= 0.0)
+                    if (_data._cannotHarvest)
                     {
                         break;
                     }
-                
+
                     _secsSinceGrowth += Time.deltaTime; 
 
                     if (_secsSinceGrowth <= _data._fruitingCycle)

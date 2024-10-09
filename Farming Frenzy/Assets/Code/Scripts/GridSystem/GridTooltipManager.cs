@@ -1,6 +1,7 @@
 using System;
 using Code.Scripts.Menus;
 using Code.Scripts.Plants;
+using Code.Scripts.Plants.Powers;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -24,14 +25,6 @@ namespace Code.Scripts.GridSystem
             _root.visible = false;
             _tooltip = _root.Q<VisualElement>("tooltip");
             _root.RegisterCallback<MouseMoveEvent>(_ => UpdatePosition());
-
-            // In case these are no longer purchasable
-            PlayerController.Instance.OnMoneyChange += _ =>
-            {
-                if (_currentObstacle) BuildObstacleTooltip(_currentObstacle, _currentObstacleType);
-                else if (_currentTile) BuildTileTooltip(_currentTile);
-                else if (_currentPlant) BuildPlantTooltip(_currentPlant);
-            };
         }
 
         private void UpdatePosition()
@@ -67,8 +60,31 @@ namespace Code.Scripts.GridSystem
             _startedHoverTime = Time.time;
         }
 
+        private void RebuildTooltip()
+        {
+            if (_currentObstacle) BuildObstacleTooltip(_currentObstacle, _currentObstacleType);
+            else if (_currentTile) BuildTileTooltip(_currentTile);
+            else if (_currentPlant) BuildPlantTooltip(_currentPlant);
+        }
+
+        private void AddLegumeModifier(Collider2D thing)
+        {
+            var growthModifier = LegumePower.CalculateGrowthModifier(thing);
+            if (growthModifier >= 1.0f)
+            {
+                var growthPercent = (int) Math.Round(growthModifier * 100.0f);
+                _root.Q<Label>("legume_modifier").text = $"Growth speed: <b>+{growthPercent - 100}%</b>";
+                _root.Q<Label>("legume_modifier").style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None;
+            }
+        }
+
         private void BuildTileTooltip([NotNull] GridTile tile)
         {
+            AddLegumeModifier(tile.Collider);
             if (tile.IsPurchased)
             {
                 BuildFarmlandTooltip(tile);
@@ -79,7 +95,6 @@ namespace Code.Scripts.GridSystem
             }
 
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
-            _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None; // TODO legumes
             _root.Q<Label>("power").style.display = DisplayStyle.None;
         }
 
@@ -93,7 +108,7 @@ namespace Code.Scripts.GridSystem
         private void BuildFarmlandTooltip([NotNull] GridTile _)
         {
             _root.Q<Label>("name").text = "Farmland";
-            _root.Q<Label>("status").text = "Plant here by selecting a plant\n in the sho pand then clicking here.";
+            _root.Q<Label>("status").text = "Plant here by selecting a plant\nin the shop and then clicking here.";
         }
 
         private void HandleObstacleHoverIn(Obstacle obstacle, string type)
@@ -106,6 +121,7 @@ namespace Code.Scripts.GridSystem
 
         private void BuildObstacleTooltip([NotNull] Obstacle obstacle, string type)
         {
+            AddLegumeModifier(obstacle.Collider);
             _root.Q<Label>("name").text = type;
             _root.Q<Label>("status").text = $"Click to buy and remove. Cost: {FarmingFrenzyColors.PriceRichText(obstacle.Cost)}";
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
@@ -122,6 +138,7 @@ namespace Code.Scripts.GridSystem
         
         private void BuildPlantTooltip([NotNull] Plant plant)
         {
+            AddLegumeModifier(plant.Collider);
             _root.Q<Label>("name").text = plant.PlantName;
             _root.Q<Label>("status").text = plant.StatusRichText;
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
@@ -134,6 +151,8 @@ namespace Code.Scripts.GridSystem
             _root.visible = false;
             _startedHoverTime = float.PositiveInfinity;
             _currentPlant = null;
+            _currentObstacle = null;
+            _currentTile = null;
         }
 
         public void Update()
@@ -149,7 +168,7 @@ namespace Code.Scripts.GridSystem
                 return;
             }
 
-            if (_currentPlant) BuildPlantTooltip(_currentPlant); // In case the time to next stage changes
+            RebuildTooltip();
             UpdatePosition();
             _root.visible = true;
         }
