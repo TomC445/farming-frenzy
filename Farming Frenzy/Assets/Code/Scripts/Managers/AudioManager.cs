@@ -59,6 +59,18 @@ public class AudioManager : MonoBehaviour
         }
         _sfxSource.PlayOneShot(sound);
     }
+
+    public void PlayRandomGoatNoise(){
+        int randomNumber = UnityEngine.Random.Range(1, 6);
+        string name = "goatNoises" + randomNumber;
+        var sound = Array.Find(_sfxSounds, x => x.name == name);
+        if (sound == null)
+        {
+            Debug.LogError("Sound Not Found");
+            return;
+        }
+        _sfxSource.PlayOneShot(sound);
+    }
         public void ToggleMusic()
     {
         _musicSource.mute = !_musicSource.mute;

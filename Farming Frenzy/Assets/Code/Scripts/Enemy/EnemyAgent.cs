@@ -36,12 +36,16 @@ namespace Code.Scripts.Enemy
 
         public bool CanAttack => _currentState != State.Scared && _health >= 0;
         private const float Damage = 5;
+        private float timeToNextPlay;
+        private float timer;
 
         #endregion
 
         #region Methods
         private void Start()
         {
+             timeToNextPlay = UnityEngine.Random.Range(2,9);
+             AudioManager.Instance.PlayRandomGoatNoise();
             _plantTransform = GameObject.Find("Plants").transform;
             _spawnPoints = GameObject.Find("EnemySpawnPositions").transform;
             _agent = GetComponent<NavMeshAgent>();
@@ -71,6 +75,13 @@ namespace Code.Scripts.Enemy
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
+            
+            timer += Time.deltaTime;
+            if(timer>timeToNextPlay) {
+                AudioManager.Instance.PlayRandomGoatNoise();
+                timeToNextPlay = UnityEngine.Random.Range(2,9);
+                timer = 0f;
+            }
 
             lock (this)
             {
@@ -149,6 +160,14 @@ namespace Code.Scripts.Enemy
                 _target = closest;
                 _agent.SetDestination(closest.position);
             }
+        {
+            print("Running away");
+            var randomIndex = Random.Range(0, _spawnPoints.childCount);
+            var spawnPoint = _spawnPoints.GetChild(randomIndex);
+            _target = spawnPoint;
+            _agent.SetDestination(spawnPoint.position);
+            _currentState = State.Scared;
+            AudioManager.Instance.PlaySFX("goatScared");
         }
 
         /// <summary>
@@ -208,7 +227,7 @@ namespace Code.Scripts.Enemy
             yield return new WaitForSeconds(0.2f);
             _agent.isStopped = false;
             yield return new WaitForSeconds(2f);
-
+            AudioManager.Instance.PlaySFX("goatEating");
             while (true)
             {
                 lock (this)
