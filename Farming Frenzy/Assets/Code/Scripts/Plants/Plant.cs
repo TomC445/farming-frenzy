@@ -84,8 +84,8 @@ namespace Code.Scripts.Plants
 
             if (Time.time >= _nextHealTime)
             {
-                _nextHealTime = Time.time + 1.0f;
-                _health = Math.Min(MaxHealth, _health + 1.0f * _growthRate);
+                _nextHealTime = Time.time + 2.0f;
+                _health = Math.Min(MaxHealth, _health + 2.0f * _growthRate);
             }
 
             switch (_state)
@@ -143,11 +143,21 @@ namespace Code.Scripts.Plants
         public void OnMouseDown()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            if (_data._cannotHarvest) return;
-            if (_state != GrowthState.Fruited) return;
 
-            AudioManager.Instance.PlaySFX("picking");
-            Harvest();
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) // TODO placeholder control
+            {
+                Destroy(gameObject);
+                PlayerController.Instance.IncreaseMoney(_data._price / 2);
+                AudioManager.Instance.PlaySFX("digMaybe"); // TODO placeholder sound
+            }
+            else
+            {
+                if (_data._cannotHarvest) return;
+                if (_state != GrowthState.Fruited) return;
+
+                AudioManager.Instance.PlaySFX("picking");
+                Harvest();
+            }
         }
 
         private void Harvest()
