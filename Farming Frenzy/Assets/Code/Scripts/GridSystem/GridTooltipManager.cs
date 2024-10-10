@@ -67,9 +67,9 @@ namespace Code.Scripts.GridSystem
             else if (_currentPlant) BuildPlantTooltip(_currentPlant);
         }
 
-        private void AddTileModifiers(Collider2D thing, [CanBeNull] Plant plant) 
+        private void AddTileModifiers(Collider2D thing) 
         {
-            AddCornModifier(thing, plant);
+            AddCornModifier(thing);
             AddLegumeModifier(thing);
         }
 
@@ -88,9 +88,9 @@ namespace Code.Scripts.GridSystem
             }
         }
         
-        private void AddCornModifier(Collider2D thing, [CanBeNull] Plant plant)
+        private void AddCornModifier(Collider2D thing)
         {
-            var cornModifier = CornPower.CalculateCornFruitingModifier(thing, plant);
+            var cornModifier = CornPower.CalculateCornFruitingModifier(thing);
             var cornPercent = (int) Math.Round(cornModifier * 100.0f);
             if (cornPercent > 100)
             {
@@ -106,7 +106,7 @@ namespace Code.Scripts.GridSystem
 
         private void BuildTileTooltip([NotNull] GridTile tile)
         {
-            AddTileModifiers(tile.Collider, null);
+            AddTileModifiers(tile.Collider);
             if (tile.IsPurchased)
             {
                 BuildFarmlandTooltip(tile);
@@ -143,7 +143,7 @@ namespace Code.Scripts.GridSystem
 
         private void BuildObstacleTooltip([NotNull] Obstacle obstacle, string type)
         {
-            AddTileModifiers(obstacle.Collider, null);
+            AddTileModifiers(obstacle.Collider);
             _root.Q<Label>("name").text = type;
             _root.Q<Label>("status").text = $"Click to buy and remove. Cost: {FarmingFrenzyColors.PriceRichText(obstacle.Cost)}";
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
@@ -160,7 +160,7 @@ namespace Code.Scripts.GridSystem
         
         private void BuildPlantTooltip([NotNull] Plant plant)
         {
-            AddTileModifiers(plant.Collider, plant);
+            AddTileModifiers(plant.Collider);
             _root.Q<Label>("name").text = plant.PlantName;
             _root.Q<Label>("status").text = plant.StatusRichText;
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
