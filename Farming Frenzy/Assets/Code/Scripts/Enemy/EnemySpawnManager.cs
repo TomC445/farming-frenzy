@@ -33,11 +33,11 @@ public class EnemySpawnManager : MonoBehaviour
 
     public void SpawnEnemies(int enemyNumber)
     {
-        var randomIndex = Random.Range(0, _spawnPositions.childCount);
-        var spawnPosition = _spawnPositions.GetChild(randomIndex);
-        for (int i = 0; i < enemyNumber; i++)
+        for (var i = 0; i < enemyNumber; i++)
         {
-            Instantiate(_enemyPrefab, spawnPosition.position, Quaternion.identity);
+            var randomIndex = Random.Range(0, _spawnPositions.childCount);
+            var spawnPoint = _spawnPositions.GetChild(randomIndex).position;
+            Instantiate(_enemyPrefab, spawnPoint, Quaternion.identity);
         }
     }
     #endregion

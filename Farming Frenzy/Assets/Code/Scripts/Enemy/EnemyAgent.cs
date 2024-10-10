@@ -5,6 +5,7 @@ using Code.Scripts.Plants.Powers;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
+using Debug = System.Diagnostics.Debug;
 using Random = UnityEngine.Random;
 
 namespace Code.Scripts.Enemy
@@ -33,7 +34,7 @@ namespace Code.Scripts.Enemy
         private State _currentState;
         [CanBeNull] private Coroutine _eatingCoroutine;
 
-        public bool CanAttack => _currentState != State.Scared;
+        public bool CanAttack => _currentState != State.Scared && _health >= 0;
         private const float Damage = 5;
 
         #endregion
@@ -48,7 +49,6 @@ namespace Code.Scripts.Enemy
             _agent.updateRotation = false;
             _agent.updateUpAxis = false;
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _collider = GetComponentInChildren<BoxCollider2D>();
             _currentState = State.Hungry; //when spawning in for the first time the animal is hungry
             _health = _maxHealth;
         }
@@ -67,53 +67,51 @@ namespace Code.Scripts.Enemy
         private void Update()
         {
             var direction = _agent.velocity.normalized;
-
-            // Make the hitbox point in the correct direction
-            if (direction.magnitude > 0)
-            {
-                _collider.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-            }
-
             _agentAnimator.SetFloat(X, direction.x);
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
 
-            switch (_currentState)
+            lock (this)
             {
-                case State.Hungry:
+                switch (_currentState)
                 {
-                    AcquirePlantTarget();
-                    if (!_target)
+                    case State.Hungry:
                     {
-                        print("No plant, running away");
+                        AcquirePlantTarget();
+                        if (!_target)
+                        {
+                            RunAway();
+                        } else
+                        {
+                            _agent.SetDestination(_target.position);
+                            _currentState = State.Eating;
+                        }
+
+                        break;
+                    }
+                    case State.Eating:
+                    {
+                        if(!_target)
+                        {
+                            _currentState = State.Hungry;
+                        }
+
+                        break;
+                    }
+                    case State.Scared when !_target:
                         RunAway();
-                    } else
-                    {
-                        print("Acquired target");
-                        _agent.SetDestination(_target.position);
-                        _currentState = State.Eating;
-                    }
-
-                    break;
+                        break;
+                    case State.Scared when _agent.remainingDistance > 0.1f:
+                        break;
+                    case State.Scared:
+                        _agent.isStopped = true;
+                        Destroy(gameObject);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-                case State.Eating:
-                {
-                    if(!_target)
-                    {
-                        _currentState = State.Hungry;
-                    }
 
-                    break;
-                }
-                case State.Scared when !_target || _agent.remainingDistance > 0.1f:
-                    break;
-                case State.Scared:
-                    _agent.isStopped = true;
-                    Destroy(gameObject);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -124,12 +122,33 @@ namespace Code.Scripts.Enemy
 
         private void RunAway()
         {
-            print("Running away");
-            var randomIndex = Random.Range(0, _spawnPoints.childCount);
-            var spawnPoint = _spawnPoints.GetChild(randomIndex);
-            _target = spawnPoint;
-            _agent.SetDestination(spawnPoint.position);
-            _currentState = State.Scared;
+            lock (this)
+            {
+                print("Running away");
+                _currentState = State.Scared;
+            
+                if (_eatingCoroutine != null)
+                {
+                    StopCoroutine(_eatingCoroutine);
+                    _eatingCoroutine = null;
+                }
+
+                Transform closest = null;
+                var closestDist = float.PositiveInfinity;
+                foreach (Transform child in _spawnPoints)
+                {
+                    var dist = Vector3.Distance(transform.position, child.position);
+                    if (dist >= closestDist) continue;
+    
+                    closest = child;
+                    closestDist = dist;
+                }
+            
+                Debug.Assert(closest != null, nameof(closest) + " != null");
+            
+                _target = closest;
+                _agent.SetDestination(closest.position);
+            }
         }
 
         /// <summary>
@@ -138,10 +157,10 @@ namespace Code.Scripts.Enemy
         /// <returns>True if the animal is now running away</returns>
         private bool TakeDamage(int amount)
         {
-            print("Taking damage");
             _health -= amount;
+            print($"Goat took {amount} damage! HP = {_health}");
 
-            if (!(_health <= 0)) return false;
+            if (_health >= 0) return false;
 
             RunAway();
             return true;
@@ -149,32 +168,40 @@ namespace Code.Scripts.Enemy
 
         private void OnMouseDown()
         {
-            TakeDamage(1);
+            TrySpray();
+        }
+
+        public void TrySpray()
+        {
+            if (!CanAttack) return;
+            if (!PlayerController.Instance.TryPurchase(3)) return;
+
+            // TODO make a "-$2" floating text
+            TakeDamage(5);
         }
         #endregion
 
         public void StartAttacking(Plant plant)
         {
-            var distToPlant = (_collider.transform.position - plant.transform.position).magnitude;
-            var distToCurrent = (_collider.transform.position - _target?.transform.position)?.magnitude ?? float.PositiveInfinity;
-
-            if (distToPlant > distToCurrent) return;
-
-            if (_eatingCoroutine != null)
+            lock (this)
             {
-                StopCoroutine(_eatingCoroutine);
-            }
+                if (!CanAttack) return;
+                if (_eatingCoroutine != null) return;
+            
+                print($"Going to start attacking {plant.PlantName}, because state = {_currentState}");
 
-            _target = plant.transform;
-            _agent.ResetPath();
-            _agent.SetDestination(_target.position);
-            _currentState = State.Eating;
-            _eatingCoroutine = StartCoroutine(DoEating(plant));
+                _target = plant.transform;
+                _agent.ResetPath();
+                _agent.SetDestination(_target.position);
+                _currentState = State.Eating;
+                _eatingCoroutine = StartCoroutine(DoEating(plant));
+            }
         }
 
         private IEnumerator DoEating(Plant plant)
         {
             var spiky = plant.GetComponentInChildren<SpikyPower>();
+            print($"Spike damage: {spiky?.Damage ?? 0}. Plant is {plant.PlantName}");
 
             // Force the agent to stop and eat current plant
             _agent.isStopped = true;
@@ -184,22 +211,28 @@ namespace Code.Scripts.Enemy
 
             while (true)
             {
-                var plantDies = plant.TakeDamage(Damage);
-                var animalRunsAway = spiky && TakeDamage(spiky.Damage);
-    
-                if (plantDies)
+                lock (this)
                 {
-                    _target = null;
-                    _currentState = State.Hungry;
-                    _eatingCoroutine = null;
-                    yield break;
-                }
+                    var plantDies = !plant || plant.TakeDamage(Damage);
+                    var animalRunsAway = spiky && TakeDamage(spiky.Damage);
     
-                if (animalRunsAway)
-                {
-                    RunAway();
-                    _eatingCoroutine = null;
-                    yield break;
+                    if (plantDies)
+                    {
+                        _target = null;
+                        _currentState = State.Hungry;
+                        _eatingCoroutine = null;
+                    }
+    
+                    if (animalRunsAway)
+                    {
+                        RunAway();
+                        _eatingCoroutine = null;
+                    }
+
+                    if (animalRunsAway || plantDies)
+                    {
+                        yield break;
+                    }
                 }
 
                 yield return new WaitForSeconds(2f);
