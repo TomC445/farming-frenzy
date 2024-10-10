@@ -46,7 +46,7 @@ namespace Code.Scripts.Plants.Powers
         /// <param name="place"></param>
         /// <param name="plant"></param>
         /// <returns></returns>
-        public static float CalculateCornFruitingModifier(Collider2D place, [CanBeNull] Plant plant)
+        public static float CalculateCornFruitingModifier(Collider2D place)
         {
             var collisions = new List<Collider2D>();
             
@@ -57,11 +57,6 @@ namespace Code.Scripts.Plants.Powers
                 .NotNull()
                 .Distinct()
                 .Count();
-
-            if (plant?.PlantName == "Corn")
-            {
-                numberCorn = Math.Max(numberCorn - 1, 0);
-            }
 
             return 1.0f + Math.Min(MaxEffectPercent, numberCorn * EffectPercent) / 100.0f;
         }

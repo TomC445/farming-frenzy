@@ -1,6 +1,8 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Code.Scripts.Managers
 {
@@ -75,7 +77,8 @@ namespace Code.Scripts.Managers
                 _dayCount++;
                 if(_dayCount % _enemySpawnFrequency == 0)
                 {
-                    EnemySpawnManager.Instance.SpawnEnemies(Random.Range(_enemyDifficulty, _enemyDifficulty + 2));
+                    var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 2) * Math.Max(1, _dayCount / 7);
+                    EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
                 if (_dayCount % 7 == 0)
                 {
@@ -110,6 +113,12 @@ namespace Code.Scripts.Managers
             {
                 return;
             }
+
+            if (_currentQuotaPayment >= _quota)
+            {
+                return;
+            }
+
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
             PlayerController.Instance.Purchase(amount);

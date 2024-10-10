@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
+using Code.Scripts.Plants;
+using Code.Scripts.Plants.Powers;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Code.Scripts.Enemy
@@ -22,15 +25,16 @@ namespace Code.Scripts.Enemy
         private Transform _plantTransform;
         private NavMeshAgent _agent;
         private Animator _agentAnimator;
-        public Transform _target;
+        [CanBeNull] private Transform _target;
         private SpriteRenderer _spriteRenderer;
         private BoxCollider2D _collider;
         public Transform _spawnPoints;
         private enum State { Hungry, Eating, Scared}
         private State _currentState;
+        [CanBeNull] private Coroutine _eatingCoroutine;
 
         public bool CanAttack => _currentState != State.Scared;
-        public float Damage => 5;
+        private const float Damage = 5;
 
         #endregion
 
@@ -44,8 +48,9 @@ namespace Code.Scripts.Enemy
             _agent.updateRotation = false;
             _agent.updateUpAxis = false;
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _collider = GetComponent<BoxCollider2D>();
+            _collider = GetComponentInChildren<BoxCollider2D>();
             _currentState = State.Hungry; //when spawning in for the first time the animal is hungry
+            _health = _maxHealth;
         }
 
 
@@ -62,11 +67,18 @@ namespace Code.Scripts.Enemy
         private void Update()
         {
             var direction = _agent.velocity.normalized;
+
+            // Make the hitbox point in the correct direction
+            if (direction.magnitude > 0)
+            {
+                _collider.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+            }
+
             _agentAnimator.SetFloat(X, direction.x);
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
-        
+
             switch (_currentState)
             {
                 case State.Hungry:
@@ -124,7 +136,7 @@ namespace Code.Scripts.Enemy
         /// </summary>
         /// <param name="amount"></param>
         /// <returns>True if the animal is now running away</returns>
-        public bool TakeDamage(int amount)
+        private bool TakeDamage(int amount)
         {
             print("Taking damage");
             _health -= amount;
@@ -138,8 +150,60 @@ namespace Code.Scripts.Enemy
         private void OnMouseDown()
         {
             TakeDamage(1);
-
         }
         #endregion
+
+        public void StartAttacking(Plant plant)
+        {
+            var distToPlant = (_collider.transform.position - plant.transform.position).magnitude;
+            var distToCurrent = (_collider.transform.position - _target?.transform.position)?.magnitude ?? float.PositiveInfinity;
+
+            if (distToPlant > distToCurrent) return;
+
+            if (_eatingCoroutine != null)
+            {
+                StopCoroutine(_eatingCoroutine);
+            }
+
+            _target = plant.transform;
+            _agent.ResetPath();
+            _agent.SetDestination(_target.position);
+            _currentState = State.Eating;
+            _eatingCoroutine = StartCoroutine(DoEating(plant));
+        }
+
+        private IEnumerator DoEating(Plant plant)
+        {
+            var spiky = plant.GetComponentInChildren<SpikyPower>();
+
+            // Force the agent to stop and eat current plant
+            _agent.isStopped = true;
+            yield return new WaitForSeconds(0.2f);
+            _agent.isStopped = false;
+            yield return new WaitForSeconds(2f);
+
+            while (true)
+            {
+                var plantDies = plant.TakeDamage(Damage);
+                var animalRunsAway = spiky && TakeDamage(spiky.Damage);
+    
+                if (plantDies)
+                {
+                    _target = null;
+                    _currentState = State.Hungry;
+                    _eatingCoroutine = null;
+                    yield break;
+                }
+    
+                if (animalRunsAway)
+                {
+                    RunAway();
+                    _eatingCoroutine = null;
+                    yield break;
+                }
+
+                yield return new WaitForSeconds(2f);
+            }
+        }
     }
 }

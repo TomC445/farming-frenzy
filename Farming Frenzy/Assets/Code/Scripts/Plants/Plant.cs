@@ -4,6 +4,7 @@ using Code.Scripts.Enemy;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
 using Code.Scripts.Plants.Powers.PowerExtension;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -22,9 +23,9 @@ namespace Code.Scripts.Plants
         public BoxCollider2D Collider { get; private set; }
         private float _growthRate;
         private float _fruitingRate;
-        private Coroutine _damageCoroutine;
         private float _health;
-
+        private float _nextHealTime;
+        private float MaxHealth => _data._health;
         private int SecsToNextStage
         {
             get
@@ -80,7 +81,13 @@ namespace Code.Scripts.Plants
         private void UpdateState()
         {
             _growthRate = LegumePower.CalculateGrowthModifier(Collider);
-            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(Collider, this) : 1.0f;
+            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(Collider) : 1.0f;
+
+            if (Time.time >= _nextHealTime)
+            {
+                _nextHealTime = Time.time + 1.0f;
+                _health = Math.Min(MaxHealth, _health + 1.0f * _growthRate);
+            }
 
             switch (_state)
             {
@@ -153,64 +160,29 @@ namespace Code.Scripts.Plants
             OnHoverOut?.Invoke(this);
         }
 
+        public bool TakeDamage(float amount)
+        {
+            _health -= amount;
+            if (_health > 0) return false;
+
+            Destroy(gameObject);
+            return true;
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.CompareTag("Enemy")) return;
-            if (_damageCoroutine != null)
-            {
-                StopCoroutine(_damageCoroutine);
-            }
+            print("Trigger enter by enemy");
 
-            var enemy = other.GetComponent<EnemyAgent>();
+            var enemy = other.GetComponentInParent<EnemyAgent>();
             if (!enemy.CanAttack)
             {
-                return;
-            }
-            
-            _damageCoroutine = StartCoroutine(TakeAnimalDamage(enemy));
-        }
-
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!other.CompareTag("Enemy")) return;
-            if (_damageCoroutine != null)
-            {
-                StopCoroutine(_damageCoroutine);
-            }
-            
-            var enemy = other.GetComponent<EnemyAgent>();
-            
-            if (!enemy.CanAttack)
-            {
+                print("Cannot attack so i return");
                 return;
             }
 
-            _damageCoroutine = StartCoroutine(TakeAnimalDamage(enemy));
-        }
-
-        private IEnumerator TakeAnimalDamage(EnemyAgent enemy)
-        {
-            var spiky = GetComponentInChildren<SpikyPower>();
-            print(spiky);
-            
-            while (true)
-            {
-                _health -= enemy.Damage;
-                print(_health);
-
-                if (spiky)
-                {
-                    print("damage!");
-                    if (enemy.TakeDamage(spiky.Damage))
-                    {
-                        _damageCoroutine = null;
-                        print("Goodbye coroutine");
-                        yield break;
-                    }
-                }
-                
-                yield return new WaitForSeconds(1f);
-            }
+            print($"Inside of {this} ({PlantName})! Must start to attack!!");
+            enemy.StartAttacking(this);
         }
         #endregion
     }
