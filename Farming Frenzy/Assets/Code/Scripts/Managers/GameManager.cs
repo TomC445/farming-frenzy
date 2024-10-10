@@ -113,6 +113,15 @@ namespace Code.Scripts.Managers
             if (_currentQuotaPayment >= _quota) return;
             if (!PlayerController.Instance.TryPurchase(amount)) return;
 
+            if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+            {
+                var maxCanBuy = Math.Min(_quota - _currentQuotaPayment, PlayerController.Instance.Money);
+                if (maxCanBuy > 0)
+                {
+                    PlayerController.Instance.Purchase(maxCanBuy);
+                }
+            }
+
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
             _quotaText.text = $"{_currentQuotaPayment}/{_quota}";
