@@ -11419,7 +11419,7 @@ MonoBehaviour:
   _quota: 100
   _quotaIncreaseRate: 2
   _timerRate: 20
-  _dayTime: 5
+  _dayTime: 20
   _enemyDifficulty: 1
   _enemySpawnFrequency: 1
 --- !u!1 &2087830138

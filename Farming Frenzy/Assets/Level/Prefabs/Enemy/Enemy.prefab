@@ -126,6 +126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d33cce0a018a2d4bb1590ead6b3e0d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _health: 3
+  _maxHealth: 3
+  _target: {fileID: 0}
+  _spawnPoints: {fileID: 0}
 --- !u!95 &6591600945038376290
 Animator:
   serializedVersion: 7

@@ -37,6 +37,7 @@ public class GridManager : MonoBehaviour
     private List<GridTile> _purchasedTiles = new List<GridTile>();
     private List<GridTile> _groundTiles = new List<GridTile>();
     private List<GridTile> _obstructedTiles = new List<GridTile>();
+    private Transform _plantsTransform;
     public string PlantName => _plantName;
     private GridTooltipManager _tooltipManager;
     #endregion
@@ -63,6 +64,7 @@ public class GridManager : MonoBehaviour
         _excludedTilesNames = _excludedTiles.Select(x => x.name).ToList();
         _starterTilesNames = _starterTiles.Select(x => x.name).ToList();
         _tooltipManager = GameObject.Find("Grid tooltip").GetComponent<GridTooltipManager>();
+        _plantsTransform = GameObject.Find("Plants").transform;
         InitObstacles();
         GenerateGrid();
     }
@@ -257,20 +259,19 @@ public class GridManager : MonoBehaviour
     private void InstantiatePlant(Vector3 tilePosition)
     {
         var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
-        if(PlayerController.Instance.Money >= plantAmount)
-        {
-            var plant = Instantiate(_plant, tilePosition, Quaternion.identity);
-            var plantComponent = plant.GetComponent<Plant>();
-            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
-            _tooltipManager.SubscribePlantEvents(plantComponent);
-            PlayerController.Instance.Purchase(plantAmount);
-        }
+        if (PlayerController.Instance.Money < plantAmount) return;
+
+        var plant = Instantiate(_plant, tilePosition, Quaternion.identity, _plantsTransform);
+        var plantComponent = plant.GetComponent<Plant>();
+        plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+        _tooltipManager.SubscribePlantEvents(plantComponent);
+        PlayerController.Instance.Purchase(plantAmount);
     }
 
     public void HighlightTiles(GridTile gridTile, bool highlightOn)
     {
         var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == gridTile).Key;
-        var isTree = (_plantName != "") ? PlantManager.Instance.GetPlantData(_plantName)._isTree : false;
+        var isTree = _plantName != "" && PlantManager.Instance.GetPlantData(_plantName)._isTree;
         if (isTree)
         {
             for (int x = 0; x < 3; ++x)
