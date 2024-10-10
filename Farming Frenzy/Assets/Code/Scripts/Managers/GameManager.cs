@@ -119,7 +119,7 @@ namespace Code.Scripts.Managers
 
         private void CheckGameOver()
         {
-            var diff = _currentQuotaPayment - _quota;
+            var diff = _quota - _currentQuotaPayment;
 
             // Player hasn't paid enough
             if (diff > 0)
