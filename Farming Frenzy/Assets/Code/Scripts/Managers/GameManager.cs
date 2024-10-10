@@ -77,7 +77,8 @@ namespace Code.Scripts.Managers
                 _dayCount++;
                 if(_dayCount % _enemySpawnFrequency == 0)
                 {
-                    var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 2) * Math.Max(1, _dayCount / 7);
+                    var week = _dayCount / 7;
+                    var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 2) * Mathf.RoundToInt((float) Math.Pow(2, week));
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
                 if (_dayCount % 7 == 0)
