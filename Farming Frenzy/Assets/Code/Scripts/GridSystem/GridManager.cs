@@ -183,12 +183,10 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
-        if (PlayerController.Instance.Money < _selectedTile.Cost)
-        {
-            return;
-        }
+
+        if (!PlayerController.Instance.TryPurchase(_selectedTile.Cost)) return;
+
         AudioManager.Instance.PlaySFX("digMaybe");
-        PlayerController.Instance.Purchase(_selectedTile.Cost);
         _selectedTile.ChangeTile(PlayerController.Instance.GroundSprite);
         _purchasedTiles.Add(_selectedTile);
         UpdateSurroundingTiles(_selectedTile);
@@ -259,13 +257,12 @@ public class GridManager : MonoBehaviour
     private void InstantiatePlant(Vector3 tilePosition)
     {
         var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
-        if (PlayerController.Instance.Money < plantAmount) return;
+        if (!PlayerController.Instance.TryPurchase(plantAmount)) return;
 
         var plant = Instantiate(_plant, tilePosition, Quaternion.identity, _plantsTransform);
         var plantComponent = plant.GetComponent<Plant>();
         plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
         _tooltipManager.SubscribePlantEvents(plantComponent);
-        PlayerController.Instance.Purchase(plantAmount);
     }
 
     public void HighlightTiles(GridTile gridTile, bool highlightOn)

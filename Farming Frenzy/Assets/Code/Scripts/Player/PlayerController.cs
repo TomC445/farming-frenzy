@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -35,6 +34,13 @@ public class PlayerController : MonoBehaviour
     {
         _money -= amount;
         OnMoneyChange?.Invoke(_money);
+    }
+
+    public bool TryPurchase(int amount)
+    {
+        if (_money < amount) return false;
+        Purchase(amount);
+        return true;
     }
 
     public void IncreaseMoney(int amount)

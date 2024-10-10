@@ -33,7 +33,7 @@ namespace Code.Scripts.Menus
             var plants = new List<string>
             {
                 // Tier 1
-                "Tomato", "Corn", "Clover", "Nettle",
+                "Tomato", "Corn", "Clover", "Blister Berry",
                 
                 // Tier 2
                 "Marigold", "Pumpkin", "Banana", // "Scarecrow",

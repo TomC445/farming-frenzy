@@ -1,10 +1,9 @@
 using System;
-using System.Collections;
+using System.Linq;
 using Code.Scripts.Enemy;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
 using Code.Scripts.Plants.Powers.PowerExtension;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -56,7 +55,7 @@ namespace Code.Scripts.Plants
             _plantSpriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        void Update()
+        private void Update()
         {
             UpdateState();
         }
@@ -72,9 +71,9 @@ namespace Code.Scripts.Plants
             {
                 Collider.size = new Vector2(3, 2);
                 Collider.offset = new Vector2(0, 0.5f);
-
             }
 
+            _plantSpriteRenderer.sprite = _data._growthSprite.First();
             GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
         }
 
@@ -94,16 +93,16 @@ namespace Code.Scripts.Plants
                 case GrowthState.Seedling:
                     _secsSinceGrowth += Time.deltaTime * _growthRate;
 
-                    if (_secsSinceGrowth <= _data._maturationCycle)
+                    if (_secsSinceGrowth >= _data._maturationCycle)
                     {
-                        var spriteIndex = Mathf.FloorToInt(_secsSinceGrowth * _data._maturationSprite.Length / _data._maturationCycle);
-                        _plantSpriteRenderer.sprite = _data._maturationSprite[spriteIndex];
-                    }
-                    else
-                    {
+                        // Plant has finished growing!
                         _state = GrowthState.Mature;
                         _data.power.AddTo(gameObject); // Power only enabled when the plant is grown
                         _secsSinceGrowth = 0;
+                    } else {
+                        // Plant is still growing
+                        var spriteIndex = Mathf.FloorToInt(_secsSinceGrowth * _data._maturationSprite.Length / _data._maturationCycle);
+                        _plantSpriteRenderer.sprite = _data._maturationSprite[spriteIndex];
                     }
                     break;
                 case GrowthState.Mature:
@@ -130,9 +129,14 @@ namespace Code.Scripts.Plants
                 case GrowthState.Harvested:
                     _state = GrowthState.Mature;
                     break;
-                case GrowthState.Fruited:
-                default:
+                case GrowthState.Fruited when _secsSinceGrowth >= 3.0:
+                    Harvest();
                     break;
+                case GrowthState.Fruited:
+                    _secsSinceGrowth += Time.deltaTime;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -142,8 +146,12 @@ namespace Code.Scripts.Plants
             if (_data._cannotHarvest) return;
             if (_state != GrowthState.Fruited) return;
 
-            // HARVEST AND UPDATE GOLD IN GAME MANAGER
             AudioManager.Instance.PlaySFX("picking");
+            Harvest();
+        }
+
+        private void Harvest()
+        {
             PlayerController.Instance.IncreaseMoney(_data._goldGenerated);
             _state = GrowthState.Harvested;
             _plantSpriteRenderer.sprite = _data._harvestedSprite;
@@ -163,6 +171,7 @@ namespace Code.Scripts.Plants
         public bool TakeDamage(float amount)
         {
             _health -= amount;
+            print($"{PlantName} took {amount} damage! HP = {_health}");
             if (_health > 0) return false;
 
             Destroy(gameObject);
@@ -172,16 +181,10 @@ namespace Code.Scripts.Plants
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.CompareTag("Enemy")) return;
-            print("Trigger enter by enemy");
 
             var enemy = other.GetComponentInParent<EnemyAgent>();
-            if (!enemy.CanAttack)
-            {
-                print("Cannot attack so i return");
-                return;
-            }
+            if (!enemy.CanAttack) return;
 
-            print($"Inside of {this} ({PlantName})! Must start to attack!!");
             enemy.StartAttacking(this);
         }
         #endregion

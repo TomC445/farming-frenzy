@@ -34,10 +34,9 @@ namespace Code.Scripts.GridSystem
             {
                 return;
             }
-            if (PlayerController.Instance.Money < _cost)
-            {
-                return;
-            }
+
+            if (!PlayerController.Instance.TryPurchase(_cost)) return;
+
             PlayerController.Instance.Purchase(_cost);
             GridManager.Instance.UnlockTiles(GetComponent<BoxCollider2D>().bounds);
             Destroy(gameObject);

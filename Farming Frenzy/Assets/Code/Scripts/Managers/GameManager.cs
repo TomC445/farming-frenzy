@@ -109,19 +109,11 @@ namespace Code.Scripts.Managers
 
         public void PayQuota(int amount)
         {
-            if(PlayerController.Instance.Money < amount)
-            {
-                return;
-            }
-
-            if (_currentQuotaPayment >= _quota)
-            {
-                return;
-            }
+            if (_currentQuotaPayment >= _quota) return;
+            if (!PlayerController.Instance.TryPurchase(amount)) return;
 
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
-            PlayerController.Instance.Purchase(amount);
             _quotaText.text = $"{_currentQuotaPayment}/{_quota}";
         }
 
