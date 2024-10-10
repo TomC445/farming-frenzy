@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Code.Scripts.Enemy;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
 using Code.Scripts.Plants.Powers.PowerExtension;
@@ -94,7 +95,6 @@ namespace Code.Scripts.Plants
                     else
                     {
                         _state = GrowthState.Mature;
-                        Debug.Log(_data.power);
                         _data.power.AddTo(gameObject); // Power only enabled when the plant is grown
                         _secsSinceGrowth = 0;
                     }
@@ -155,35 +155,60 @@ namespace Code.Scripts.Plants
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Enemy"))
+            if (!other.CompareTag("Enemy")) return;
+            if (_damageCoroutine != null)
             {
-                if (_damageCoroutine != null)
-                {
-                    StopCoroutine(_damageCoroutine);
-
-                }
-                _damageCoroutine = StartCoroutine(TakeAnimalDamage());
+                StopCoroutine(_damageCoroutine);
             }
+
+            var enemy = other.GetComponent<EnemyAgent>();
+            if (!enemy.CanAttack)
+            {
+                return;
+            }
+            
+            _damageCoroutine = StartCoroutine(TakeAnimalDamage(enemy));
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.CompareTag("Enemy"))
+            if (!other.CompareTag("Enemy")) return;
+            if (_damageCoroutine != null)
             {
-                if (_damageCoroutine != null)
-                {
-                    StopCoroutine(_damageCoroutine);
-
-                }
-                _damageCoroutine = StartCoroutine(TakeAnimalDamage());
+                StopCoroutine(_damageCoroutine);
             }
+            
+            var enemy = other.GetComponent<EnemyAgent>();
+            
+            if (!enemy.CanAttack)
+            {
+                return;
+            }
+
+            _damageCoroutine = StartCoroutine(TakeAnimalDamage(enemy));
         }
 
-        private IEnumerator TakeAnimalDamage()
+        private IEnumerator TakeAnimalDamage(EnemyAgent enemy)
         {
+            var spiky = GetComponentInChildren<SpikyPower>();
+            print(spiky);
+            
             while (true)
             {
-                _health -= 5;
+                _health -= enemy.Damage;
+                print(_health);
+
+                if (spiky)
+                {
+                    print("damage!");
+                    if (enemy.TakeDamage(spiky.Damage))
+                    {
+                        _damageCoroutine = null;
+                        print("Goodbye coroutine");
+                        yield break;
+                    }
+                }
+                
                 yield return new WaitForSeconds(1f);
             }
         }
