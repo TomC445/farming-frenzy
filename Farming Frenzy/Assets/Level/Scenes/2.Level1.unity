@@ -10011,7 +10011,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1843748310}
-  - component: {fileID: 1843748311}
   m_Layer: 5
   m_Name: VolumeSliders
   m_TagString: Untagged
@@ -10044,18 +10043,6 @@ RectTransform:
   m_AnchoredPosition: {x: 90, y: 0}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1843748311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1843748309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f994145e5a68ca743be824bb27f3faa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1863968200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10399,6 +10386,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 538426d1a4a3eac4d9efdec27e015397, type: 3}
   - {fileID: 8300000, guid: 376e3322d48c96243a697da76ade2f4a, type: 3}
   - {fileID: 8300000, guid: ab88ff2bd6ccbe84f93694755f227f2d, type: 3}
+  - {fileID: 8300000, guid: a891b990980f7164a93fd0b2c6618a08, type: 3}
+  - {fileID: 8300000, guid: f2c33495413def5478bc8759b985b4bd, type: 3}
+  - {fileID: 8300000, guid: c1732ea398b979945adeee38b0f8f4ae, type: 3}
+  - {fileID: 8300000, guid: 5f37caa2c0ae6784a993d7fac6efce54, type: 3}
+  - {fileID: 8300000, guid: a23d5d50eea2ca349b4c7f8c7c573f9f, type: 3}
+  - {fileID: 8300000, guid: 75c0ea74183e2ba47a266b4f82482b10, type: 3}
+  - {fileID: 8300000, guid: f65b702a7358f954689de8dcfae60f9d, type: 3}
   _musicSource: {fileID: 1896792630}
   _sfxSource: {fileID: 1896792629}
   audioMixer: {fileID: 24100000, guid: 1aa7a43ee54e76f41bb3d0f2c8027585, type: 2}
