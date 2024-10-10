@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.GrowthRateExtension;
 using Code.Scripts.Plants.Powers.PowerExtension;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,8 +21,8 @@ namespace Code.Scripts.Menus
         private void Start()
         {
             _root = ((UIDocument)gameObject.GetComponent(typeof(UIDocument))).rootVisualElement;
-            _itemTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/shop_item.uxml");
-            _itemTooltipTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/shop_item_tooltip.uxml");
+            _itemTemplate = Resources.Load<VisualTreeAsset>("Shop_item");
+            _itemTooltipTemplate = Resources.Load<VisualTreeAsset>("Shop_item_tooltip");
             _tooltipManipulator = new ShopContainerTooltipManipulator();
             _root.AddManipulator(_tooltipManipulator);
 
@@ -111,7 +109,9 @@ namespace Code.Scripts.Menus
                 }
                 else
                 {
-                    overlay.style.backgroundColor = Color.white.WithAlpha(0);
+                    var color2 = Color.white;
+                    color2.a = 0;
+                    overlay.style.backgroundColor = color2;
                     tooExpensive.style.display = DisplayStyle.None;
                 }
             };
