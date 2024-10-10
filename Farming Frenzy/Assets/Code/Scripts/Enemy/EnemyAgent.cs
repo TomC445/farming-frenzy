@@ -169,6 +169,7 @@ namespace Code.Scripts.Enemy
             _currentState = State.Scared;
             AudioManager.Instance.PlaySFX("goatScared");
         }
+        }
 
         /// <summary>
         /// </summary>
