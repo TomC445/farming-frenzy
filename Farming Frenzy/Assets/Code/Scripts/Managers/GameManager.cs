@@ -75,12 +75,14 @@ namespace Code.Scripts.Managers
             {
                 _dayNightAnimator.SetTrigger(NightTime);
                 _dayCount++;
-                if(_dayCount % _enemySpawnFrequency == 0)
+
+                if(_dayCount % _enemySpawnFrequency == 0 && _dayCount >= 3)
                 {
-                    var week = _dayCount / 7;
+                    var week = Mathf.CeilToInt(_dayCount / 7.0f);
                     var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 1) * Mathf.RoundToInt((float) Math.Pow(week, 2));
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
+
                 if (_dayCount % 7 == 0)
                 {
                     _weekCount++;
