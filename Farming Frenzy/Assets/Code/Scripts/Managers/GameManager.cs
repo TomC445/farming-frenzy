@@ -76,7 +76,15 @@ namespace Code.Scripts.Managers
                 _dayNightAnimator.SetTrigger(NightTime);
                 _dayCount++;
 
-                if(_dayCount % _enemySpawnFrequency == 0 && _dayCount >= 3)
+                // Spawn only once every $period days
+                var rightDayForSpawn = _dayCount % _enemySpawnFrequency == 0;
+
+                // TODO this could only be in easy-med mode ?
+                // Only spawn on Thursday and Saturday in Week 1 to reduce load on player
+                var gracePeriod = _dayCount <= 7;
+                var reducedSpawnDay = gracePeriod && _dayCount is not (3 or 5);
+
+                if(rightDayForSpawn && !reducedSpawnDay)
                 {
                     var week = Mathf.CeilToInt(_dayCount / 7.0f);
                     var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 1) * Mathf.RoundToInt((float) Math.Pow(week, 2));
