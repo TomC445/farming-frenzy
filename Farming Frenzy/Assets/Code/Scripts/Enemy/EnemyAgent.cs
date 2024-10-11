@@ -183,7 +183,6 @@ namespace Code.Scripts.Enemy
             {
                 TrySpray();
             }
-            
         }
 
         public void TrySpray()

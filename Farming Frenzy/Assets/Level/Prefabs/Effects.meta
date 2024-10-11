@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Farming Frenzy/Assets/Level/Prefabs/Effects.meta
 guid: 73164d787e387004583725dd79e3d837
+========
+guid: 62a707bf66ba5fbfb8a0c5518e50605a
+>>>>>>>> main:Farming Frenzy/Assets/UI/Resources.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
