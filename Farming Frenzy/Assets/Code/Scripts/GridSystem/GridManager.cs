@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Code.Scripts.Plants;
-using Unity.Burst.Intrinsics;
+using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -158,7 +158,7 @@ namespace Code.Scripts.GridSystem
             switch (tile.IsPurchased)
             {
                 // Try place the plant that is selected
-                case true when PlayerController.Instance._currentState == PlayerController.CursorState.Planting:
+                case true when PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Planting:
                     TryPlacePlant(tile.transform.position);
                     break;
     
@@ -220,12 +220,7 @@ namespace Code.Scripts.GridSystem
         {
             _plantName = plantName;
             Debug.Log(plantName);
-            PlayerController.Instance._currentState = PlayerController.CursorState.Planting;
-            var cursorTexture = Resources.Load<Texture2D>($"SeedBags/{plantName}");
-            if (cursorTexture != null)
-            {
-                Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
-            }
+            PlayerController.Instance.SetPickedCursor(PlayerController.CursorState.Planting, Resources.Load<Texture2D>($"SeedBags/{plantName}"));
         }
 
         private void TryPlacePlant(Vector3 tilePosition)

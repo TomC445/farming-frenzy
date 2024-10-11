@@ -3,6 +3,7 @@ using System.Linq;
 using Code.GrowthRateExtension;
 using Code.Scripts.GridSystem;
 using Code.Scripts.Plants.Powers.PowerExtension;
+using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.UIElements;
 

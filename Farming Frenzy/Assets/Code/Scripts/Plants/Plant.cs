@@ -4,6 +4,7 @@ using Code.Scripts.Enemy;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
 using Code.Scripts.Plants.Powers.PowerExtension;
+using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -49,7 +50,7 @@ namespace Code.Scripts.Plants
         public delegate void HoverOutEvent(Plant plant);
         public event HoverInEvent OnHoverIn;
         public event HoverOutEvent OnHoverOut;
-        private bool _isMouseOverPlant = false;
+        private bool _isMouseOverPlant;
         #endregion
 
         #region Methods
@@ -61,16 +62,21 @@ namespace Code.Scripts.Plants
         private void Update()
         {
             UpdateState();
-            if(Input.GetMouseButton(0) && _isMouseOverPlant)
+            if (!Input.GetMouseButton(0) || !_isMouseOverPlant) return;
+
+            switch (PlayerController.Instance.CurrentlyActiveCursor)
             {
-                if(PlayerController.Instance._currentState == PlayerController.CursorState.Scythe)
-                {
+                case PlayerController.CursorState.Scythe:
                     HarvestPlant();
-                } else if (PlayerController.Instance._currentState == PlayerController.CursorState.Shovel)
-                {
+                    break;
+                case PlayerController.CursorState.Shovel:
                     DigPlant();
-                }
-                
+                    break;
+                case PlayerController.CursorState.Default:
+                case PlayerController.CursorState.Spray:
+                case PlayerController.CursorState.Planting:
+                default:
+                    break;
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using Code.Scripts.Managers;
 using Code.Scripts.Plants;
 using Code.Scripts.Plants.Powers;
+using Code.Scripts.Player;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
@@ -196,9 +197,19 @@ namespace Code.Scripts.Enemy
             return true;
         }
 
+        private void OnMouseEnter()
+        {
+            PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Spray);
+        }
+
+        private void OnMouseExit()
+        {
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Spray);
+        }
+
         private void OnMouseDown()
         {
-            if(PlayerController.Instance._currentState == PlayerController.CursorState.Spray)
+            if(PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Spray)
             {
                 TrySpray();
             }
