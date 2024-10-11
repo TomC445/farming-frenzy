@@ -28,11 +28,12 @@ namespace Code.Scripts.Enemy
         private Animator _agentAnimator;
         [CanBeNull] private Transform _target;
         private SpriteRenderer _spriteRenderer;
-        private BoxCollider2D _collider;
+        private Rigidbody2D _rigidbody;
         public Transform _spawnPoints;
         private enum State { Hungry, Eating, Scared}
         private State _currentState;
         [CanBeNull] private Coroutine _eatingCoroutine;
+        private Renderer _renderer;
 
         public bool CanAttack => _currentState != State.Scared && _health >= 0;
         private const float Damage = 5;
@@ -55,6 +56,8 @@ namespace Code.Scripts.Enemy
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _currentState = State.Hungry; //when spawning in for the first time the animal is hungry
             _health = _maxHealth;
+            _rigidbody = GetComponentInChildren<Rigidbody2D>();
+            _renderer = GetComponent<Renderer>();
         }
 
 
@@ -113,7 +116,7 @@ namespace Code.Scripts.Enemy
                     case State.Scared when !_target:
                         RunAway();
                         break;
-                    case State.Scared when _agent.remainingDistance > 0.1f:
+                    case State.Scared when _agent.remainingDistance > 0.1f && _renderer.isVisible:
                         break;
                     case State.Scared:
                         _agent.isStopped = true;
@@ -137,6 +140,7 @@ namespace Code.Scripts.Enemy
             {
                 print("Running away");
                 _currentState = State.Scared;
+                _rigidbody.simulated = false;
                 CancelEating();
 
                 Transform closest = null;
