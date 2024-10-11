@@ -17,7 +17,6 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region Properties
-    private int totalGoats;
 
     #endregion
 
@@ -37,25 +36,6 @@ public class AudioManager : MonoBehaviour
 
     }
     #endregion
-
-    void Start()
-    {
-        totalGoats = 0;
-    }
-
-    public int Goats() {
-        return totalGoats;
-    }
-
-    public void IncreaseGoats() {
-        totalGoats++;
-        Debug.Log("New Goat! Total Goats: " + totalGoats);
-    }
-
-    public void DecreaseGoats() {
-        totalGoats--;
-        Debug.Log("Goat Died. Total Goats: " + totalGoats);
-    }
 
     #region Methods
     public void PlayMusic(string name)

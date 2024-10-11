@@ -39,8 +39,11 @@ namespace Code.Scripts.Enemy
         private const float Damage = 5;
         private float _timeToNextPlay;
         private float _timer;
+        private float _timer2;
         private AudioManager _audioManager;
         private bool playSFX;
+        private bool firstUpdate;
+        private GameManager _gameManager;
 
         #endregion
 
@@ -48,14 +51,10 @@ namespace Code.Scripts.Enemy
         private void Start()
         {
             _audioManager = AudioManager.Instance;
-            _audioManager.IncreaseGoats();
-            if(_audioManager.Goats() > 10) playSFX = false;
-            else playSFX = true;
-
-            if(playSFX){
-                _timeToNextPlay = Random.Range(2,9);
-                _audioManager.PlayRandomGoatNoise();
-             }
+            _gameManager = GameObject.Find("[GameManager]").GetComponent<GameManager>();
+            firstUpdate = false;
+            _timeToNextPlay = Random.Range(2,9);
+            _audioManager.PlayRandomGoatNoise();
             _plantTransform = GameObject.Find("Plants").transform;
             _spawnPoints = GameObject.Find("EnemySpawnPositions").transform;
             _agent = GetComponent<NavMeshAgent>();
@@ -82,14 +81,21 @@ namespace Code.Scripts.Enemy
 
         private void Update()
         {
+
+            if(!firstUpdate) {
+                if(_gameManager._goats > 10) {
+                    float randNum = Random.Range(1,_gameManager._goats+1);
+                    if(randNum > 10) playSFX = false;
+                    else playSFX = true;
+                }
+                firstUpdate = true;
+            }
             var direction = _agent.velocity.normalized;
             _agentAnimator.SetFloat(X, direction.x);
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
-            
-            if(_audioManager.Goats() > 10) playSFX = false;
-            else playSFX = true;
+            _timer2+=Time.deltaTime;
 
             if(playSFX){
                 _timer += Time.deltaTime;
@@ -173,7 +179,6 @@ namespace Code.Scripts.Enemy
                 _target = closest;
                 _agent.SetDestination(closest.position);
                 _audioManager.PlaySFX("goatScared");
-                _audioManager.DecreaseGoats();
             }
         }
 
