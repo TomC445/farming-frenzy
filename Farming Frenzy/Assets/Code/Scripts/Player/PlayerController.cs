@@ -62,6 +62,13 @@ public class PlayerController : MonoBehaviour
         OnMoneyChange?.Invoke(_money);
     }
 
+    public bool TryPurchase(int amount)
+    {
+        if (_money < amount) return false;
+        Purchase(amount);
+        return true;
+    }
+
     public void IncreaseMoney(int amount)
     {
         _money += amount;

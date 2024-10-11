@@ -1,7 +1,11 @@
 using System;
+using System.Collections;
+using Code.Scripts.Plants;
+using Code.Scripts.Plants.Powers;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
+using Debug = System.Diagnostics.Debug;
 using Random = UnityEngine.Random;
 
 namespace Code.Scripts.Enemy
@@ -22,21 +26,27 @@ namespace Code.Scripts.Enemy
         private Transform _plantTransform;
         private NavMeshAgent _agent;
         private Animator _agentAnimator;
-        public Transform _target;
+        [CanBeNull] private Transform _target;
         private SpriteRenderer _spriteRenderer;
-        private BoxCollider2D _collider;
+        private Rigidbody2D _rigidbody;
         public Transform _spawnPoints;
         private enum State { Hungry, Eating, Scared}
         private State _currentState;
+        [CanBeNull] private Coroutine _eatingCoroutine;
+        private Renderer _renderer;
 
-        public bool CanAttack => _currentState != State.Scared;
-        public float Damage => 5;
+        public bool CanAttack => _currentState != State.Scared && _health >= 0;
+        private const float Damage = 5;
+        private float _timeToNextPlay;
+        private float _timer;
 
         #endregion
 
         #region Methods
         private void Start()
         {
+             _timeToNextPlay = Random.Range(2,9);
+             AudioManager.Instance.PlayRandomGoatNoise();
             _plantTransform = GameObject.Find("Plants").transform;
             _spawnPoints = GameObject.Find("EnemySpawnPositions").transform;
             _agent = GetComponent<NavMeshAgent>();
@@ -44,8 +54,10 @@ namespace Code.Scripts.Enemy
             _agent.updateRotation = false;
             _agent.updateUpAxis = false;
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _collider = GetComponent<BoxCollider2D>();
             _currentState = State.Hungry; //when spawning in for the first time the animal is hungry
+            _health = _maxHealth;
+            _rigidbody = GetComponentInChildren<Rigidbody2D>();
+            _renderer = GetComponent<Renderer>();
         }
 
 
@@ -66,42 +78,54 @@ namespace Code.Scripts.Enemy
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
-        
-            switch (_currentState)
+
+            _timer += Time.deltaTime;
+            if(_timer > _timeToNextPlay) {
+                AudioManager.Instance.PlayRandomGoatNoise();
+                _timeToNextPlay = Random.Range(2,9);
+                _timer = 0f;
+            }
+
+            lock (this)
             {
-                case State.Hungry:
+                switch (_currentState)
                 {
-                    AcquirePlantTarget();
-                    if (!_target)
+                    case State.Hungry:
                     {
-                        print("No plant, running away");
+                        AcquirePlantTarget();
+                        if (!_target)
+                        {
+                            RunAway();
+                        } else
+                        {
+                            _agent.SetDestination(_target.position);
+                            _currentState = State.Eating;
+                        }
+
+                        break;
+                    }
+                    case State.Eating:
+                    {
+                        if(!_target)
+                        {
+                            _currentState = State.Hungry;
+                        }
+
+                        break;
+                    }
+                    case State.Scared when !_target:
                         RunAway();
-                    } else
-                    {
-                        print("Acquired target");
-                        _agent.SetDestination(_target.position);
-                        _currentState = State.Eating;
-                    }
-
-                    break;
+                        break;
+                    case State.Scared when _agent.remainingDistance > 0.1f && _renderer.isVisible:
+                        break;
+                    case State.Scared:
+                        _agent.isStopped = true;
+                        Destroy(gameObject);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-                case State.Eating:
-                {
-                    if(!_target)
-                    {
-                        _currentState = State.Hungry;
-                    }
 
-                    break;
-                }
-                case State.Scared when !_target || _agent.remainingDistance > 0.1f:
-                    break;
-                case State.Scared:
-                    _agent.isStopped = true;
-                    Destroy(gameObject);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -112,24 +136,42 @@ namespace Code.Scripts.Enemy
 
         private void RunAway()
         {
-            print("Running away");
-            var randomIndex = Random.Range(0, _spawnPoints.childCount);
-            var spawnPoint = _spawnPoints.GetChild(randomIndex);
-            _target = spawnPoint;
-            _agent.SetDestination(spawnPoint.position);
-            _currentState = State.Scared;
+            lock (this)
+            {
+                print("Running away");
+                _currentState = State.Scared;
+                _rigidbody.simulated = false;
+                CancelEating();
+
+                Transform closest = null;
+                var closestDist = float.PositiveInfinity;
+                foreach (Transform child in _spawnPoints)
+                {
+                    var dist = Vector3.Distance(transform.position, child.position);
+                    if (dist >= closestDist) continue;
+    
+                    closest = child;
+                    closestDist = dist;
+                }
+            
+                Debug.Assert(closest != null, nameof(closest) + " != null");
+            
+                _target = closest;
+                _agent.SetDestination(closest.position);
+                AudioManager.Instance.PlaySFX("goatScared");
+            }
         }
 
         /// <summary>
         /// </summary>
         /// <param name="amount"></param>
         /// <returns>True if the animal is now running away</returns>
-        public bool TakeDamage(int amount)
+        private bool TakeDamage(int amount)
         {
-            print("Taking damage");
             _health -= amount;
+            print($"Goat took {amount} damage! HP = {_health}");
 
-            if (!(_health <= 0)) return false;
+            if (_health >= 0) return false;
 
             RunAway();
             return true;
@@ -139,9 +181,98 @@ namespace Code.Scripts.Enemy
         {
             if(PlayerController.Instance._currentState == PlayerController.CursorState.Spray)
             {
-                TakeDamage(1);
+                TrySpray();
             }
+            
+        }
+
+        public void TrySpray()
+        {
+            print($"I am goat; _health = {_health}; _state = {_currentState}; _target = {_target?.gameObject}; stopped = {_agent.isStopped}");
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && _health <= 0)
+            {
+                Destroy(gameObject);
+            }
+
+            if (!CanAttack) return;
+            if (!PlayerController.Instance.TryPurchase(3)) return;
+
+            // TODO make a "-$2" floating text
+            TakeDamage(5);
         }
         #endregion
+
+        public void StartAttacking(Plant plant)
+        {
+            lock (this)
+            {
+                if (!CanAttack) return;
+                if (_eatingCoroutine != null) return;
+            
+                print($"Going to start attacking {plant.PlantName}, because state = {_currentState}");
+
+                _target = plant.transform;
+                _agent.ResetPath();
+                _agent.SetDestination(_target.position);
+                _currentState = State.Eating;
+                _eatingCoroutine = StartCoroutine(DoEating(plant));
+            }
+        }
+
+        private void CancelEating()
+        {
+            lock (this)
+            {
+                if (_eatingCoroutine != null)
+                {
+                    StopCoroutine(_eatingCoroutine);
+                }
+
+                _eatingCoroutine = null;
+                _agent.isStopped = false;
+            }
+        }
+
+        private IEnumerator DoEating(Plant plant)
+        {
+            var spiky = plant.GetComponentInChildren<SpikyPower>();
+            print($"Spike damage: {spiky?.Damage ?? 0}. Plant is {plant.PlantName}");
+
+            // Force the agent to stop and eat current plant
+            _agent.isStopped = true;
+            yield return new WaitForSeconds(0.2f);
+            _agent.isStopped = false;
+            yield return new WaitForSeconds(2f);
+            AudioManager.Instance.PlaySFX("goatEating");
+            while (true)
+            {
+                lock (this)
+                {
+                    var plantDies = !plant || plant.TakeDamage(Damage);
+                    var animalRunsAway = spiky && TakeDamage(spiky.Damage);
+    
+                    if (plantDies)
+                    {
+                        _target = null;
+                        _currentState = State.Hungry;
+                        _eatingCoroutine = null;
+                    }
+    
+                    if (animalRunsAway)
+                    {
+                        RunAway();
+                        _eatingCoroutine = null;
+                    }
+
+                    if (animalRunsAway || plantDies)
+                    {
+                        yield break;
+                    }
+                }
+
+                yield return new WaitForSeconds(2f);
+            }
+        }
     }
 }

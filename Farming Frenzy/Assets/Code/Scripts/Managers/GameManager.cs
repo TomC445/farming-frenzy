@@ -1,6 +1,8 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Code.Scripts.Managers
 {
@@ -73,10 +75,22 @@ namespace Code.Scripts.Managers
             {
                 _dayNightAnimator.SetTrigger(NightTime);
                 _dayCount++;
-                if(_dayCount % _enemySpawnFrequency == 0)
+
+                // Spawn only once every $period days
+                var rightDayForSpawn = _dayCount % _enemySpawnFrequency == 0;
+
+                // TODO this could only be in easy-med mode ?
+                // Only spawn on Thursday and Saturday in Week 1 to reduce load on player
+                var gracePeriod = _dayCount <= 7;
+                var reducedSpawnDay = gracePeriod && _dayCount is not (3 or 5);
+
+                if(rightDayForSpawn && !reducedSpawnDay)
                 {
-                    EnemySpawnManager.Instance.SpawnEnemies(Random.Range(_enemyDifficulty, _enemyDifficulty + 2));
+                    var week = Mathf.CeilToInt(_dayCount / 7.0f);
+                    var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 1) * Mathf.RoundToInt((float) Math.Pow(week, 2));
+                    EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
+
                 if (_dayCount % 7 == 0)
                 {
                     _weekCount++;
@@ -84,7 +98,7 @@ namespace Code.Scripts.Managers
                 }
             }
 
-            var clockFaceAngle = (Mathf.FloorToInt(_time) / _dayTime) * 360;
+            var clockFaceAngle = Mathf.FloorToInt(_time) / _dayTime * 360;
             _clockHand.transform.eulerAngles = new Vector3(0, 0, -clockFaceAngle);
             _dayText.text = $"{_days[_dayCount % 7]}";
             _weekText.text = $"Week:{_weekCount + 1:0}";
@@ -106,19 +120,26 @@ namespace Code.Scripts.Managers
 
         public void PayQuota(int amount)
         {
-            if(PlayerController.Instance.Money < amount)
+            if (_currentQuotaPayment >= _quota) return;
+            if (!PlayerController.Instance.TryPurchase(amount)) return;
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
             {
-                return;
+                var maxCanBuy = Math.Min(_quota - _currentQuotaPayment, PlayerController.Instance.Money);
+                if (maxCanBuy > 0)
+                {
+                    PlayerController.Instance.Purchase(maxCanBuy);
+                }
             }
+
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
-            PlayerController.Instance.Purchase(amount);
             _quotaText.text = $"{_currentQuotaPayment}/{_quota}";
         }
 
         private void CheckGameOver()
         {
-            var diff = _currentQuotaPayment - _quota;
+            var diff = _quota - _currentQuotaPayment;
 
             // Player hasn't paid enough
             if (diff > 0)

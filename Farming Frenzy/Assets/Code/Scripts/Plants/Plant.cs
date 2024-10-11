@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Linq;
 using Code.Scripts.Enemy;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
@@ -22,9 +22,9 @@ namespace Code.Scripts.Plants
         public BoxCollider2D Collider { get; private set; }
         private float _growthRate;
         private float _fruitingRate;
-        private Coroutine _damageCoroutine;
         private float _health;
-
+        private float _nextHealTime;
+        private float MaxHealth => _data._health;
         private int SecsToNextStage
         {
             get
@@ -37,6 +37,8 @@ namespace Code.Scripts.Plants
                 };
             }
         }
+
+        private bool CanHarvestNow => !_data._cannotHarvest && _state == GrowthState.Fruited;
 
         public string PlantName => _data.name;
 
@@ -56,7 +58,7 @@ namespace Code.Scripts.Plants
             _plantSpriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        void Update()
+        private void Update()
         {
             UpdateState();
             if(Input.GetMouseButton(0) && _isMouseOverPlant)
@@ -83,32 +85,38 @@ namespace Code.Scripts.Plants
             {
                 Collider.size = new Vector2(3, 2);
                 Collider.offset = new Vector2(0, 0.5f);
-
             }
 
+            _plantSpriteRenderer.sprite = _data._growthSprite.First();
             GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
         }
 
         private void UpdateState()
         {
             _growthRate = LegumePower.CalculateGrowthModifier(Collider);
-            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(Collider, this) : 1.0f;
+            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(Collider) : 1.0f;
+
+            if (Time.time >= _nextHealTime)
+            {
+                _nextHealTime = Time.time + 2.0f;
+                _health = Math.Min(MaxHealth, _health + 2.0f * _growthRate);
+            }
 
             switch (_state)
             {
                 case GrowthState.Seedling:
                     _secsSinceGrowth += Time.deltaTime * _growthRate;
 
-                    if (_secsSinceGrowth <= _data._maturationCycle)
+                    if (_secsSinceGrowth >= _data._maturationCycle)
                     {
-                        var spriteIndex = Mathf.FloorToInt(_secsSinceGrowth * _data._maturationSprite.Length / _data._maturationCycle);
-                        _plantSpriteRenderer.sprite = _data._maturationSprite[spriteIndex];
-                    }
-                    else
-                    {
+                        // Plant has finished growing!
                         _state = GrowthState.Mature;
                         _data.power.AddTo(gameObject); // Power only enabled when the plant is grown
                         _secsSinceGrowth = 0;
+                    } else {
+                        // Plant is still growing
+                        var spriteIndex = Mathf.FloorToInt(_secsSinceGrowth * _data._maturationSprite.Length / _data._maturationCycle);
+                        _plantSpriteRenderer.sprite = _data._maturationSprite[spriteIndex];
                     }
                     break;
                 case GrowthState.Mature:
@@ -135,20 +143,37 @@ namespace Code.Scripts.Plants
                 case GrowthState.Harvested:
                     _state = GrowthState.Mature;
                     break;
-                case GrowthState.Fruited:
-                default:
+                case GrowthState.Fruited when _secsSinceGrowth >= 3.0:
+                    Harvest();
                     break;
+                case GrowthState.Fruited:
+                    _secsSinceGrowth += Time.deltaTime;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
         private void HarvestPlant()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            if (_data._cannotHarvest) return;
-            if (_state != GrowthState.Fruited) return;
 
-            // HARVEST AND UPDATE GOLD IN GAME MANAGER
-            AudioManager.Instance.PlaySFX("picking");
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) // TODO placeholder control
+            {
+                if (CanHarvestNow) Harvest();
+                Destroy(gameObject);
+                PlayerController.Instance.IncreaseMoney(_data._price / 2);
+                AudioManager.Instance.PlaySFX("digMaybe"); // TODO placeholder sound
+            }
+            else if (CanHarvestNow)
+            {
+                AudioManager.Instance.PlaySFX("picking");
+                Harvest();
+            }
+        }
+
+        private void Harvest()
+        {
             PlayerController.Instance.IncreaseMoney(_data._goldGenerated);
             _state = GrowthState.Harvested;
             _plantSpriteRenderer.sprite = _data._harvestedSprite;
@@ -172,65 +197,24 @@ namespace Code.Scripts.Plants
             OnHoverOut?.Invoke(this);
         }
 
+        public bool TakeDamage(float amount)
+        {
+            _health -= amount;
+            print($"{PlantName} took {amount} damage! HP = {_health}");
+            if (_health > 0) return false;
+
+            Destroy(gameObject);
+            return true;
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.CompareTag("Enemy")) return;
-            if (_damageCoroutine != null)
-            {
-                StopCoroutine(_damageCoroutine);
-            }
 
-            var enemy = other.GetComponent<EnemyAgent>();
-            if (!enemy.CanAttack)
-            {
-                return;
-            }
-            
-            _damageCoroutine = StartCoroutine(TakeAnimalDamage(enemy));
-        }
+            var enemy = other.GetComponentInParent<EnemyAgent>();
+            if (!enemy.CanAttack) return;
 
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!other.CompareTag("Enemy")) return;
-            if (_damageCoroutine != null)
-            {
-                StopCoroutine(_damageCoroutine);
-            }
-            
-            var enemy = other.GetComponent<EnemyAgent>();
-            
-            if (!enemy.CanAttack)
-            {
-                return;
-            }
-
-            _damageCoroutine = StartCoroutine(TakeAnimalDamage(enemy));
-        }
-
-        private IEnumerator TakeAnimalDamage(EnemyAgent enemy)
-        {
-            var spiky = GetComponentInChildren<SpikyPower>();
-            print(spiky);
-            
-            while (true)
-            {
-                _health -= enemy.Damage;
-                if (_health <= 0) Destroy(gameObject);
-                print(_health);
-
-                if (spiky)
-                {
-                    print("damage!");
-                    if (enemy.TakeDamage(spiky.Damage))
-                    {
-                        _damageCoroutine = null;
-                        print("Goodbye coroutine");
-                        yield break;
-                    }
-                }
-                
-                yield return new WaitForSeconds(1f);
-            }
+            enemy.StartAttacking(this);
         }
         #endregion
     }
