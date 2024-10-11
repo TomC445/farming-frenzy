@@ -88,6 +88,7 @@ namespace Code.Scripts.Managers
                 {
                     var week = Mathf.CeilToInt(_dayCount / 7.0f);
                     var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 1) * Mathf.RoundToInt((float) Math.Pow(week, 2));
+                    Debug.Log(week+" "+numEnemies);
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
 
