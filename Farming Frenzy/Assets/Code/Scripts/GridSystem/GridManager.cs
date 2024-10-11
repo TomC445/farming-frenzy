@@ -136,7 +136,7 @@ namespace Code.Scripts.GridSystem
 
             foreach (var groundTile in _groundTiles)
             {
-                groundTile.ChangeTile(PlayerController.Instance.GroundSprite);
+                groundTile.PurchaseTile(PlayerController.Instance.GroundSprite);
                 UpdateSurroundingTiles(groundTile);
             }
 
@@ -169,7 +169,7 @@ namespace Code.Scripts.GridSystem
                 // Try purchase the tile
                 case false when PlayerController.Instance.TryPurchase(tile.Cost):
                     AudioManager.Instance.PlaySFX("digMaybe");
-                    tile.ChangeTile(PlayerController.Instance.GroundSprite);
+                    tile.PurchaseTile(PlayerController.Instance.GroundSprite);
                     UpdateSurroundingTiles(tile);
                     break;
             }
@@ -197,7 +197,7 @@ namespace Code.Scripts.GridSystem
                 var surroundingTile = GetTile(surroundingPos);
                 if (surroundingTile == null || surroundingTile.IsPurchased) continue;
 
-                surroundingTile.ChangeTileColor(Color.red);
+                surroundingTile.MakePurchasable(Color.red);
             }
         }
 

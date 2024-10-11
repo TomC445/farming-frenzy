@@ -1,3 +1,4 @@
+using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -44,10 +45,17 @@ namespace Code.Scripts.GridSystem
                 GridManager.Instance.HighlightTiles(this, false);
                 return;
             }
+
             if(GridManager.Instance.PlantName != "")
             {
                 GridManager.Instance.HighlightTiles(this, true);
             }
+
+            if (CanBePurchased && !IsPurchased)
+            {
+                PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
+            }
+
             _highlight.SetActive(true);
             OnTileHoverIn?.Invoke(this);
         }
@@ -58,6 +66,9 @@ namespace Code.Scripts.GridSystem
             {
                 GridManager.Instance.HighlightTiles(this, false);
             }
+
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
+
             _highlight.SetActive(false);
             OnTileHoverOut?.Invoke(this);
         }
@@ -72,15 +83,17 @@ namespace Code.Scripts.GridSystem
             OnTileClicked?.Invoke(this);
         }
     
-        public void ChangeTile(Sprite tile)
+        public void PurchaseTile(Sprite tile)
         {
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
+
             _renderer.color = Color.white;
             _renderer.sprite = tile;
             IsPurchased = true;
             CanBePurchased = true;
         }
 
-        public void ChangeTileColor(Color colour)
+        public void MakePurchasable(Color colour)
         {
             _renderer.color = colour;
             CanBePurchased = true;

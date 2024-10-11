@@ -42,11 +42,13 @@ namespace Code.Scripts.GridSystem
         private void OnMouseEnter()
         {
             OnObstacleHoverIn?.Invoke(this);
+            PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
         }
 
         private void OnMouseExit()
         {
             OnObstacleHoverOut?.Invoke(this);
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
         }
 
         #endregion

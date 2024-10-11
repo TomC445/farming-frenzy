@@ -39,7 +39,7 @@ namespace Code.Scripts.Plants
             }
         }
 
-        private bool CanHarvestNow => !_data._cannotHarvest && _state == GrowthState.Fruited;
+        public bool CanHarvestNow => !_data._cannotHarvest && _state == GrowthState.Fruited;
 
         public string PlantName => _data.name;
 
@@ -62,7 +62,19 @@ namespace Code.Scripts.Plants
         private void Update()
         {
             UpdateState();
-            if (!Input.GetMouseButton(0) || !_isMouseOverPlant) return;
+
+            if (!_isMouseOverPlant) return;
+            
+            lock (PlayerController.Instance)
+            {
+                if (CanHarvestNow && PlayerController.Instance.CurrentlyActiveCursor != PlayerController.CursorState.Shovel)
+                {
+                    PlayerController.Instance.timeSinceLastHarvestablePlant = Time.time;
+                    PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Scythe);
+                }
+            }
+
+            if (!Input.GetMouseButton(0)) return;
 
             switch (PlayerController.Instance.CurrentlyActiveCursor)
             {

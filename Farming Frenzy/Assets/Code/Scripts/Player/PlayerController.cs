@@ -1,6 +1,8 @@
 using System;
+using Code.Scripts.Plants;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Code.Scripts.Player
@@ -39,6 +41,7 @@ namespace Code.Scripts.Player
         public CursorState CurrentlyActiveCursor => _contextualCursor ?? _currentlyPicked;
         private Color _defaultCursorBackgroundColor;
         private readonly Color _activeCursorBackgroundColor = new Color32(149, 81,19, 255);
+        public float timeSinceLastHarvestablePlant;
         #endregion
 
         #region Singleton
@@ -113,8 +116,13 @@ namespace Code.Scripts.Player
         public void SetPickedCursor(CursorState picked, [CanBeNull] Texture2D seedBag)
         {
             _currentlyPicked = picked;
+            _contextualCursor = null;
+
             _seedBagTexture = seedBag;
-            Cursor.SetCursor(seedBag, Vector2.zero, CursorMode.Auto);
+            if (_seedBagTexture)
+            {
+                Cursor.SetCursor(_seedBagTexture, Vector2.zero, CursorMode.Auto);
+            }
         }
         
         private void Update()
@@ -160,17 +168,22 @@ namespace Code.Scripts.Player
 
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
-                    _currentlyPicked = CursorState.Default;
+                    SetPickedCursor(CursorState.Default, null);
                 } else if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
-                    _currentlyPicked = CursorState.Spray;
+                    SetPickedCursor(CursorState.Spray, null);
                 } else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
-                    _currentlyPicked = CursorState.Shovel;
+                    SetPickedCursor(CursorState.Shovel, null);
                 }
                 else if (Input.GetKeyDown(KeyCode.Alpha4))
                 {
-                    _currentlyPicked = CursorState.Scythe;
+                    SetPickedCursor(CursorState.Scythe, null);
+                }
+
+                if (Time.time - timeSinceLastHarvestablePlant > 0.5 && !Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    EndContextualCursor(CursorState.Scythe);
                 }
 
                 if (!Input.GetKeyDown(KeyCode.Mouse0) || CurrentlyActiveCursor != CursorState.Spray) return;
