@@ -1,9 +1,13 @@
 using System;
+using System.Linq;
+using Code.Scripts.Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+namespace Code.Scripts.Managers
+{
     public class GameManager : MonoBehaviour
     {
         private static readonly int NightTime = Animator.StringToHash("NightTime");
@@ -28,14 +32,14 @@ using Random = UnityEngine.Random;
         #endregion
 
         #region Properties
-        private bool _isPaused = false;
-        private bool _isTimerRunning = false;
+        private bool _isPaused;
         private float _time;
         private int _dayCount;
         private int _weekCount;
         private int _currentQuotaPayment;
-        public int Quota => _quota;
-        public bool IsTimerRunning => _isTimerRunning;
+        private bool _animationStarted;
+        private bool IsTimerRunning { get; set; }
+
         public int _goats;
         private string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         #endregion
@@ -43,7 +47,7 @@ using Random = UnityEngine.Random;
         private void Start()
         {
             AudioManager.Instance.SetInitialMusicVolume();
-            _isTimerRunning = true;
+            IsTimerRunning = true;
             _quotaText.text = $"0/{_quota}";
             _goats = 0;
         }
@@ -57,7 +61,7 @@ using Random = UnityEngine.Random;
                 else { ResumeGame(); }
             }
 
-            if (!_isTimerRunning) return;
+            if (!IsTimerRunning) return;
             _time += Time.deltaTime;
             UpdateTimerDisplay();
             UpdateGoatCount();
@@ -73,10 +77,20 @@ using Random = UnityEngine.Random;
 
         private void UpdateDate()
         {
-            if (_time >= (_dayCount + 1) * _dayTime)
+            var nextDayTime = (_dayCount + 1) * _dayTime;
+
+            // Start animation 3s before
+            if (!_animationStarted && _time >= nextDayTime - 3)
             {
+                _animationStarted = true;
                 _dayNightAnimator.SetTrigger(NightTime);
+            }
+
+            if (_time >= nextDayTime)
+            {
                 _dayCount++;
+                AudioManager.Instance.PlaySFX("rooster");
+                _animationStarted = false;
 
                 // Spawn only once every $period days
                 var rightDayForSpawn = _dayCount % _enemySpawnFrequency == 0;
@@ -108,20 +122,10 @@ using Random = UnityEngine.Random;
         }
 
         private void UpdateGoatCount() {
-            GameObject[] allGameObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-            
+            var allGameObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
             // Count how many of them have the name "Enemy(Clone)"
-            int enemyCount = 0;
-        
-            foreach (GameObject obj in allGameObjects)
-            {
-                if (obj.name == "Enemy(Clone)")
-                {
-                    enemyCount++;
-                }
-            }
+            var enemyCount = allGameObjects.Count(obj => obj.name.StartsWith("Enemy"));
             _goats = enemyCount;
-
         }
 
         private void PauseGame()
@@ -188,3 +192,4 @@ using Random = UnityEngine.Random;
         }
         #endregion
     }
+}

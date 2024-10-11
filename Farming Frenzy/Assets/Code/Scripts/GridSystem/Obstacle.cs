@@ -1,3 +1,4 @@
+using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -28,24 +29,12 @@ namespace Code.Scripts.GridSystem
             Collider = GetComponent<BoxCollider2D>();
         }
 
-        void OnMouseDown()
+        private void OnMouseDown()
         {
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
-            }
-            if (PlayerController.Instance.Money < _cost)
-            {
-                return;
-            }
-            if(PlayerController.Instance._currentState != PlayerController.CursorState.Shovel)
-            {
-                return;
-            }
-
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if(PlayerController.Instance.CurrentlyActiveCursor != PlayerController.CursorState.Shovel) return;
             if (!PlayerController.Instance.TryPurchase(_cost)) return;
 
-            PlayerController.Instance.Purchase(_cost);
             GridManager.Instance.UnlockTiles(GetComponent<BoxCollider2D>().bounds);
             Destroy(gameObject);
         }
@@ -53,11 +42,13 @@ namespace Code.Scripts.GridSystem
         private void OnMouseEnter()
         {
             OnObstacleHoverIn?.Invoke(this);
+            PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
         }
 
         private void OnMouseExit()
         {
             OnObstacleHoverOut?.Invoke(this);
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
         }
 
         #endregion

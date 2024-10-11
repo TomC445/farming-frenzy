@@ -2568,7 +2568,7 @@ PrefabInstance:
     - target: {fileID: 4953300633611848400, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 3700810548614518524, guid: b85dfd3f0c9ca804fa18da2744b40d79, type: 3}
+      objectReference: {fileID: 3700810548614518524, guid: 2633a740b1cd7e44cbc498f3d8ec414f, type: 3}
     - target: {fileID: 5677991558401769306, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_Name
       value: Scythe
@@ -3670,6 +3670,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3325087381407394846, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_Name
+      value: SpawnPos top farleft
+      objectReference: {fileID: 0}
+    - target: {fileID: 7165644971396952127, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_Name
+      value: SpawnPos bottom right
+      objectReference: {fileID: 0}
+    - target: {fileID: 7841672081320226222, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_Name
+      value: SpawnPosition bottom left
+      objectReference: {fileID: 0}
     - target: {fileID: 8457346541727673146, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
       propertyPath: m_Name
       value: EnemySpawnPositions
@@ -3680,6 +3692,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2485439184916186890, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1962903536}
+    - targetCorrespondingSourceObject: {fileID: 2485439184916186890, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1360789598}
     - targetCorrespondingSourceObject: {fileID: 2485439184916186890, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 989026481}
@@ -5282,7 +5297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 989026481}
   m_Layer: 0
-  m_Name: SpawnPosition (5)
+  m_Name: SpawnPosition centre right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7319,6 +7334,37 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &1360789597
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1360789598}
+  m_Layer: 0
+  m_Name: SpawnPosition top centre
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1360789598
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360789597}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 70.12, y: 61.59, z: 0.210415}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 762213175}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1367380561 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9135973545549438307, guid: 6c17e1b229580b84ea73481ab5888ff6, type: 3}
@@ -10156,6 +10202,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a23d5d50eea2ca349b4c7f8c7c573f9f, type: 3}
   - {fileID: 8300000, guid: 75c0ea74183e2ba47a266b4f82482b10, type: 3}
   - {fileID: 8300000, guid: f65b702a7358f954689de8dcfae60f9d, type: 3}
+  - {fileID: 8300000, guid: a70a0297fa3be96979d8409936025780, type: 3}
   _musicSource: {fileID: 1896792630}
   _sfxSource: {fileID: 1896792629}
   audioMixer: {fileID: 24100000, guid: 1aa7a43ee54e76f41bb3d0f2c8027585, type: 2}
@@ -10364,8 +10411,8 @@ MonoBehaviour:
   _sprayPurchaseAmount: 0
   _defaultCursor: {fileID: 2800000, guid: 63145efc7cad540428652679b417402a, type: 3}
   _wateringCanCursor: {fileID: 0}
-  _shovelCursor: {fileID: 2800000, guid: 01fcf17da1446aa4ebccbb7a810037ff, type: 3}
-  _sprayBottleCursor: {fileID: 2800000, guid: 3856f899e9d33ff498486960c8c5bf1d, type: 3}
+  _shovelCursor: {fileID: 2800000, guid: b8a8d73aaec3cb89c86f4f4a1176a032, type: 3}
+  _sprayBottleCursor: {fileID: 2800000, guid: ee8ca543e66bd843991e117eb79e533b, type: 3}
   _scytheCursor: {fileID: 2800000, guid: b85dfd3f0c9ca804fa18da2744b40d79, type: 3}
   _defaultCursorBackground: {fileID: 6409075220635336161}
   _shovelCursorBackground: {fileID: 1116738242}
@@ -10430,7 +10477,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1962903536}
   m_Layer: 0
-  m_Name: SpawnPosition (4)
+  m_Name: SpawnPosition top left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11287,6 +11334,7 @@ MonoBehaviour:
   _dayTime: 20
   _enemyDifficulty: 1
   _enemySpawnFrequency: 1
+  _goats: 0
 --- !u!1 &2087830138
 GameObject:
   m_ObjectHideFlags: 0
@@ -11794,7 +11842,7 @@ PrefabInstance:
     - target: {fileID: 4953300633611848400, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -6860851807922165244, guid: 63145efc7cad540428652679b417402a, type: 3}
+      objectReference: {fileID: -6860851807922165244, guid: 7fc66227e030e225b939496374c0f3e1, type: 3}
     - target: {fileID: 5677991558401769306, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_Name
       value: Default

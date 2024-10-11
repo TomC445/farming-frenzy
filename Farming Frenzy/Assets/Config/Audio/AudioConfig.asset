@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44d3b07bf2f789498c27add863f590e, type: 3}
   m_Name: AudioConfig
   m_EditorClassIdentifier: 
-  BGMVolume: 100
+  BGMVolume: 50
   SFXVolume: 60
