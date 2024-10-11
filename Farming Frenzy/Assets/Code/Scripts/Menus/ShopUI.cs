@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Code.GrowthRateExtension;
+using Code.Scripts.GridSystem;
 using Code.Scripts.Plants.Powers.PowerExtension;
 using UnityEngine;
 using UnityEngine.UIElements;
