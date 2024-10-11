@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 63145efc7cad540428652679b417402a
+guid: be90a679948cccb4fb248b22f728f51b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6860851807922165244
-    second: handCursor_0
+      213: 3117950602386599086
+    second: cornbag_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -57,7 +57,7 @@ TextureImporter:
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
-  textureType: 8
+  textureType: 7
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: handCursor_0
+      name: cornbag_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 68
-        height: 63
+        width: 206
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 40ae33c81ab59c0a0800000000000000
-      internalID: -6860851807922165244
+      spriteID: eace772ad8f254b20800000000000000
+      internalID: 3117950602386599086
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      handCursor_0: -6860851807922165244
+      cornbag_0: 3117950602386599086
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

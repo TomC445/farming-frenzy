@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Scripts.GridSystem;
 using Code.Scripts.Plants;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -158,7 +159,7 @@ public class GridManager : MonoBehaviour
 
     private void HandleTileClicked(GridTile clickedTile)
     {
-        if(_selectedTile != null && _selectedTile != clickedTile)
+        if (_selectedTile != null && _selectedTile != clickedTile)
         {
             _selectedTile.DeselectTile();
         }
@@ -173,13 +174,21 @@ public class GridManager : MonoBehaviour
         {
             return;
         }
-        if (_selectedTile.IsPurchased && _plantName != "")
+        if (_selectedTile.IsPurchased && PlayerController.Instance._currentState == PlayerController.CursorState.Planting)
         {
             AudioManager.Instance.PlaySFX("planting");
             InstantiatePlant(_selectedTile.transform.position);
             return;
         }
-        if (_selectedTile.IsPurchased && _plantName == "")
+        if (_selectedTile.IsPurchased)
+        {
+            return;
+        }
+        if (PlayerController.Instance.Money < _selectedTile.Cost)
+        {
+            return;
+        }
+        if(PlayerController.Instance._currentState != PlayerController.CursorState.Default)
         {
             return;
         }
@@ -250,6 +259,14 @@ public class GridManager : MonoBehaviour
     public void SetActivePlant(string plantName)
     {
         _plantName = plantName;
+        Debug.Log(plantName);
+        PlayerController.Instance._currentState = PlayerController.CursorState.Planting;
+        var cursorTexture = Resources.Load<Texture2D>($"SeedBags/{plantName}");
+        if (cursorTexture != null)
+        {
+            Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+        }
+
         // _cursorImage.color = Color.white;
         // _cursorImage.sprite = PlantManager.Instance.GetPlantData(plantName)._cursorSprite;
     }

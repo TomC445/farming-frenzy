@@ -34,6 +34,14 @@ namespace Code.Scripts.GridSystem
             {
                 return;
             }
+            if (PlayerController.Instance.Money < _cost)
+            {
+                return;
+            }
+            if(PlayerController.Instance._currentState != PlayerController.CursorState.Shovel)
+            {
+                return;
+            }
 
             if (!PlayerController.Instance.TryPurchase(_cost)) return;
 

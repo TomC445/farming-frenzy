@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 63145efc7cad540428652679b417402a
+guid: 5a8008e1e5bfe604db4904672d8a8ffe
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6860851807922165244
-    second: handCursor_0
+      213: 7097384338728399490
+    second: wateringcan_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -24,7 +24,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 1
+  isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: handCursor_0
+      name: wateringcan_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 68
-        height: 63
+        width: 203
+        height: 203
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 40ae33c81ab59c0a0800000000000000
-      internalID: -6860851807922165244
+      spriteID: 282b358d379fe7260800000000000000
+      internalID: 7097384338728399490
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      handCursor_0: -6860851807922165244
+      wateringcan_0: 7097384338728399490
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

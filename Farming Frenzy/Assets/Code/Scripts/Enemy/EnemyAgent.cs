@@ -199,7 +199,10 @@ namespace Code.Scripts.Enemy
 
         private void OnMouseDown()
         {
-            TrySpray();
+            if(PlayerController.Instance._currentState == PlayerController.CursorState.Spray)
+            {
+                TrySpray();
+            }
         }
 
         public void TrySpray()
