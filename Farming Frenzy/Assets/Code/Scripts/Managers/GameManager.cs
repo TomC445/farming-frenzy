@@ -42,6 +42,7 @@ using Random = UnityEngine.Random;
 
         private void Start()
         {
+            AudioManager.Instance.SetInitialMusicVolume();
             _isTimerRunning = true;
             _quotaText.text = $"0/{_quota}";
             _goats = 0;
