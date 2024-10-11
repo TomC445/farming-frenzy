@@ -34,6 +34,7 @@ using Random = UnityEngine.Random;
         private int _dayCount;
         private int _weekCount;
         private int _currentQuotaPayment;
+        private bool _animationStarted;
         public int Quota => _quota;
         public bool IsTimerRunning => _isTimerRunning;
         public int _goats;
@@ -73,10 +74,20 @@ using Random = UnityEngine.Random;
 
         private void UpdateDate()
         {
-            if (_time >= (_dayCount + 1) * _dayTime)
+            var nextDayTime = (_dayCount + 1) * _dayTime;
+
+            // Start animation 3s before
+            if (!_animationStarted && _time >= nextDayTime - 3)
             {
+                _animationStarted = true;
                 _dayNightAnimator.SetTrigger(NightTime);
+            }
+
+            if (_time >= nextDayTime)
+            {
                 _dayCount++;
+                AudioManager.Instance.PlaySFX("rooster");
+                _animationStarted = false;
 
                 // Spawn only once every $period days
                 var rightDayForSpawn = _dayCount % _enemySpawnFrequency == 0;
