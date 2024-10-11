@@ -137,12 +137,7 @@ namespace Code.Scripts.Enemy
             {
                 print("Running away");
                 _currentState = State.Scared;
-            
-                if (_eatingCoroutine != null)
-                {
-                    StopCoroutine(_eatingCoroutine);
-                    _eatingCoroutine = null;
-                }
+                CancelEating();
 
                 Transform closest = null;
                 var closestDist = float.PositiveInfinity;
@@ -185,6 +180,8 @@ namespace Code.Scripts.Enemy
 
         public void TrySpray()
         {
+            print($"I am goat; _health = {_health}; _state = {_currentState}; _target = {_target?.gameObject}; stopped = {_agent.isStopped}");
+
             if (Input.GetKeyDown(KeyCode.LeftShift) && _health <= 0)
             {
                 Destroy(gameObject);
@@ -212,6 +209,20 @@ namespace Code.Scripts.Enemy
                 _agent.SetDestination(_target.position);
                 _currentState = State.Eating;
                 _eatingCoroutine = StartCoroutine(DoEating(plant));
+            }
+        }
+
+        private void CancelEating()
+        {
+            lock (this)
+            {
+                if (_eatingCoroutine != null)
+                {
+                    StopCoroutine(_eatingCoroutine);
+                }
+
+                _eatingCoroutine = null;
+                _agent.isStopped = false;
             }
         }
 

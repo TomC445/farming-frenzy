@@ -38,6 +38,8 @@ namespace Code.Scripts.Plants
             }
         }
 
+        private bool CanHarvestNow => !_data._cannotHarvest && _state == GrowthState.Fruited;
+
         public string PlantName => _data.name;
 
         public string StatusRichText => _state.StatusRichText(SecsToNextStage, _data._goldGenerated);
@@ -146,15 +148,13 @@ namespace Code.Scripts.Plants
 
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) // TODO placeholder control
             {
+                if (CanHarvestNow) Harvest();
                 Destroy(gameObject);
                 PlayerController.Instance.IncreaseMoney(_data._price / 2);
                 AudioManager.Instance.PlaySFX("digMaybe"); // TODO placeholder sound
             }
-            else
+            else if (CanHarvestNow)
             {
-                if (_data._cannotHarvest) return;
-                if (_state != GrowthState.Fruited) return;
-
                 AudioManager.Instance.PlaySFX("picking");
                 Harvest();
             }
