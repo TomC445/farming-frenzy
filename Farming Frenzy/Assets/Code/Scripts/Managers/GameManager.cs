@@ -78,7 +78,7 @@ namespace Code.Scripts.Managers
                 if(_dayCount % _enemySpawnFrequency == 0)
                 {
                     var week = _dayCount / 7;
-                    var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 2) * Mathf.RoundToInt((float) Math.Pow(2, week));
+                    var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 1) * Mathf.RoundToInt((float) Math.Pow(week, 2));
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
                 if (_dayCount % 7 == 0)
@@ -88,7 +88,7 @@ namespace Code.Scripts.Managers
                 }
             }
 
-            var clockFaceAngle = (Mathf.FloorToInt(_time) / _dayTime) * 360;
+            var clockFaceAngle = Mathf.FloorToInt(_time) / _dayTime * 360;
             _clockHand.transform.eulerAngles = new Vector3(0, 0, -clockFaceAngle);
             _dayText.text = $"{_days[_dayCount % 7]}";
             _weekText.text = $"Week:{_weekCount + 1:0}";
