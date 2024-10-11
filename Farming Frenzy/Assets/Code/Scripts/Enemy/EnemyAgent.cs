@@ -263,6 +263,9 @@ namespace Code.Scripts.Enemy
 
             if(playSFX) _audioManager.PlaySFX("goatEating");
             
+
+            if(playSFX) _audioManager.PlaySFX("goatEating");
+            
             while (true)
             {
                 lock (this)
