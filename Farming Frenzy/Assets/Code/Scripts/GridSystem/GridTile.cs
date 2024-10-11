@@ -11,19 +11,14 @@ namespace Code.Scripts.GridSystem
         [SerializeField] private Color _offsetColour;
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private GameObject _highlight;
-        [SerializeField] private GameObject _selectedHighlight;
         [SerializeField] private int _cost;
         #endregion
 
         #region Properties
         public Collider2D Collider { get; private set; }
-
         public bool IsPurchased { get; private set; }
-
         public bool CanBePurchased { get; private set; }
-
         public bool IsLocked { get; private set; }
-
         public int Cost => _cost;
         public delegate void TileClicked(GridTile tile);
 
@@ -76,17 +71,13 @@ namespace Code.Scripts.GridSystem
 
             OnTileClicked?.Invoke(this);
         }
-
-        public void DeselectTile()
-        {
-            _selectedHighlight.SetActive(false);
-        }
-
+    
         public void ChangeTile(Sprite tile)
         {
             _renderer.color = Color.white;
             _renderer.sprite = tile;
             IsPurchased = true;
+            CanBePurchased = true;
         }
 
         public void ChangeTileColor(Color colour)

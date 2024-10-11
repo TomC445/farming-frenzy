@@ -32,7 +32,6 @@ namespace Code.Scripts.GridSystem
 
         #region Properties
         private Dictionary<Vector2, GridTile> _tiles;
-        private GridTile _selectedTile;
         private List<string> _excludedTilesNames;
         private List<string> _starterTilesNames;
         private readonly List<BoxCollider2D> _obstacleColliders = new();
@@ -152,31 +151,28 @@ namespace Code.Scripts.GridSystem
             return _tiles.GetValueOrDefault(pos);
         }
 
-        private void HandleTileClicked(GridTile clickedTile)
+        private void HandleTileClicked(GridTile tile)
         {
-            if(_selectedTile != null && _selectedTile != clickedTile)
-            {
-                _selectedTile.DeselectTile();
-            }
+            if (tile.IsLocked || !tile.CanBePurchased) return;
 
-            _selectedTile = clickedTile;
-        
-            if (_selectedTile.IsLocked || !_selectedTile.CanBePurchased) return;
-
-            switch (_selectedTile.IsPurchased)
+            switch (tile.IsPurchased)
             {
+                // Try place the plant that is selected
                 case true when PlayerController.Instance._currentState == PlayerController.CursorState.Planting:
-                    TryPlacePlant(_selectedTile.transform.position);
-                    return;
+                    TryPlacePlant(tile.transform.position);
+                    break;
+    
+                // No plant selected
                 case true:
-                    return;
+    
+                    break;
+                // Try purchase the tile
+                case false when PlayerController.Instance.TryPurchase(tile.Cost):
+                    AudioManager.Instance.PlaySFX("digMaybe");
+                    tile.ChangeTile(PlayerController.Instance.GroundSprite);
+                    UpdateSurroundingTiles(tile);
+                    break;
             }
-
-            if (!PlayerController.Instance.TryPurchase(_selectedTile.Cost)) return;
-
-            AudioManager.Instance.PlaySFX("digMaybe");
-            _selectedTile.ChangeTile(PlayerController.Instance.GroundSprite);
-            UpdateSurroundingTiles(_selectedTile);
         }
 
         private bool IsPositionValid(Vector2 pos)
@@ -220,17 +216,17 @@ namespace Code.Scripts.GridSystem
             }
         }
 
-    public void SetActivePlant(string plantName)
-    {
-        _plantName = plantName;
-        Debug.Log(plantName);
-        PlayerController.Instance._currentState = PlayerController.CursorState.Planting;
-        var cursorTexture = Resources.Load<Texture2D>($"SeedBags/{plantName}");
-        if (cursorTexture != null)
+        public void SetActivePlant(string plantName)
         {
-            Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+            _plantName = plantName;
+            Debug.Log(plantName);
+            PlayerController.Instance._currentState = PlayerController.CursorState.Planting;
+            var cursorTexture = Resources.Load<Texture2D>($"SeedBags/{plantName}");
+            if (cursorTexture != null)
+            {
+                Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+            }
         }
-    }
 
         private void TryPlacePlant(Vector3 tilePosition)
         {
