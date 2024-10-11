@@ -47,6 +47,7 @@ namespace Code.Scripts.Plants
         public delegate void HoverOutEvent(Plant plant);
         public event HoverInEvent OnHoverIn;
         public event HoverOutEvent OnHoverOut;
+        private bool _isMouseOverPlant = false;
         #endregion
 
         #region Methods
@@ -58,6 +59,17 @@ namespace Code.Scripts.Plants
         void Update()
         {
             UpdateState();
+            if(Input.GetMouseButton(0) && _isMouseOverPlant)
+            {
+                if(PlayerController.Instance._currentState == PlayerController.CursorState.Scythe)
+                {
+                    HarvestPlant();
+                } else if (PlayerController.Instance._currentState == PlayerController.CursorState.Shovel)
+                {
+                    DigPlant();
+                }
+                
+            }
         }
 
         public void InitPlant(PlantData pdata)
@@ -129,7 +141,7 @@ namespace Code.Scripts.Plants
             }
         }
 
-        public void OnMouseDown()
+        private void HarvestPlant()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (_data._cannotHarvest) return;
@@ -143,13 +155,20 @@ namespace Code.Scripts.Plants
             _secsSinceGrowth = 0.0f;
         }
 
+        private void DigPlant()
+        {
+            Destroy(gameObject);
+        }
+
         private void OnMouseEnter()
         {
+            _isMouseOverPlant = true;
             OnHoverIn?.Invoke(this);
         }
 
         private void OnMouseExit()
         {
+            _isMouseOverPlant = false;
             OnHoverOut?.Invoke(this);
         }
 
@@ -196,6 +215,7 @@ namespace Code.Scripts.Plants
             while (true)
             {
                 _health -= enemy.Damage;
+                if (_health <= 0) Destroy(gameObject);
                 print(_health);
 
                 if (spiky)

@@ -137,8 +137,10 @@ namespace Code.Scripts.Enemy
 
         private void OnMouseDown()
         {
-            TakeDamage(1);
-
+            if(PlayerController.Instance._currentState == PlayerController.CursorState.Spray)
+            {
+                TakeDamage(1);
+            }
         }
         #endregion
     }

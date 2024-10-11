@@ -38,6 +38,10 @@ namespace Code.Scripts.GridSystem
             {
                 return;
             }
+            if(PlayerController.Instance._currentState != PlayerController.CursorState.Shovel)
+            {
+                return;
+            }
             PlayerController.Instance.Purchase(_cost);
             GridManager.Instance.UnlockTiles(GetComponent<BoxCollider2D>().bounds);
             Destroy(gameObject);
