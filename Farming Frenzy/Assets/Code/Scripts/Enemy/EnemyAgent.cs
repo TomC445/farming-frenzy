@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Code.Scripts.Managers;
 using Code.Scripts.Plants;
 using Code.Scripts.Plants.Powers;
 using JetBrains.Annotations;
@@ -39,7 +40,6 @@ namespace Code.Scripts.Enemy
         private const float Damage = 5;
         private float _timeToNextPlay;
         private float _timer;
-        private float _timer2;
         private AudioManager _audioManager;
         private bool playSFX;
         private bool firstUpdate;
@@ -95,7 +95,6 @@ namespace Code.Scripts.Enemy
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
-            _timer2+=Time.deltaTime;
 
             if(playSFX){
                 _timer += Time.deltaTime;

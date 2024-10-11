@@ -157,19 +157,10 @@ namespace Code.Scripts.Plants
         private void HarvestPlant()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (!CanHarvestNow) return;
 
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) // TODO placeholder control
-            {
-                if (CanHarvestNow) Harvest();
-                Destroy(gameObject);
-                PlayerController.Instance.IncreaseMoney(_data._price / 2);
-                AudioManager.Instance.PlaySFX("digMaybe"); // TODO placeholder sound
-            }
-            else if (CanHarvestNow)
-            {
-                AudioManager.Instance.PlaySFX("picking");
-                Harvest();
-            }
+            AudioManager.Instance.PlaySFX("picking");
+            Harvest();
         }
 
         private void Harvest()
@@ -182,6 +173,7 @@ namespace Code.Scripts.Plants
 
         private void DigPlant()
         {
+            AudioManager.Instance.PlaySFX("digMaybe");
             Destroy(gameObject);
         }
 

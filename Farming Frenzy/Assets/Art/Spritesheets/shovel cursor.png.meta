@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6411561c9dba07c478a13d76fac16ae0
+guid: b8a8d73aaec3cb89c86f4f4a1176a032
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4191530089768232695
-    second: bananatreebag_0
+      213: 2905342849302255774
+    second: pixelartshovel 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bananatreebag_0
+      name: pixelartshovel 1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 206
-        height: 260
+        width: 74
+        height: 43
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 909d00e4791b4d5c0800000000000000
-      internalID: -4191530089768232695
+      spriteID: e98d163ade9d15820800000000000000
+      internalID: 2905342849302255774
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bananatreebag_0: -4191530089768232695
+      pixelartshovel 1_0: 2905342849302255774
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

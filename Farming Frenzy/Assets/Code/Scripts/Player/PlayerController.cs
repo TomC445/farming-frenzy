@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     public int Money => _money;
     public delegate void MoneyChangeEvent(int newAmount);
     public event MoneyChangeEvent OnMoneyChange;
-    public enum CursorState { Default, Spray, Shovel, Scythe, Planting};
+    public enum CursorState { Default, Spray, Shovel, Scythe, Planting };
     public CursorState _currentState = CursorState.Default;
     private Color _defaultCursorBackgroundColor;
     private Color _activeCursorBackgroundColor = new Color32(149, 81,19, 255);
