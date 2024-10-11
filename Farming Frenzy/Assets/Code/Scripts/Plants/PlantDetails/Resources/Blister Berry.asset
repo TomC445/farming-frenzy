@@ -29,5 +29,5 @@ MonoBehaviour:
   _tier: 1
   _price: 5
   _goldGenerated: 0
-  _health: 7
+  _health: 8
   _indestructible: 0

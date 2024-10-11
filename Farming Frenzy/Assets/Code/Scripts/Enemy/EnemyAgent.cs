@@ -36,15 +36,15 @@ namespace Code.Scripts.Enemy
 
         public bool CanAttack => _currentState != State.Scared && _health >= 0;
         private const float Damage = 5;
-        private float timeToNextPlay;
-        private float timer;
+        private float _timeToNextPlay;
+        private float _timer;
 
         #endregion
 
         #region Methods
         private void Start()
         {
-             timeToNextPlay = UnityEngine.Random.Range(2,9);
+             _timeToNextPlay = Random.Range(2,9);
              AudioManager.Instance.PlayRandomGoatNoise();
             _plantTransform = GameObject.Find("Plants").transform;
             _spawnPoints = GameObject.Find("EnemySpawnPositions").transform;
@@ -75,12 +75,12 @@ namespace Code.Scripts.Enemy
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
-            
-            timer += Time.deltaTime;
-            if(timer>timeToNextPlay) {
+
+            _timer += Time.deltaTime;
+            if(_timer > _timeToNextPlay) {
                 AudioManager.Instance.PlayRandomGoatNoise();
-                timeToNextPlay = UnityEngine.Random.Range(2,9);
-                timer = 0f;
+                _timeToNextPlay = Random.Range(2,9);
+                _timer = 0f;
             }
 
             lock (this)
@@ -159,16 +159,8 @@ namespace Code.Scripts.Enemy
             
                 _target = closest;
                 _agent.SetDestination(closest.position);
+                AudioManager.Instance.PlaySFX("goatScared");
             }
-        {
-            print("Running away");
-            var randomIndex = Random.Range(0, _spawnPoints.childCount);
-            var spawnPoint = _spawnPoints.GetChild(randomIndex);
-            _target = spawnPoint;
-            _agent.SetDestination(spawnPoint.position);
-            _currentState = State.Scared;
-            AudioManager.Instance.PlaySFX("goatScared");
-        }
         }
 
         /// <summary>
@@ -193,6 +185,11 @@ namespace Code.Scripts.Enemy
 
         public void TrySpray()
         {
+            if (Input.GetKeyDown(KeyCode.LeftShift) && _health <= 0)
+            {
+                Destroy(gameObject);
+            }
+
             if (!CanAttack) return;
             if (!PlayerController.Instance.TryPurchase(3)) return;
 
