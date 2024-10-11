@@ -172,8 +172,12 @@ namespace Code.Scripts.Plants
             }
         }
 
-        private void Harvest()
+        public void Harvest()
         {
+            if(!CanHarvestNow)
+            {
+                return;
+            }
             PlayerController.Instance.IncreaseMoney(_data._goldGenerated);
             _state = GrowthState.Harvested;
             _plantSpriteRenderer.sprite = _data._harvestedSprite;

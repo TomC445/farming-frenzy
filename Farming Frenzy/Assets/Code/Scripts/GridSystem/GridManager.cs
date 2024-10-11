@@ -27,6 +27,8 @@ public class GridManager : MonoBehaviour
     [Header("Plants")]
     [SerializeField] private GameObject _plant;
     [SerializeField] private string _plantName;
+    [Header("Tools")]
+    [SerializeField] private GameObject _autoharvesterObject;
     #endregion
 
     #region Properties
@@ -180,6 +182,11 @@ public class GridManager : MonoBehaviour
             InstantiatePlant(_selectedTile.transform.position);
             return;
         }
+        if (PlayerController.Instance._currentState == PlayerController.CursorState.Autoharvester)
+        {
+            InstantiateAutoharvester(_selectedTile.transform.position);
+            return;
+        }
         if (_selectedTile.IsPurchased)
         {
             return;
@@ -280,6 +287,12 @@ public class GridManager : MonoBehaviour
         var plantComponent = plant.GetComponent<Plant>();
         plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
         _tooltipManager.SubscribePlantEvents(plantComponent);
+    }
+
+    private void InstantiateAutoharvester(Vector3 tilePosition)
+    {
+        if (!PlayerController.Instance.TryPurchase(50)) return;
+        Instantiate(_autoharvesterObject, tilePosition, Quaternion.identity);
     }
 
     public void HighlightTiles(GridTile gridTile, bool highlightOn)

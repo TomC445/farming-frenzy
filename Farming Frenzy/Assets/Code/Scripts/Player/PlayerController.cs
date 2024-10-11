@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Texture2D _shovelCursor;
     [SerializeField] private Texture2D _sprayBottleCursor;
     [SerializeField] private Texture2D _scytheCursor;
+    [SerializeField] private Texture2D _autoharvesterCursor;
     [Header("Hotbar Icons")]
     [SerializeField] private Image _defaultCursorBackground;
     [SerializeField] private Image _shovelCursorBackground;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour
     public int Money => _money;
     public delegate void MoneyChangeEvent(int newAmount);
     public event MoneyChangeEvent OnMoneyChange;
-    public enum CursorState { Default, Spray, Shovel, Scythe, Planting};
+    public enum CursorState { Default, Spray, Shovel, Scythe, Planting, Autoharvester};
     public CursorState _currentState = CursorState.Default;
     private Color _defaultCursorBackgroundColor;
     private Color _activeCursorBackgroundColor = new Color32(149, 81,19, 255);
@@ -116,6 +117,9 @@ public class PlayerController : MonoBehaviour
                 _sprayBottleCursorBackground.color = _defaultCursorBackgroundColor;
                 _scytheCursorBackground.color = _activeCursorBackgroundColor;
                 break;
+            case CursorState.Autoharvester:
+                Cursor.SetCursor(_autoharvesterCursor, Vector2.zero, CursorMode.Auto);
+                break;
             default:
                 break;
         }
@@ -133,6 +137,11 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             _currentState = CursorState.Scythe;
+        }
+        //TODO reroute autoharvester
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            _currentState = CursorState.Autoharvester;
         }
 
         if(Input.GetKeyDown(KeyCode.Mouse0) && _currentState == CursorState.Spray)
