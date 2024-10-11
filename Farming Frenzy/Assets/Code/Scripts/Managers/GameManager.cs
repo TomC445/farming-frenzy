@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-namespace Code.Scripts.Managers
-{
     public class GameManager : MonoBehaviour
     {
         private static readonly int NightTime = Animator.StringToHash("NightTime");
@@ -38,6 +36,7 @@ namespace Code.Scripts.Managers
         private int _currentQuotaPayment;
         public int Quota => _quota;
         public bool IsTimerRunning => _isTimerRunning;
+        public int _goats;
         private string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         #endregion
 
@@ -45,6 +44,7 @@ namespace Code.Scripts.Managers
         {
             _isTimerRunning = true;
             _quotaText.text = $"0/{_quota}";
+            _goats = 0;
         }
 
         #region Methods
@@ -59,6 +59,7 @@ namespace Code.Scripts.Managers
             if (!_isTimerRunning) return;
             _time += Time.deltaTime;
             UpdateTimerDisplay();
+            UpdateGoatCount();
             UpdateDate();
         }
 
@@ -88,6 +89,7 @@ namespace Code.Scripts.Managers
                 {
                     var week = Mathf.CeilToInt(_dayCount / 7.0f);
                     var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 1) * Mathf.RoundToInt((float) Math.Pow(week, 2));
+                    //AudioManager.Instance.IncreaseGoats(numEnemies);
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
 
@@ -102,6 +104,23 @@ namespace Code.Scripts.Managers
             _clockHand.transform.eulerAngles = new Vector3(0, 0, -clockFaceAngle);
             _dayText.text = $"{_days[_dayCount % 7]}";
             _weekText.text = $"Week:{_weekCount + 1:0}";
+        }
+
+        private void UpdateGoatCount() {
+            GameObject[] allGameObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+            
+            // Count how many of them have the name "Enemy(Clone)"
+            int enemyCount = 0;
+        
+            foreach (GameObject obj in allGameObjects)
+            {
+                if (obj.name == "Enemy(Clone)")
+                {
+                    enemyCount++;
+                }
+            }
+            _goats = enemyCount;
+
         }
 
         private void PauseGame()
@@ -154,6 +173,7 @@ namespace Code.Scripts.Managers
                     // Not enough to pay - game over!
                     Time.timeScale = 0f;
                     AudioManager.Instance.ToggleMusic();
+                    AudioManager.Instance.ToggleSFX();
                     AudioManager.Instance.PlaySFX("gameOver");
                     _gameOverMenu.SetActive(true);
                     return;
@@ -167,4 +187,3 @@ namespace Code.Scripts.Managers
         }
         #endregion
     }
-}
