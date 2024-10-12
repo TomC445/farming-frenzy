@@ -1,13 +1,17 @@
+using Code.Scripts.Player;
 using UnityEngine;
 
-public class HotbarItem : MonoBehaviour
+namespace Code.Scripts.Menus
 {
-    #region Editor Fields
-    #endregion
+    public class HotbarItem : MonoBehaviour
+    {
+        #region Editor Fields
+        [SerializeField] private PlayerController.CursorState _cursor;
+        #endregion
 
-    #region Properties
-    #endregion
-
-    #region Methods
-    #endregion
+        public void OnClick()
+        {
+            PlayerController.Instance.SetPickedCursor(_cursor, null);
+        }
+    }
 }

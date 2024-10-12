@@ -219,11 +219,6 @@ namespace Code.Scripts.Enemy
         {
             print($"I am goat; _health = {_health}; _state = {_currentState}; _target = {_target?.gameObject}; stopped = {_agent.isStopped}");
 
-            if (Input.GetKeyDown(KeyCode.LeftShift) && _health <= 0)
-            {
-                Destroy(gameObject);
-            }
-
             if (!CanAttack) return;
             if (!PlayerController.Instance.TryPurchase(3)) return;
 
