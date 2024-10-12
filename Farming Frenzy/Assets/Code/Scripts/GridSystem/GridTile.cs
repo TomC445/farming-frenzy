@@ -1,5 +1,6 @@
 using System;
 using Code.Scripts.Player;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,9 +12,11 @@ namespace Code.Scripts.GridSystem
         [Header("Tile Settings")]
         [SerializeField] private Color _baseColour;
         [SerializeField] private Color _offsetColour;
+        [SerializeField] private Color _purchasableColor;
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private GameObject _highlight;
         [SerializeField] private int _cost;
+        [SerializeField] private GameObject _tiletext;
         #endregion
 
         #region Properties
@@ -25,6 +28,7 @@ namespace Code.Scripts.GridSystem
         public bool IsLocked { get; private set; }
         public int Cost => _cost;
         public bool HasPlant;
+        private Color _startColor;
 
         public delegate void TileClicked(GridTile tile);
 
@@ -37,6 +41,11 @@ namespace Code.Scripts.GridSystem
         #endregion
 
         #region Methods
+        private void Start()
+        {
+            _startColor = _renderer.color;
+        }
+
         public void Init(bool isOffset)
         {
             Collider = GetComponent<BoxCollider2D>();
@@ -61,8 +70,8 @@ namespace Code.Scripts.GridSystem
             if (CanBePurchased && !IsPurchased)
             {
                 PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
+                _tiletext.SetActive(true);
             }
-
             _highlight.SetActive(true);
             OnTileHoverIn?.Invoke(this);
         }
@@ -77,7 +86,7 @@ namespace Code.Scripts.GridSystem
             }
 
             PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
-
+            _tiletext.SetActive(false);
             _highlight.SetActive(false);
             OnTileHoverOut?.Invoke(this);
         }
@@ -98,13 +107,15 @@ namespace Code.Scripts.GridSystem
 
             _renderer.color = Color.white;
             _renderer.sprite = tile;
+            _tiletext.SetActive(false);
             IsPurchased = true;
             CanBePurchased = true;
         }
 
         public void MakePurchasable(Color colour)
         {
-            _renderer.color = colour;
+            _renderer.color = _purchasableColor;
+            
             CanBePurchased = true;
         }
 
