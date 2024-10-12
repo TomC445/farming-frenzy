@@ -9207,6 +9207,7 @@ MonoBehaviour:
   _rocks: {fileID: 60141673}
   _plant: {fileID: 581491179377338265, guid: 53d6a981d86211b4a9ca73cb7ddb628a, type: 3}
   _plantName: 
+  _autoharvesterObject: {fileID: 1233649126032001086, guid: 924ff3eef1d49ab4aa0e3174c12ed9fe, type: 3}
 --- !u!4 &1659707308
 Transform:
   m_ObjectHideFlags: 0
@@ -10414,6 +10415,7 @@ MonoBehaviour:
   _shovelCursor: {fileID: 2800000, guid: b8a8d73aaec3cb89c86f4f4a1176a032, type: 3}
   _sprayBottleCursor: {fileID: 2800000, guid: ee8ca543e66bd843991e117eb79e533b, type: 3}
   _scytheCursor: {fileID: 2800000, guid: b85dfd3f0c9ca804fa18da2744b40d79, type: 3}
+  _autoharvesterCursor: {fileID: 2800000, guid: e991df33f9c51a44abb0c68c5c4c02f3, type: 3}
   _defaultCursorBackground: {fileID: 6409075220635336161}
   _shovelCursorBackground: {fileID: 1116738242}
   _sprayBottleCursorBackground: {fileID: 562090541}
