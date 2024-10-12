@@ -153,25 +153,28 @@ namespace Code.Scripts.GridSystem
 
         private void HandleTileClicked(GridTile tile)
         {
-            if (tile.IsLocked || !tile.CanBePurchased) return;
-
-            switch (tile.IsPurchased)
+            lock (tile)
             {
-                // Try place the plant that is selected
-                case true when PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Planting:
-                    TryPlacePlant(tile.transform.position);
-                    break;
+                if (tile.IsLocked || !tile.CanBePurchased) return;
+
+                switch (tile.IsPurchased)
+                {
+                    // Try place the plant that is selected
+                    case true when PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Planting && !tile.HasPlant:
+                        TryPlacePlant(tile);
+                        break;
     
-                // No plant selected
-                case true:
-    
-                    break;
-                // Try purchase the tile
-                case false when PlayerController.Instance.TryPurchase(tile.Cost):
-                    AudioManager.Instance.PlaySFX("digMaybe");
-                    tile.PurchaseTile(PlayerController.Instance.GroundSprite);
-                    UpdateSurroundingTiles(tile);
-                    break;
+                    // No plant selected
+                    case true:
+                        break;
+
+                    // Try purchase the tile
+                    case false when PlayerController.Instance.TryPurchase(tile.Cost):
+                        AudioManager.Instance.PlaySFX("digMaybe");
+                        tile.PurchaseTile(PlayerController.Instance.GroundSprite);
+                        UpdateSurroundingTiles(tile);
+                        break;
+                }
             }
         }
 
@@ -223,16 +226,17 @@ namespace Code.Scripts.GridSystem
             PlayerController.Instance.SetPickedCursor(PlayerController.CursorState.Planting, Resources.Load<Texture2D>($"SeedBags/{plantName}"));
         }
 
-        private void TryPlacePlant(Vector3 tilePosition)
+        private void TryPlacePlant(GridTile tile)
         {
             var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
             if (!PlayerController.Instance.TryPurchase(plantAmount)) return;
+            
 
             AudioManager.Instance.PlaySFX("planting");
 
-            var plant = Instantiate(_plant, tilePosition, Quaternion.identity, _plantsTransform);
+            var plant = Instantiate(_plant, tile.transform.position, Quaternion.identity, _plantsTransform);
             var plantComponent = plant.GetComponent<Plant>();
-            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName), tile);
             _tooltipManager.SubscribePlantEvents(plantComponent);
         }
 

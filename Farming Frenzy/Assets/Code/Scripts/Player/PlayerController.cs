@@ -42,6 +42,8 @@ namespace Code.Scripts.Player
         private CursorState _currentlyPicked = CursorState.Default;
         [CanBeNull] private Texture2D _seedBagTexture;
         public CursorState CurrentlyActiveCursor => _contextualCursor ?? _currentlyPicked;
+        public bool IsContextualActive => _contextualCursor != null;
+
         private Color _defaultCursorBackgroundColor;
         private readonly Color _activeCursorBackgroundColor = new Color32(149, 81,19, 255);
         public float lastHarvestablePlant;
@@ -192,9 +194,9 @@ namespace Code.Scripts.Player
                     SetPickedCursor(CursorState.Scythe, null);
                 }
 
-                var stopScythe = _contextualCursor == CursorState.Scythe && Time.time - lastHarvestablePlant > 0.2 &&
+                var stopScythe = _contextualCursor == CursorState.Scythe && Time.time - lastHarvestablePlant > 0.1 &&
                                  !Input.GetKeyDown(KeyCode.Mouse0);
-                var stopContextualCursor = _lastContextualCursor != null && Time.time - _lastContextualCursor > 0.2;
+                var stopContextualCursor = _lastContextualCursor != null && Time.time - _lastContextualCursor > 0.1;
 
                 if (stopScythe || stopContextualCursor)
                 {

@@ -154,6 +154,7 @@ namespace Code.Scripts.Managers
                 {
                     PlayerController.Instance.Purchase(maxCanBuy);
                 }
+                print($"yes keydown, max can buy is {maxCanBuy}");
             }
 
             AudioManager.Instance.PlaySFX("kaching");
