@@ -69,7 +69,7 @@ namespace Code.Scripts.Plants
             {
                 if (CanHarvestNow && PlayerController.Instance.CurrentlyActiveCursor != PlayerController.CursorState.Shovel)
                 {
-                    PlayerController.Instance.timeSinceLastHarvestablePlant = Time.time;
+                    PlayerController.Instance.lastHarvestablePlant = Time.time;
                     PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Scythe);
                 }
             }
