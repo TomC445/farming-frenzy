@@ -223,18 +223,14 @@ namespace Code.Scripts.GridSystem
             PlayerController.Instance.SetPickedCursor(PlayerController.CursorState.Planting, Resources.Load<Texture2D>($"SeedBags/{plantName}"));
         }
 
-        private void TryPlacePlant(GridTile tile)
+        private void TryPlacePlant(Vector3 tilePosition)
         {
             var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
             if (!PlayerController.Instance.TryPurchase(plantAmount)) return;
 
-
             AudioManager.Instance.PlaySFX("planting");
-
-            var plant = Instantiate(_plant, tile.transform.position, Quaternion.identity, _plantsTransform);
-            var plantComponent = plant.GetComponent<Plant>();
-            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName), tile);
-            _tooltipManager.SubscribePlantEvents(plantComponent);
+            InstantiatePlant(tilePosition);
+            return;
         }
 
         public void HighlightTiles(GridTile gridTile, bool highlightOn)
@@ -245,37 +241,21 @@ namespace Code.Scripts.GridSystem
             {
                 for (var x = 0; x < 3; ++x)
                 {
-                    for (var y = 0; y < 2; ++y)
-                    {
-                        if (highlightOn)
-                        {
-                            _tiles[new Vector2(selectedTilePos.x + x - 1, selectedTilePos.y + y)].HighlightTile();
-                        }
-                        else
-                        {
-                            _tiles[new Vector2(selectedTilePos.x + x - 1, selectedTilePos.y + y)].UnHighlightTile();
-                        }
+                    //surroundingTile.ChangeTileColor(Color.red);
+                }
+            }
+        }
+       
 
-                    }
-                }
-            }
-            else
-            {
-                for (var x = 0; x < 1; ++x)
-                {
-                    for (var y = 0; y < 1; ++y)
-                    {
-                        if (highlightOn)
-                        {
-                            _tiles[new Vector2(selectedTilePos.x + x, selectedTilePos.y + y)].HighlightTile();
-                        }
-                        else
-                        {
-                            _tiles[new Vector2(selectedTilePos.x + x, selectedTilePos.y + y)].UnHighlightTile();
-                        }
-                    }
-                }
-            }
+        private void InstantiatePlant(Vector3 tilePosition)
+        {
+            var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
+            if (!PlayerController.Instance.TryPurchase(plantAmount)) return;
+
+            var plant = Instantiate(_plant, tilePosition, Quaternion.identity, _plantsTransform);
+            var plantComponent = plant.GetComponent<Plant>();
+            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+            _tooltipManager.SubscribePlantEvents(plantComponent);
         }
 
         //private void InstantiateAutoharvester(Vector3 tilePosition)
@@ -284,8 +264,6 @@ namespace Code.Scripts.GridSystem
         //    Instantiate(_autoharvesterObject, tilePosition, Quaternion.identity);
         //}
     
-
-
         #endregion
     }
 }
