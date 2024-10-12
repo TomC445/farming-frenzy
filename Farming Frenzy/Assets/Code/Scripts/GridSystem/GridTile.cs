@@ -1,4 +1,3 @@
-using System;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,15 +16,11 @@ namespace Code.Scripts.GridSystem
         #endregion
 
         #region Properties
-
-        private bool _isMouseOver;
         public Collider2D Collider { get; private set; }
         public bool IsPurchased { get; private set; }
         public bool CanBePurchased { get; private set; }
         public bool IsLocked { get; private set; }
         public int Cost => _cost;
-        public bool HasPlant;
-
         public delegate void TileClicked(GridTile tile);
 
         public delegate void TileHoverIn(GridTile tile);
@@ -45,8 +40,6 @@ namespace Code.Scripts.GridSystem
 
         private void OnMouseEnter()
         {
-            _isMouseOver = true;
-
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 GridManager.Instance.HighlightTiles(this, false);
@@ -69,8 +62,6 @@ namespace Code.Scripts.GridSystem
 
         private void OnMouseExit()
         {
-            _isMouseOver = false;
-
             if (GridManager.Instance.PlantName != "")
             {
                 GridManager.Instance.HighlightTiles(this, false);
@@ -91,7 +82,7 @@ namespace Code.Scripts.GridSystem
 
             OnTileClicked?.Invoke(this);
         }
-
+    
         public void PurchaseTile(Sprite tile)
         {
             PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
@@ -129,15 +120,6 @@ namespace Code.Scripts.GridSystem
             Collider.enabled = true;
             IsLocked = false;
         }
-
-        private void Update()
-        {
-            if (_isMouseOver && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
-            {
-                OnTileClicked?.Invoke(this);
-            }
-        }
-
         #endregion
     }
 }

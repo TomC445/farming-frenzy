@@ -3,7 +3,6 @@ using Code.Scripts.Plants;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Code.Scripts.Player
@@ -34,20 +33,15 @@ namespace Code.Scripts.Player
         public int Money => _money;
         public delegate void MoneyChangeEvent(int newAmount);
         public event MoneyChangeEvent OnMoneyChange;
-        
-        [Serializable]
         public enum CursorState { Default, Spray, Shovel, Scythe, Planting }
 
         private CursorState? _contextualCursor;
         private CursorState _currentlyPicked = CursorState.Default;
         [CanBeNull] private Texture2D _seedBagTexture;
         public CursorState CurrentlyActiveCursor => _contextualCursor ?? _currentlyPicked;
-        public bool IsContextualActive => _contextualCursor != null;
-
         private Color _defaultCursorBackgroundColor;
         private readonly Color _activeCursorBackgroundColor = new Color32(149, 81,19, 255);
-        public float lastHarvestablePlant;
-        private float? _lastContextualCursor;
+        public float timeSinceLastHarvestablePlant;
         #endregion
 
         #region Singleton
@@ -102,7 +96,6 @@ namespace Code.Scripts.Player
             lock (this)
             {
                 _contextualCursor = contextual;
-                _lastContextualCursor = null;
             }
         }
 
@@ -111,7 +104,12 @@ namespace Code.Scripts.Player
             lock (this)
             {
                 if (_contextualCursor != contextual) return;
-                _lastContextualCursor = Time.time;
+                _contextualCursor = null;
+
+                if (_currentlyPicked == CursorState.Planting)
+                {
+                    Cursor.SetCursor(_seedBagTexture, Vector2.zero, CursorMode.Auto);
+                }
             }
         }
 
@@ -119,7 +117,6 @@ namespace Code.Scripts.Player
         {
             _currentlyPicked = picked;
             _contextualCursor = null;
-            _lastContextualCursor = null;
 
             _seedBagTexture = seedBag;
             if (_seedBagTexture)
@@ -127,30 +124,7 @@ namespace Code.Scripts.Player
                 Cursor.SetCursor(_seedBagTexture, Vector2.zero, CursorMode.Auto);
             }
         }
-
-        private void ResetBackgrounds()
-        {
-            _defaultCursorBackground.color = _defaultCursorBackgroundColor;
-            _shovelCursorBackground.color = _defaultCursorBackgroundColor;
-            _sprayBottleCursorBackground.color = _defaultCursorBackgroundColor;
-            _scytheCursorBackground.color = _defaultCursorBackgroundColor;
-        }
-
-        private void SetupBackgrounds()
-        {
-            var elt = _currentlyPicked switch
-            {
-                CursorState.Default => _defaultCursorBackground,
-                CursorState.Spray => _sprayBottleCursorBackground,
-                CursorState.Shovel => _shovelCursorBackground,
-                CursorState.Scythe => _scytheCursorBackground,
-                CursorState.Planting => null,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-
-            if (elt != null) elt.color = _activeCursorBackgroundColor;
-        }
-
+        
         private void Update()
         {
             lock (this)
@@ -159,25 +133,38 @@ namespace Code.Scripts.Player
                 {
                     case CursorState.Default:
                         Cursor.SetCursor(_defaultCursor, Vector2.zero, CursorMode.Auto);
+                        _defaultCursorBackground.color = _activeCursorBackgroundColor;                
+                        _shovelCursorBackground.color = _defaultCursorBackgroundColor;
+                        _sprayBottleCursorBackground.color = _defaultCursorBackgroundColor;
+                        _scytheCursorBackground.color = _defaultCursorBackgroundColor;
                         break;
                     case CursorState.Spray:
                         Cursor.SetCursor(_sprayBottleCursor, Vector2.zero, CursorMode.Auto);
+                        _defaultCursorBackground.color = _defaultCursorBackgroundColor;    
+                        _shovelCursorBackground.color = _defaultCursorBackgroundColor;
+                        _sprayBottleCursorBackground.color = _activeCursorBackgroundColor;
+                        _scytheCursorBackground.color = _defaultCursorBackgroundColor;
                         break;
                     case CursorState.Shovel:
                         var hotspot = new Vector2(0, _shovelCursor.height);
                         Cursor.SetCursor(_shovelCursor, hotspot, CursorMode.Auto);
+                        _defaultCursorBackground.color = _defaultCursorBackgroundColor;              
+                        _shovelCursorBackground.color = _activeCursorBackgroundColor;
+                        _sprayBottleCursorBackground.color = _defaultCursorBackgroundColor;
+                        _scytheCursorBackground.color = _defaultCursorBackgroundColor;
                         break;
                     case CursorState.Scythe:
                         Cursor.SetCursor(_scytheCursor, Vector2.zero, CursorMode.Auto);
+                        _defaultCursorBackground.color = _defaultCursorBackgroundColor;
+                        _shovelCursorBackground.color = _defaultCursorBackgroundColor;
+                        _sprayBottleCursorBackground.color = _defaultCursorBackgroundColor;
+                        _scytheCursorBackground.color = _activeCursorBackgroundColor;
                         break;
                     case CursorState.Planting:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-
-                ResetBackgrounds();
-                SetupBackgrounds();
 
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
@@ -194,19 +181,11 @@ namespace Code.Scripts.Player
                     SetPickedCursor(CursorState.Scythe, null);
                 }
 
-                var stopScythe = _contextualCursor == CursorState.Scythe && Time.time - lastHarvestablePlant > 0.1 &&
-                                 !Input.GetKey(KeyCode.Mouse0);
-                var stopContextualCursor = _lastContextualCursor != null && Time.time - _lastContextualCursor > 0.1;
-
-                if (stopScythe || stopContextualCursor)
+                if (Time.time - timeSinceLastHarvestablePlant > 0.5 && !Input.GetKeyDown(KeyCode.Mouse0))
                 {
-                    _contextualCursor = null;
-                    if (_currentlyPicked == CursorState.Planting)
-                    {
-                        Cursor.SetCursor(_seedBagTexture, Vector2.zero, CursorMode.Auto);
-                    }
+                    EndContextualCursor(CursorState.Scythe);
                 }
-    
+
                 if (!Input.GetKeyDown(KeyCode.Mouse0) || CurrentlyActiveCursor != CursorState.Spray) return;
                 Instantiate(_sprayBottleParticleSystem, Camera.main!.ScreenToWorldPoint(Input.mousePosition), Quaternion.identity);
                 Purchase(_sprayPurchaseAmount);

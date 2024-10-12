@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Code.Scripts.Enemy;
-using Code.Scripts.GridSystem;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
 using Code.Scripts.Plants.Powers.PowerExtension;
@@ -15,7 +14,6 @@ namespace Code.Scripts.Plants
     {
         #region Properties
         private PlantData _data;
-        private GridTile _tile;
         private Sprite _currentSprite;
         private float _secsSinceGrowth;
         private GrowthState _state;
@@ -41,7 +39,7 @@ namespace Code.Scripts.Plants
             }
         }
 
-        private bool CanHarvestNow => !_data._cannotHarvest && _state == GrowthState.Fruited;
+        public bool CanHarvestNow => !_data._cannotHarvest && _state == GrowthState.Fruited;
 
         public string PlantName => _data.name;
 
@@ -66,30 +64,24 @@ namespace Code.Scripts.Plants
             UpdateState();
 
             if (!_isMouseOverPlant) return;
-
-            PlayerController.CursorState cursor;
-            bool isContextual;
+            
             lock (PlayerController.Instance)
             {
-                cursor = PlayerController.Instance.CurrentlyActiveCursor;
-                
-                if (CanHarvestNow && cursor != PlayerController.CursorState.Shovel)
+                if (CanHarvestNow && PlayerController.Instance.CurrentlyActiveCursor != PlayerController.CursorState.Shovel)
                 {
-                    PlayerController.Instance.lastHarvestablePlant = Time.time;
+                    PlayerController.Instance.timeSinceLastHarvestablePlant = Time.time;
                     PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Scythe);
                 }
-
-                isContextual = PlayerController.Instance.IsContextualActive;
             }
 
             if (!Input.GetMouseButton(0)) return;
 
-            switch (cursor)
+            switch (PlayerController.Instance.CurrentlyActiveCursor)
             {
                 case PlayerController.CursorState.Scythe:
                     HarvestPlant();
                     break;
-                case PlayerController.CursorState.Shovel when !isContextual: // Prevent accidental digging
+                case PlayerController.CursorState.Shovel:
                     DigPlant();
                     break;
                 case PlayerController.CursorState.Default:
@@ -100,7 +92,7 @@ namespace Code.Scripts.Plants
             }
         }
 
-        public void InitPlant(PlantData pdata, GridTile tile)
+        public void InitPlant(PlantData pdata)
         {
             _data = pdata;
             _state = GrowthState.Seedling;
@@ -112,9 +104,6 @@ namespace Code.Scripts.Plants
                 Collider.size = new Vector2(3, 2);
                 Collider.offset = new Vector2(0, 0.5f);
             }
-
-            _tile = tile;
-            _tile.HasPlant = true;
 
             _plantSpriteRenderer.sprite = _data._growthSprite.First();
             GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
@@ -203,7 +192,7 @@ namespace Code.Scripts.Plants
         private void DigPlant()
         {
             AudioManager.Instance.PlaySFX("digMaybe");
-            Kill();
+            Destroy(gameObject);
         }
 
         private void OnMouseEnter()
@@ -218,29 +207,13 @@ namespace Code.Scripts.Plants
             OnHoverOut?.Invoke(this);
         }
 
-        private void OnMouseDown()
-        {
-            _isMouseOverPlant = true;
-        }
-
-        private void OnMouseDrag()
-        {
-            _isMouseOverPlant = true;
-        }
-
-        private void Kill()
-        {
-            _tile.HasPlant = false;
-            Destroy(gameObject);
-        }
-
         public bool TakeDamage(float amount)
         {
             _health -= amount;
             print($"{PlantName} took {amount} damage! HP = {_health}");
             if (_health > 0) return false;
 
-            Kill();
+            Destroy(gameObject);
             return true;
         }
 

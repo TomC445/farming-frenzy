@@ -145,14 +145,16 @@ namespace Code.Scripts.Managers
         public void PayQuota(int amount)
         {
             if (_currentQuotaPayment >= _quota) return;
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            if (!PlayerController.Instance.TryPurchase(amount)) return;
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
             {
                 var maxCanBuy = Math.Min(_quota - _currentQuotaPayment, PlayerController.Instance.Money);
-                print($"yes keydown, max can buy is {maxCanBuy}");
-                amount = maxCanBuy;
+                if (maxCanBuy > 0)
+                {
+                    PlayerController.Instance.Purchase(maxCanBuy);
+                }
             }
-
-            if (amount == 0 || !PlayerController.Instance.TryPurchase(amount)) return;
 
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
