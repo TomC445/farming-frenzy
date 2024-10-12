@@ -63,20 +63,19 @@ public class CameraControl : MonoBehaviour
 
     private void HandleDrag()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
         {
             _dragOrigin = Input.mousePosition;
             return;
         }
 
-        if (Input.GetMouseButton(1))
-        {
-            var currentMousePos = Input.mousePosition;
-            var difference = Camera.main.ScreenToViewportPoint(_dragOrigin - currentMousePos);
-            var move = new Vector3(difference.x, difference.y, 0) * _dragSpeed * _attachedCamera.orthographicSize;
-            transform.Translate(move, Space.World);
-            _dragOrigin = currentMousePos;
-        }
+        if (!(Input.GetMouseButton(1) || Input.GetMouseButton(2))) return;
+
+        var currentMousePos = Input.mousePosition;
+        var difference = Camera.main.ScreenToViewportPoint(_dragOrigin - currentMousePos);
+        var move = new Vector3(difference.x, difference.y, 0) * _dragSpeed * _attachedCamera.orthographicSize;
+        transform.Translate(move, Space.World);
+        _dragOrigin = currentMousePos;
     }
 
     private void UpdateCameraBounds()

@@ -195,7 +195,7 @@ namespace Code.Scripts.Player
                 }
 
                 var stopScythe = _contextualCursor == CursorState.Scythe && Time.time - lastHarvestablePlant > 0.1 &&
-                                 !Input.GetKeyDown(KeyCode.Mouse0);
+                                 !Input.GetKey(KeyCode.Mouse0);
                 var stopContextualCursor = _lastContextualCursor != null && Time.time - _lastContextualCursor > 0.1;
 
                 if (stopScythe || stopContextualCursor)
