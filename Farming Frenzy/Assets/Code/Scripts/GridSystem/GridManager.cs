@@ -75,7 +75,6 @@ namespace Code.Scripts.GridSystem
             _trees = GameObject.Find("Trees").transform;
             _rocks = GameObject.Find("Rocks").transform;
             _tilePrefab = GameObject.Find("Tile").GetComponent<GridTile>();
-            if(_tilePrefab.GetComponent<SpriteRenderer>() == null) print("NULL TILE");
             InitObstacles();
             GenerateGrid();
         }
@@ -189,6 +188,7 @@ namespace Code.Scripts.GridSystem
                         UpdateSurroundingTiles(tile);
                         break;
                 }
+                print(tile.name + " " + tile._renderer.sprite.name);
             }
         }
 

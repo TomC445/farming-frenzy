@@ -97,6 +97,7 @@ namespace Code.Scripts.GridSystem
 
         public void PurchaseTile(Sprite tile)
         {
+            //print("Tile Purchased! " + tile.name);
             PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
             _renderer.color = Color.white;
             _renderer.sprite = tile;
