@@ -31,6 +31,10 @@ public class EnemySpawnManager : MonoBehaviour
 
     #region Methods
 
+    public void Restart() {
+        _spawnPositions = GameObject.Find("EnemySpawnPositions").transform;
+    }
+
     public void SpawnEnemies(int enemyNumber)
     {
         for (var i = 0; i < enemyNumber; i++)

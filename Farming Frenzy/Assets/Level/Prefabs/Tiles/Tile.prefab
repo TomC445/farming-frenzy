@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5052544893010365548
 Transform:
   m_ObjectHideFlags: 0
@@ -153,6 +153,7 @@ MonoBehaviour:
   _renderer: {fileID: 5154196224293100628}
   _highlight: {fileID: 8571974738013697907}
   _cost: 10
+  HasPlant: 0
 --- !u!1 &8571974738013697907
 GameObject:
   m_ObjectHideFlags: 0

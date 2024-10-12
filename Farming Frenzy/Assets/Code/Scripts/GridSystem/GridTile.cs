@@ -11,7 +11,7 @@ namespace Code.Scripts.GridSystem
         [Header("Tile Settings")]
         [SerializeField] private Color _baseColour;
         [SerializeField] private Color _offsetColour;
-        [SerializeField] private SpriteRenderer _renderer;
+        [SerializeField] public SpriteRenderer _renderer;
         [SerializeField] private GameObject _highlight;
         [SerializeField] private int _cost;
         #endregion
@@ -37,6 +37,9 @@ namespace Code.Scripts.GridSystem
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Awake is called when the script instance is being loaded.
+        /// </summary>
         public void Init(bool isOffset)
         {
             Collider = GetComponent<BoxCollider2D>();
@@ -95,7 +98,6 @@ namespace Code.Scripts.GridSystem
         public void PurchaseTile(Sprite tile)
         {
             PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
-
             _renderer.color = Color.white;
             _renderer.sprite = tile;
             IsPurchased = true;
