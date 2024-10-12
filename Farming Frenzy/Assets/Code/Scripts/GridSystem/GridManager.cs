@@ -34,9 +34,9 @@ namespace Code.Scripts.GridSystem
         private Dictionary<Vector2, GridTile> _tiles;
         private List<string> _excludedTilesNames;
         private List<string> _starterTilesNames;
-        private readonly List<BoxCollider2D> _obstacleColliders = new();
-        private readonly List<GridTile> _groundTiles = new();
-        private readonly List<GridTile> _obstructedTiles = new();
+        private List<BoxCollider2D> _obstacleColliders = new();
+        private List<GridTile> _groundTiles = new();
+        private List<GridTile> _obstructedTiles = new();
         private Transform _plantsTransform;
         public string PlantName => _plantName;
         private GridTooltipManager _tooltipManager;
@@ -60,17 +60,29 @@ namespace Code.Scripts.GridSystem
 
         #region Methods
         private void Start()
-        {
+        { 
+            Restart();
+        }
+
+        public void Restart() {
             _excludedTilesNames = _excludedTiles.Select(x => x.name).ToList();
             _starterTilesNames = _starterTiles.Select(x => x.name).ToList();
             _tooltipManager = GameObject.Find("Grid tooltip").GetComponent<GridTooltipManager>();
             _plantsTransform = GameObject.Find("Plants").transform;
+            _backgroundGrid = GameObject.Find("Grid").transform.Find("BaseTiles").GetComponent<Tilemap>();
+            _camera = GameObject.Find("Main Camera").transform;
+            _tilesContainer = GameObject.Find("Tiles").transform;
+            _trees = GameObject.Find("Trees").transform;
+            _rocks = GameObject.Find("Rocks").transform;
+            _tilePrefab = GameObject.Find("Tile").GetComponent<GridTile>();
+            if(_tilePrefab.GetComponent<SpriteRenderer>() == null) print("NULL TILE");
             InitObstacles();
             GenerateGrid();
         }
 
         private void InitObstacles()
         {
+            _obstacleColliders = new();
             foreach(Transform child in _trees)
             {
                 var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
@@ -97,6 +109,8 @@ namespace Code.Scripts.GridSystem
             var tileBounds = _backgroundGrid.localBounds.size;
             var width = tileBounds.x;
             var height = tileBounds.y;
+            _groundTiles = new();
+            _obstructedTiles = new();
             _tiles = new Dictionary<Vector2, GridTile>();
             for (var x = 0; x < width; ++x)
             {

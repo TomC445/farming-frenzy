@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Code.Scripts.Player;
+using Code.Scripts.GridSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,6 +48,8 @@ namespace Code.Scripts.Managers
         private void Start()
         {
             AudioManager.Instance.SetInitialMusicVolume();
+            GridManager.Instance.Restart();
+            EnemySpawnManager.Instance.Restart();
             IsTimerRunning = true;
             _quotaText.text = $"0/{_quota}";
             _goats = 0;
