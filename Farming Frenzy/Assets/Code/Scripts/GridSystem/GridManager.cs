@@ -233,11 +233,25 @@ namespace Code.Scripts.GridSystem
             
 
             AudioManager.Instance.PlaySFX("planting");
-
-            var plant = Instantiate(_plant, tile.transform.position, Quaternion.identity, _plantsTransform);
-            var plantComponent = plant.GetComponent<Plant>();
-            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName), tile);
-            _tooltipManager.SubscribePlantEvents(plantComponent);
+            InstantiatePlant(_selectedTile.transform.position);
+            return;
+        }
+        if (PlayerController.Instance._currentState == PlayerController.CursorState.Autoharvester)
+        {
+            InstantiateAutoharvester(_selectedTile.transform.position);
+            return;
+        }
+        if (_selectedTile.IsPurchased)
+        {
+            return;
+        }
+        if (PlayerController.Instance.Money < _selectedTile.Cost)
+        {
+            return;
+        }
+        if(PlayerController.Instance._currentState != PlayerController.CursorState.Default)
+        {
+            return;
         }
 
         public void HighlightTiles(GridTile gridTile, bool highlightOn)
@@ -248,7 +262,70 @@ namespace Code.Scripts.GridSystem
             {
                 for (var x = 0; x < 3; ++x)
                 {
-                    for (var y = 0; y < 2; ++y)
+                    surroundingTile.ChangeTileColor(Color.red);
+                }
+            }
+        }
+    }
+
+    public void UnlockTiles(Bounds obstacleBounds)
+    {
+        int xStart = Mathf.FloorToInt(obstacleBounds.center.x - obstacleBounds.extents.x);
+        int xEnd = Mathf.FloorToInt(obstacleBounds.center.x + obstacleBounds.extents.x);
+        int yStart = Mathf.FloorToInt(obstacleBounds.center.y - obstacleBounds.extents.y);
+        int yEnd = Mathf.FloorToInt(obstacleBounds.center.y + obstacleBounds.extents.y);
+        for (int x = xStart; x <= xEnd; x++)
+        {
+            for (int y = yStart; y <= yEnd; y++)
+            {
+                _tiles[new Vector2(x, y)].UnlockTile();
+            }
+        }
+    }
+
+    public void SetActivePlant(string plantName)
+    {
+        _plantName = plantName;
+        Debug.Log(plantName);
+        PlayerController.Instance._currentState = PlayerController.CursorState.Planting;
+        var cursorTexture = Resources.Load<Texture2D>($"SeedBags/{plantName}");
+        if (cursorTexture != null)
+        {
+            Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+        }
+
+        // _cursorImage.color = Color.white;
+        // _cursorImage.sprite = PlantManager.Instance.GetPlantData(plantName)._cursorSprite;
+    }
+
+    private void InstantiatePlant(Vector3 tilePosition)
+    {
+        var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
+        if (!PlayerController.Instance.TryPurchase(plantAmount)) return;
+
+        var plant = Instantiate(_plant, tilePosition, Quaternion.identity, _plantsTransform);
+        var plantComponent = plant.GetComponent<Plant>();
+        plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName));
+        _tooltipManager.SubscribePlantEvents(plantComponent);
+    }
+
+    private void InstantiateAutoharvester(Vector3 tilePosition)
+    {
+        if (!PlayerController.Instance.TryPurchase(50)) return;
+        Instantiate(_autoharvesterObject, tilePosition, Quaternion.identity);
+    }
+
+    public void HighlightTiles(GridTile gridTile, bool highlightOn)
+    {
+        var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == gridTile).Key;
+        var isTree = _plantName != "" && PlantManager.Instance.GetPlantData(_plantName)._isTree;
+        if (isTree)
+        {
+            for (int x = 0; x < 3; ++x)
+            {
+                for (int y = 0; y < 2; ++y)
+                {
+                    if (highlightOn)
                     {
                         if (highlightOn)
                         {
