@@ -76,7 +76,11 @@ namespace Code.Scripts.Player
             Purchase(amount);
             return true;
         }
-        
+        //TODO reroute autoharvester
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            _currentState = CursorState.Autoharvester;
+        }
 
         public void IncreaseMoney(int amount)
         {

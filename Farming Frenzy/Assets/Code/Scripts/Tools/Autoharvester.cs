@@ -1,7 +1,7 @@
 using Code.Scripts.Plants;
-using Code.Scripts.Player;
 using System.Collections;
 using UnityEngine;
+using static GridTile;
 using UnityEngine.EventSystems;
 
 public class Autoharvester : MonoBehaviour
@@ -59,7 +59,7 @@ public class Autoharvester : MonoBehaviour
             return;
         }
 
-        if (PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Shovel)
+        if (PlayerController.Instance._currentState == PlayerController.CursorState.Shovel)
         {
             Destroy(gameObject);
         }
