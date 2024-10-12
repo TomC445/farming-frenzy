@@ -65,6 +65,7 @@ namespace Code.Scripts.Menus
             ui.RegisterCallback<ClickEvent>(_ =>
             {
                 GridManager.Instance.SetActivePlant(data.name);
+                print($"Clicked on a {data.name}");
             });
 
             // Set up tooltip
