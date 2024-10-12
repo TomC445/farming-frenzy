@@ -96,6 +96,10 @@ public class AudioManager : MonoBehaviour
         _musicSource.mute = !_musicSource.mute;
     }
 
+    public void SetInitialMusicVolume() {
+        audioMixer.SetFloat("MusicVolume",Mathf.Log10(0.5f)*20f);
+    }
+
     public void ToggleSFX()
     {
         _sfxSource.mute = !_sfxSource.mute;

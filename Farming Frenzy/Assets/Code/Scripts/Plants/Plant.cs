@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
 using Code.Scripts.Enemy;
+using Code.Scripts.GridSystem;
 using Code.Scripts.Plants.GrowthStateExtension;
 using Code.Scripts.Plants.Powers;
 using Code.Scripts.Plants.Powers.PowerExtension;
+using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,6 +15,7 @@ namespace Code.Scripts.Plants
     {
         #region Properties
         private PlantData _data;
+        private GridTile _tile;
         private Sprite _currentSprite;
         private float _secsSinceGrowth;
         private GrowthState _state;
@@ -49,7 +52,7 @@ namespace Code.Scripts.Plants
         public delegate void HoverOutEvent(Plant plant);
         public event HoverInEvent OnHoverIn;
         public event HoverOutEvent OnHoverOut;
-        private bool _isMouseOverPlant = false;
+        private bool _isMouseOverPlant;
         #endregion
 
         #region Methods
@@ -61,20 +64,43 @@ namespace Code.Scripts.Plants
         private void Update()
         {
             UpdateState();
-            if(Input.GetMouseButton(0) && _isMouseOverPlant)
+
+            if (!_isMouseOverPlant) return;
+
+            PlayerController.CursorState cursor;
+            bool isContextual;
+            lock (PlayerController.Instance)
             {
-                if(PlayerController.Instance._currentState == PlayerController.CursorState.Scythe)
-                {
-                    HarvestPlant();
-                } else if (PlayerController.Instance._currentState == PlayerController.CursorState.Shovel)
-                {
-                    DigPlant();
-                }
+                cursor = PlayerController.Instance.CurrentlyActiveCursor;
                 
+                if (CanHarvestNow && cursor != PlayerController.CursorState.Shovel)
+                {
+                    PlayerController.Instance.lastHarvestablePlant = Time.time;
+                    PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Scythe);
+                }
+
+                isContextual = PlayerController.Instance.IsContextualActive;
+            }
+
+            if (!Input.GetMouseButton(0)) return;
+
+            switch (cursor)
+            {
+                case PlayerController.CursorState.Scythe:
+                    HarvestPlant();
+                    break;
+                case PlayerController.CursorState.Shovel when !isContextual: // Prevent accidental digging
+                    DigPlant();
+                    break;
+                case PlayerController.CursorState.Default:
+                case PlayerController.CursorState.Spray:
+                case PlayerController.CursorState.Planting:
+                default:
+                    break;
             }
         }
 
-        public void InitPlant(PlantData pdata)
+        public void InitPlant(PlantData pdata, GridTile tile)
         {
             _data = pdata;
             _state = GrowthState.Seedling;
@@ -86,6 +112,9 @@ namespace Code.Scripts.Plants
                 Collider.size = new Vector2(3, 2);
                 Collider.offset = new Vector2(0, 0.5f);
             }
+
+            _tile = tile;
+            _tile.HasPlant = true;
 
             _plantSpriteRenderer.sprite = _data._growthSprite.First();
             GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
@@ -157,19 +186,10 @@ namespace Code.Scripts.Plants
         private void HarvestPlant()
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (!CanHarvestNow) return;
 
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) // TODO placeholder control
-            {
-                if (CanHarvestNow) Harvest();
-                Destroy(gameObject);
-                PlayerController.Instance.IncreaseMoney(_data._price / 2);
-                AudioManager.Instance.PlaySFX("digMaybe"); // TODO placeholder sound
-            }
-            else if (CanHarvestNow)
-            {
-                AudioManager.Instance.PlaySFX("picking");
-                Harvest();
-            }
+            AudioManager.Instance.PlaySFX("picking");
+            Harvest();
         }
 
         public void Harvest()
@@ -186,7 +206,8 @@ namespace Code.Scripts.Plants
 
         private void DigPlant()
         {
-            Destroy(gameObject);
+            AudioManager.Instance.PlaySFX("digMaybe");
+            Kill();
         }
 
         private void OnMouseEnter()
@@ -201,13 +222,29 @@ namespace Code.Scripts.Plants
             OnHoverOut?.Invoke(this);
         }
 
+        private void OnMouseDown()
+        {
+            _isMouseOverPlant = true;
+        }
+
+        private void OnMouseDrag()
+        {
+            _isMouseOverPlant = true;
+        }
+
+        private void Kill()
+        {
+            _tile.HasPlant = false;
+            Destroy(gameObject);
+        }
+
         public bool TakeDamage(float amount)
         {
             _health -= amount;
             print($"{PlantName} took {amount} damage! HP = {_health}");
             if (_health > 0) return false;
 
-            Destroy(gameObject);
+            Kill();
             return true;
         }
 

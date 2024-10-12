@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using Code.Scripts.Managers;
 using Code.Scripts.Plants;
 using Code.Scripts.Plants.Powers;
+using Code.Scripts.Player;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
@@ -39,7 +41,6 @@ namespace Code.Scripts.Enemy
         private const float Damage = 5;
         private float _timeToNextPlay;
         private float _timer;
-        private float _timer2;
         private AudioManager _audioManager;
         private bool playSFX;
         private bool firstUpdate;
@@ -95,7 +96,6 @@ namespace Code.Scripts.Enemy
             _agentAnimator.SetFloat(Y, direction.y);
             _agentAnimator.SetBool(Movement, direction.magnitude > 0);
             _spriteRenderer.sortingOrder = 10000 - Mathf.CeilToInt(transform.position.y);
-            _timer2+=Time.deltaTime;
 
             if(playSFX){
                 _timer += Time.deltaTime;
@@ -197,9 +197,19 @@ namespace Code.Scripts.Enemy
             return true;
         }
 
+        private void OnMouseEnter()
+        {
+            PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Spray);
+        }
+
+        private void OnMouseExit()
+        {
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Spray);
+        }
+
         private void OnMouseDown()
         {
-            if(PlayerController.Instance._currentState == PlayerController.CursorState.Spray)
+            if(PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Spray)
             {
                 TrySpray();
             }
@@ -208,11 +218,6 @@ namespace Code.Scripts.Enemy
         public void TrySpray()
         {
             print($"I am goat; _health = {_health}; _state = {_currentState}; _target = {_target?.gameObject}; stopped = {_agent.isStopped}");
-
-            if (Input.GetKeyDown(KeyCode.LeftShift) && _health <= 0)
-            {
-                Destroy(gameObject);
-            }
 
             if (!CanAttack) return;
             if (!PlayerController.Instance.TryPurchase(3)) return;
