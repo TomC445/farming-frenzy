@@ -188,7 +188,6 @@ namespace Code.Scripts.GridSystem
                         UpdateSurroundingTiles(tile);
                         break;
                 }
-                print(tile.name + " " + tile._renderer.sprite.name);
             }
         }
 
