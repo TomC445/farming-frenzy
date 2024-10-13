@@ -27,6 +27,7 @@ namespace Code.Scripts.Player
         [SerializeField] private Image _scytheCursorBackground;
         [Header("Effects")]
         [SerializeField] private ParticleSystem _sprayBottleParticleSystem;
+        [SerializeField] private ParticleSystem _coinParticles;
         #endregion
 
         #region Properties
@@ -74,6 +75,7 @@ namespace Code.Scripts.Player
         {
             _money -= amount;
             OnMoneyChange?.Invoke(_money);
+            _coinParticles.Play();
         }
 
         public bool TryPurchase(int amount)

@@ -51,7 +51,7 @@ namespace Code.Scripts.Managers
             GridManager.Instance.Restart();
             EnemySpawnManager.Instance.Restart();
             IsTimerRunning = true;
-            _quotaText.text = $"0/{_quota}";
+            _quotaText.text = $"{_quota}G";
             _goats = 0;
         }
 
@@ -159,7 +159,7 @@ namespace Code.Scripts.Managers
 
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
-            _quotaText.text = $"{_currentQuotaPayment}/{_quota}";
+            _quotaText.text = $"{_quota-_currentQuotaPayment}G";
         }
 
         private void CheckGameOver()
@@ -190,7 +190,7 @@ namespace Code.Scripts.Managers
             // Setup next quota
             _quota *= _quotaIncreaseRate;
             _currentQuotaPayment = 0;
-            _quotaText.text = $"{_currentQuotaPayment}/{_quota}";
+            _quotaText.text = $"{_quota-_currentQuotaPayment}G";
         }
         #endregion
     }
