@@ -89,6 +89,9 @@ namespace Code.Scripts.Enemy
                     if(randNum > 10) playSFX = false;
                     else playSFX = true;
                 }
+                else {
+                    playSFX = true;
+                }
                 firstUpdate = true;
             }
             var direction = _agent.velocity.normalized;
@@ -268,9 +271,6 @@ namespace Code.Scripts.Enemy
             yield return new WaitForSeconds(0.2f);
             _agent.isStopped = false;
             yield return new WaitForSeconds(2f);
-
-            if(playSFX) _audioManager.PlaySFX("goatEating");
-            
 
             if(playSFX) _audioManager.PlaySFX("goatEating");
             

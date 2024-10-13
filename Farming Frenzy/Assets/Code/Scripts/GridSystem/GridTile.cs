@@ -46,6 +46,9 @@ namespace Code.Scripts.GridSystem
             _startColor = _renderer.color;
         }
 
+        /// <summary>
+        /// Awake is called when the script instance is being loaded.
+        /// </summary>
         public void Init(bool isOffset)
         {
             Collider = GetComponent<BoxCollider2D>();
@@ -104,7 +107,6 @@ namespace Code.Scripts.GridSystem
         public void PurchaseTile(Sprite tile)
         {
             PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
-
             _renderer.color = Color.white;
             _renderer.sprite = tile;
             _tiletext.SetActive(false);

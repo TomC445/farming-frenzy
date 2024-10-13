@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Code.Scripts.Player;
+using Code.Scripts.GridSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,6 +48,8 @@ namespace Code.Scripts.Managers
         private void Start()
         {
             AudioManager.Instance.SetInitialMusicVolume();
+            GridManager.Instance.Restart();
+            EnemySpawnManager.Instance.Restart();
             IsTimerRunning = true;
             _quotaText.text = $"{_quota}G";
             _goats = 0;
@@ -175,9 +178,10 @@ namespace Code.Scripts.Managers
                 {
                     // Not enough to pay - game over!
                     Time.timeScale = 0f;
-                    AudioManager.Instance.ToggleMusic();
+                    AudioManager.Instance.ToggleSFX();
                     AudioManager.Instance.ToggleSFX();
                     AudioManager.Instance.PlaySFX("gameOver");
+                    AudioManager.Instance.ToggleMusic();
                     _gameOverMenu.SetActive(true);
                     return;
                 }
