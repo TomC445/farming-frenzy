@@ -26,9 +26,8 @@ namespace Code.Scripts.Menus
     {
         [CanBeNull] private VisualElement _tooltipContainer;
         [CanBeNull] private VisualElement _currentTooltip;
-        private bool _inRoot;
 
-        public bool MouseInShop => _inRoot;
+        public bool MouseInShop { get; private set; }
 
         protected override void RegisterCallbacksOnTarget()
         {
@@ -50,28 +49,24 @@ namespace Code.Scripts.Menus
         
         private void MouseEnterAfterShop(MouseEnterEvent evt)
         {
-            _tooltipContainer.style.visibility = Visibility.Hidden;
+            if (_tooltipContainer != null) _tooltipContainer.style.visibility = Visibility.Hidden;
         }
 
         private void MouseLeaveAfterShop(MouseLeaveEvent evt)
         {
-            _tooltipContainer.style.visibility = _inRoot ? Visibility.Visible : Visibility.Hidden;
+            if (_tooltipContainer != null)
+                _tooltipContainer.style.visibility = MouseInShop ? Visibility.Visible : Visibility.Hidden;
         }
 
-        
         public void SetTooltip(VisualElement tooltip)
         {
             if (_currentTooltip != null)
             {
-                _tooltipContainer.Remove(_currentTooltip);
+                _tooltipContainer?.Remove(_currentTooltip);
             }
-            
-            _currentTooltip = tooltip;
 
-            if (tooltip != null)
-            {
-                _tooltipContainer.Add(_currentTooltip);
-            }
+            _currentTooltip = tooltip;
+            _tooltipContainer?.Add(_currentTooltip);
         }
 
         private void UpdatePosition(Vector2 mousePos)
@@ -98,7 +93,7 @@ namespace Code.Scripts.Menus
                 target.Add(_tooltipContainer);
             }
 
-            _inRoot = true;
+            MouseInShop = true;
             UpdatePosition(e.localMousePosition);
             _tooltipContainer.style.visibility = Visibility.Visible;
             _tooltipContainer.BringToFront();
@@ -111,7 +106,7 @@ namespace Code.Scripts.Menus
 
         private void MouseLeaveRoot(MouseLeaveEvent e)
         {
-            _inRoot = false;
+            MouseInShop = false;
             if (_tooltipContainer != null) _tooltipContainer.style.visibility = Visibility.Hidden;
         }
     }

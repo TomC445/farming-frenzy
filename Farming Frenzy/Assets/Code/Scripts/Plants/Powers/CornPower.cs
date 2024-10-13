@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+using Code.Scripts.Managers;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,42 +9,49 @@ namespace Code.Scripts.Plants.Powers
 {
     public class CornPower : Power
     {
-        private const float Distance = 9.9f;
+        private const float Distance = 8f;
         public const int EffectPercent = 5;
         public const int MaxEffectPercent = 50;
-
-        private BoxCollider2D _vertical;
-        private BoxCollider2D _horizontal;
+        public SpriteRenderer[] Sprites;
 
         private void Start()
         {
             var colliders = gameObject.GetComponents<BoxCollider2D>();
-            _vertical = colliders[0];
-            _horizontal = colliders[1];
+            var verticalCollider = colliders[0];
+            var horizontalCollider = colliders[1];
+            verticalCollider.size = new Vector2(Distance - 0.1f, 0.9f);
+            horizontalCollider.size = new Vector2(0.9f, Distance - 0.1f);
 
-            _vertical.size = new Vector2(0.9f, Distance);
-            _horizontal.size = new Vector2(Distance, 0.9f);
+            Sprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+            var verticalSprite = Sprites[0];
+            var horizontalSprite = Sprites[1];
+            verticalSprite.size = new Vector2(1.0f, Distance);
+            verticalSprite.sortingOrder = 1001;
+            verticalSprite.enabled = PlantManager.Instance.CornPowerAoe.Visible;
+            horizontalSprite.size = new Vector2(Distance, 1.0f);
+            horizontalSprite.sortingOrder = 1001;
+            horizontalSprite.enabled = PlantManager.Instance.CornPowerAoe.Visible;
+
+            PlantManager.Instance.CornPowerAoe.OnVisibilityChange += VisibilityChange;
         }
 
-        private void OnDrawGizmos()
+        private void VisibilityChange(bool visible)
         {
-            if (!_vertical) return;
-            DrawOneGizmo(_vertical);
-            DrawOneGizmo(_horizontal);
+            foreach (var spriteRenderer in Sprites)
+            {
+                spriteRenderer.enabled = visible;
+            }
         }
 
-        private static void DrawOneGizmo(BoxCollider2D axis)
+        private void OnDestroy()
         {
-            var rotationMatrix = Matrix4x4.TRS(axis.transform.position, axis.transform.rotation, axis.transform.lossyScale);
-            Gizmos.matrix = rotationMatrix;
-            Gizmos.DrawWireCube(axis.offset, axis.size);
+            PlantManager.Instance.CornPowerAoe.OnVisibilityChange -= VisibilityChange;
         }
 
         /// <summary>
         ///  Calculate the corn fruiting modifier for a given place (either tile or plant)
         /// </summary>
         /// <param name="place"></param>
-        /// <param name="plant"></param>
         /// <returns></returns>
         public static float CalculateCornFruitingModifier(Collider2D place)
         {

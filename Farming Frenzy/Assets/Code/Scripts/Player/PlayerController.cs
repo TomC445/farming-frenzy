@@ -1,8 +1,8 @@
 using System;
-using Code.Scripts.Plants;
+using Code.Scripts.Managers;
+using Code.Scripts.Plants.Powers.PowerExtension;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -13,7 +13,7 @@ namespace Code.Scripts.Player
         #region Editor Fields
         [SerializeField] private Sprite _groundSprite;
         [SerializeField] private int _money;
-        [SerializeField] private int _sprayPurchaseAmount;
+        [FormerlySerializedAs("_sprayPurchaseAmount")] [SerializeField] public int SprayPurchaseAmount;
         [Header("Cursors")]
         [SerializeField] private Texture2D _defaultCursor;
         [SerializeField] private Texture2D _wateringCanCursor;
@@ -35,12 +35,13 @@ namespace Code.Scripts.Player
         public int Money => _money;
         public delegate void MoneyChangeEvent(int newAmount);
         public event MoneyChangeEvent OnMoneyChange;
-        
+
         [Serializable]
         public enum CursorState { Default, Spray, Shovel, Scythe, Planting }
 
         private CursorState? _contextualCursor;
         private CursorState _currentlyPicked = CursorState.Default;
+        [CanBeNull] private PlantData _currentPlant;
         [CanBeNull] private Texture2D _seedBagTexture;
         public CursorState CurrentlyActiveCursor => _contextualCursor ?? _currentlyPicked;
         public bool IsContextualActive => _contextualCursor != null;
@@ -49,6 +50,7 @@ namespace Code.Scripts.Player
         private readonly Color _activeCursorBackgroundColor = new Color32(149, 81,19, 255);
         public float lastHarvestablePlant;
         private float? _lastContextualCursor;
+
         #endregion
 
         #region Singleton
@@ -104,6 +106,7 @@ namespace Code.Scripts.Player
             lock (this)
             {
                 _contextualCursor = contextual;
+                _currentPlant?.power.AoeState()?.SetPlanting(false);
                 _lastContextualCursor = null;
             }
         }
@@ -113,15 +116,27 @@ namespace Code.Scripts.Player
             lock (this)
             {
                 if (_contextualCursor != contextual) return;
+                _currentPlant?.power.AoeState()?.SetPlanting(true);
                 _lastContextualCursor = Time.time;
             }
         }
 
-        public void SetPickedCursor(CursorState picked, [CanBeNull] Texture2D seedBag)
+        public void SetPickedCursor(CursorState picked, [CanBeNull] string currentPlant, [CanBeNull] Texture2D seedBag)
         {
             _currentlyPicked = picked;
             _contextualCursor = null;
             _lastContextualCursor = null;
+
+            if (currentPlant != null)
+            {
+                _currentPlant = PlantManager.Instance.GetPlantData(currentPlant);
+                _currentPlant?.power.AoeState()?.SetPlanting(true);
+            }
+            else
+            {
+                _currentPlant = null;
+                _currentPlant?.power.AoeState()?.SetPlanting(false);
+            }
 
             _seedBagTexture = seedBag;
             if (_seedBagTexture)
@@ -183,17 +198,17 @@ namespace Code.Scripts.Player
 
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
-                    SetPickedCursor(CursorState.Default, null);
+                    SetPickedCursor(CursorState.Default, null, null);
                 } else if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
-                    SetPickedCursor(CursorState.Spray, null);
+                    SetPickedCursor(CursorState.Spray, null, null);
                 } else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
-                    SetPickedCursor(CursorState.Shovel, null);
+                    SetPickedCursor(CursorState.Shovel, null, null);
                 }
                 else if (Input.GetKeyDown(KeyCode.Alpha4))
                 {
-                    SetPickedCursor(CursorState.Scythe, null);
+                    SetPickedCursor(CursorState.Scythe, null, null);
                 }
 
                 var stopScythe = _contextualCursor == CursorState.Scythe && Time.time - lastHarvestablePlant > 0.1 &&
@@ -208,11 +223,12 @@ namespace Code.Scripts.Player
                         Cursor.SetCursor(_seedBagTexture, Vector2.zero, CursorMode.Auto);
                     }
                 }
-    
-                if (!Input.GetKeyDown(KeyCode.Mouse0) || CurrentlyActiveCursor != CursorState.Spray) return;
-                Instantiate(_sprayBottleParticleSystem, Camera.main!.ScreenToWorldPoint(Input.mousePosition), Quaternion.identity);
-                Purchase(_sprayPurchaseAmount);
             }
+        }
+
+        public void SprayParticles()
+        {
+            Instantiate(_sprayBottleParticleSystem, Camera.main!.ScreenToWorldPoint(Input.mousePosition), Quaternion.identity);
         }
         #endregion
     }

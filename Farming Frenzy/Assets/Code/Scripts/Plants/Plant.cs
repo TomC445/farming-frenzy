@@ -23,6 +23,7 @@ namespace Code.Scripts.Plants
         private int _growthSpriteIndex;
         private bool _readyToHarvest;
         public BoxCollider2D Collider { get; private set; }
+        private BoxCollider2D _aoeCollider;
         private float _growthRate;
         private float _fruitingRate;
         private float _health;
@@ -41,6 +42,8 @@ namespace Code.Scripts.Plants
             }
         }
 
+        public PowerKind PowerKind => _data.power;
+        
         private bool CanHarvestNow => !_data._cannotHarvest && _state == GrowthState.Fruited;
 
         public string PlantName => _data.name;
@@ -102,28 +105,35 @@ namespace Code.Scripts.Plants
 
         public void InitPlant(PlantData pdata, GridTile tile)
         {
-            _data = pdata;
-            _state = GrowthState.Seedling;
-            _secsSinceGrowth = 0.0f;
-            Collider = GetComponent<BoxCollider2D>();
-            _health = pdata._health;
-            if (_data._isTree)
+            lock (tile)
             {
-                Collider.size = new Vector2(3, 2);
-                Collider.offset = new Vector2(0, 0.5f);
+                _data = pdata;
+                _state = GrowthState.Seedling;
+                _secsSinceGrowth = 0.0f;
+                Collider = GetComponent<BoxCollider2D>();
+                _aoeCollider = transform.GetChild(0).GetComponent<BoxCollider2D>();
+                _health = pdata._health;
+                if (_data._isTree)
+                {
+                    Collider.size = new Vector2(3, 2);
+                    Collider.offset = new Vector2(0, 0.5f);
+                    _aoeCollider.size *= new Vector2(3, 2);
+                    _aoeCollider.offset *= new Vector2(0, 0.5f);
+                }
+
+                _tile = tile;
+                _tile.HasPlant = true;
+                print($"Just placed a {PlantName} on {_tile.name} (hasPlant = {_tile.HasPlant})");
+
+                _plantSpriteRenderer.sprite = _data._maturationSprite.First();
+                GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
             }
-
-            _tile = tile;
-            _tile.HasPlant = true;
-
-            _plantSpriteRenderer.sprite = _data._growthSprite.First();
-            GetComponent<SpriteRenderer>().sortingOrder = 10000 - Mathf.CeilToInt(gameObject.transform.position.y);
         }
 
         private void UpdateState()
         {
-            _growthRate = LegumePower.CalculateGrowthModifier(Collider);
-            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(Collider) : 1.0f;
+            _growthRate = LegumePower.CalculateGrowthModifier(_aoeCollider);
+            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(_aoeCollider) : 1.0f;
 
             if (Time.time >= _nextHealTime)
             {
@@ -140,6 +150,7 @@ namespace Code.Scripts.Plants
                     {
                         // Plant has finished growing!
                         _state = GrowthState.Mature;
+                        _plantSpriteRenderer.sprite = _data._growthSprite[0];
                         _data.power.AddTo(gameObject); // Power only enabled when the plant is grown
                         _secsSinceGrowth = 0;
                     } else {
@@ -230,8 +241,11 @@ namespace Code.Scripts.Plants
 
         private void Kill()
         {
-            _tile.HasPlant = false;
-            Destroy(gameObject);
+            lock (_tile)
+            {
+                _tile.HasPlant = false;
+                Destroy(gameObject);
+            }
         }
 
         public bool TakeDamage(float amount)

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Code.Scripts.Managers;
 using Code.Scripts.Plants;
+using Code.Scripts.Plants.Powers.PowerExtension;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -213,7 +215,7 @@ namespace Code.Scripts.GridSystem
                 var surroundingTile = GetTile(surroundingPos);
                 if (surroundingTile == null || surroundingTile.IsPurchased) continue;
 
-                surroundingTile.MakePurchasable(Color.red);
+                surroundingTile.MakePurchasable();
             }
         }
 
@@ -236,20 +238,22 @@ namespace Code.Scripts.GridSystem
         {
             _plantName = plantName;
             Debug.Log(plantName);
-            PlayerController.Instance.SetPickedCursor(PlayerController.CursorState.Planting, Resources.Load<Texture2D>($"SeedBags/{plantName}"));
+            PlayerController.Instance.SetPickedCursor(PlayerController.CursorState.Planting, plantName, Resources.Load<Texture2D>($"SeedBags/{plantName}"));
         }
 
         private void TryPlacePlant(GridTile tile)
         {
-            var plantAmount = PlantManager.Instance.GetPlantData(_plantName)._price;
+            var data = PlantManager.Instance.GetPlantData(_plantName);
+            var plantAmount = data._price;
             if (!PlayerController.Instance.TryPurchase(plantAmount)) return;
-            
 
             AudioManager.Instance.PlaySFX("planting");
 
-            var plant = Instantiate(_plant, tile.transform.position, Quaternion.identity, _plantsTransform);
+            var pos = tile.transform.position;
+            pos.z -= 1;
+            var plant = Instantiate(_plant, pos, Quaternion.identity, _plantsTransform);
             var plantComponent = plant.GetComponent<Plant>();
-            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName), tile);
+            plantComponent.InitPlant(data, tile);
             _tooltipManager.SubscribePlantEvents(plantComponent);
         }
 

@@ -2,6 +2,7 @@ using System;
 using Code.Scripts.Menus;
 using Code.Scripts.Plants;
 using Code.Scripts.Plants.Powers;
+using Code.Scripts.Plants.Powers.PowerExtension;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -18,6 +19,7 @@ namespace Code.Scripts.GridSystem
         [CanBeNull] private GridTile _currentTile;
         [CanBeNull] private Obstacle _currentObstacle;
         [CanBeNull] private string _currentObstacleType;
+        private bool _hasSetAoesVisible;
 
         public void Start()
         {
@@ -160,6 +162,7 @@ namespace Code.Scripts.GridSystem
         
         private void BuildPlantTooltip([NotNull] Plant plant)
         {
+            _hasSetAoesVisible = false;
             AddTileModifiers(plant.Collider);
             _root.Q<Label>("name").text = plant.PlantName;
             _root.Q<Label>("status").text = plant.StatusRichText;
@@ -169,6 +172,7 @@ namespace Code.Scripts.GridSystem
 
         private void HandleHoverOut()
         {
+            _currentPlant?.PowerKind.AoeState()?.SetHovering(false);
             _root.visible = false;
             _startedHoverTime = float.PositiveInfinity;
             _currentPlant = null;
@@ -178,7 +182,7 @@ namespace Code.Scripts.GridSystem
 
         public void Update()
         {
-            if (!(Time.time - _startedHoverTime > 1.0))
+            if (!(Time.time - _startedHoverTime > 0.2))
             {
                 return;
             }
@@ -187,6 +191,12 @@ namespace Code.Scripts.GridSystem
             {
                 HandleHoverOut();
                 return;
+            }
+
+            if (!_hasSetAoesVisible)
+            {
+                _currentPlant?.PowerKind.AoeState()?.SetHovering(true);
+                _hasSetAoesVisible = true;
             }
 
             RebuildTooltip();

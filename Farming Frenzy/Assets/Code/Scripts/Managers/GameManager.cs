@@ -42,7 +42,7 @@ namespace Code.Scripts.Managers
         private bool IsTimerRunning { get; set; }
 
         public int _goats;
-        private string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        private readonly string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         #endregion
 
         private void Start()
