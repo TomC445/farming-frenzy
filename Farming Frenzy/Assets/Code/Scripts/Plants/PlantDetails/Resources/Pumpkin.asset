@@ -22,16 +22,14 @@ MonoBehaviour:
   _cursorSprite: {fileID: -898734505, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _isTree: 0
   _cannotHarvest: 0
-  _maturationRate: 1
-  _fruitingRate: 1
   _goldGenerationFactor: 1
   _dryoutRate: 0
   _maturationCycle: 15
   _fruitingCycle: 12
-  flavorText: 
+  flavorText: A high-cost, high-producing crop
   power: 1
-  _tier: 2
+  _tier: 3
   _price: 50
-  _goldGenerated: 18
+  _goldGenerated: 9
   _health: 65
   _indestructible: 0

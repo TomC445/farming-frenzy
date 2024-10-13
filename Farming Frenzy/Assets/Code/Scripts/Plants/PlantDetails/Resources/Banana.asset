@@ -24,17 +24,15 @@ MonoBehaviour:
   _harvestedSprite: {fileID: 3062152818383019394, guid: c5519abff8651d04fa5404486404ebad, type: 3}
   _cursorSprite: {fileID: -1159967808527262342, guid: c5519abff8651d04fa5404486404ebad, type: 3}
   _isTree: 1
-  _cannotHarvest: 0
-  _maturationRate: 1
-  _fruitingRate: 1
+  _cannotHarvest: 1
   _goldGenerationFactor: 1
   _dryoutRate: 0
   _maturationCycle: 17
-  _fruitingCycle: 10
-  flavorText: 
-  power: 1
+  _fruitingCycle: -1
+  flavorText: A great economy boost
+  power: 6
   _tier: 2
   _price: 75
-  _goldGenerated: 8
-  _health: 80
+  _goldGenerated: 0
+  _health: 30
   _indestructible: 0

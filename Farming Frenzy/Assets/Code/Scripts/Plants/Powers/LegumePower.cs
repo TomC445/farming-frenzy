@@ -18,9 +18,9 @@ namespace Code.Scripts.Plants.Powers
         private void Start()
         {
             GetComponent<CircleCollider2D>().radius = 0.5f;
-            transform.localScale = new Vector3(Radius, Radius, 1.0f);
+            transform.localScale = new Vector3(Radius - 0.1f, Radius - 0.1f, 1.0f);
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _spriteRenderer.sortingOrder = 1000;
+            _spriteRenderer.sortingOrder = 1000; // EBA7CD
             _spriteRenderer.enabled = PlantManager.Instance.LegumePowerAoe.Visible;
             PlantManager.Instance.LegumePowerAoe.OnVisibilityChange += VisibilityChange;
         }

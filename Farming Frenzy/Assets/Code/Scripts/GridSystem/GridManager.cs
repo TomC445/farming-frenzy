@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Code.Scripts.Managers;
 using Code.Scripts.Plants;
-using Code.Scripts.Plants.Powers.PowerExtension;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Code.Scripts.GridSystem
 {
@@ -25,6 +28,7 @@ namespace Code.Scripts.GridSystem
         [SerializeField] private Transform _tilesContainer;
         [SerializeField] private List<Sprite> _excludedTiles;
         [SerializeField] private List<Sprite> _starterTiles;
+        [SerializeField] private List<Sprite> _connectingTiles;
         [Header("Obstacles")]
         [SerializeField] private Transform _trees;
         [SerializeField] private Transform _rocks;
@@ -74,6 +78,12 @@ namespace Code.Scripts.GridSystem
             _tilesContainer = GameObject.Find("Tiles").transform;
             _trees = GameObject.Find("Trees").transform;
             _rocks = GameObject.Find("Rocks").transform;
+
+            foreach (Transform tile in _tilesContainer)
+            {
+                Destroy(tile.gameObject);
+            }
+
             _tilePrefab = GameObject.Find("Tile").GetComponent<GridTile>();
             InitObstacles();
             GenerateGrid();
@@ -81,7 +91,7 @@ namespace Code.Scripts.GridSystem
 
         private void InitObstacles()
         {
-            _obstacleColliders = new();
+            _obstacleColliders = new List<BoxCollider2D>();
             foreach(Transform child in _trees)
             {
                 var roundedX = Mathf.Round(child.transform.position.x) + 0.5f;
@@ -108,9 +118,12 @@ namespace Code.Scripts.GridSystem
             var tileBounds = _backgroundGrid.localBounds.size;
             var width = tileBounds.x;
             var height = tileBounds.y;
-            _groundTiles = new();
-            _obstructedTiles = new();
+            _groundTiles = new List<GridTile>();
+            _obstructedTiles = new List<GridTile>();
             _tiles = new Dictionary<Vector2, GridTile>();
+            
+            print("Called generate grid");
+            
             for (var x = 0; x < width; ++x)
             {
                 for (var y = 0; y < height; ++y)
@@ -164,6 +177,100 @@ namespace Code.Scripts.GridSystem
             return _tiles.GetValueOrDefault(pos);
         }
 
+        [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")] // Looks HORRID as switch
+        private Sprite GetConnectingSprite(Vector2 pos)
+        {
+            var top = GetTile(pos + Vector2.up).IsPurchased;
+            var left = GetTile(pos + Vector2.left).IsPurchased;
+            var right = GetTile(pos + Vector2.right).IsPurchased;
+            var bottom = GetTile(pos + Vector2.down).IsPurchased;
+            var topLeft = GetTile(pos + Vector2.up + Vector2.left).IsPurchased;
+            var topRight = GetTile(pos + Vector2.up + Vector2.right).IsPurchased;
+            var bottomLeft = GetTile(pos + Vector2.down + Vector2.left).IsPurchased;
+            var bottomRight = GetTile(pos + Vector2.down + Vector2.right).IsPurchased;
+
+            var idx = 0;
+            
+            // We love to see it
+            if (!top && !right && !bottom && !left && !bottomLeft && !bottomRight && !topLeft && !topRight)
+            {
+                idx = 22;
+            }
+            if (!right && topRight && !bottomRight && !top && bottom)
+            {
+                idx = 21;
+            } else if (top && !bottom && !left && !right && topRight && bottomRight && !bottomLeft)
+            {
+                idx = 20;
+            }
+            else if (!top && !bottom && !left && !right && topRight && bottomRight)
+            {
+                idx = 18;
+            }
+            else if (!top && !bottom && !left && !right && topLeft && bottomLeft)
+            {
+                idx = 19;
+            }
+            else if (left && right && bottom)
+            {
+                idx = 13;
+            } else if (left && right && top)
+            {
+                idx = 14;
+            } else if (top && bottom && left)
+            {
+                idx = 16;
+            } else if (top && bottom && right)
+            {
+                idx = 17;
+            } else if (top && bottom)
+            {
+                idx = 15;
+            } else if (left && right)
+            {
+                idx = 12;
+            } else if (bottom && right)
+            {
+                idx = 8;
+            } else if (bottom && left)
+            {
+                idx = 9;
+            } else if (top && left)
+            {
+                idx = 10;
+            } else if (top && right)
+            {
+                idx = 11;
+            }
+            else if (bottom)
+            {
+                idx = 1;
+            } else if (top)
+            {
+                idx = 6;
+            } else if (left)
+            {
+                idx = 4;
+            } else if (right)
+            {
+                idx = 3;
+            } else if (bottomRight)
+            {
+                idx = 0;
+            } else if (bottomLeft)
+            {
+                idx = 2;
+            } else if (topLeft)
+            {
+                idx = 7;
+            } else if (topRight)
+            {
+                idx = 5;
+            }
+            
+            return _connectingTiles[idx];
+        }
+
         private void HandleTileClicked(GridTile tile)
         {
             lock (tile)
@@ -182,11 +289,29 @@ namespace Code.Scripts.GridSystem
                         break;
 
                     // Try purchase the tile
-                    case false when PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Shovel && 
-                                    PlayerController.Instance.TryPurchase(tile.Cost):
+                    case false when PlayerController.Instance.CurrentlyActiveCursor ==
+                                    PlayerController.CursorState.Shovel &&
+                                    PlayerController.Instance.TryPurchase(tile.Cost * 4):
                         AudioManager.Instance.PlaySFX("digMaybe");
-                        tile.PurchaseTile(PlayerController.Instance.GroundSprite);
-                        UpdateSurroundingTiles(tile);
+
+                        var pos = _tiles.FirstOrDefault(t => t.Value == tile).Key;
+                        var bl = new Vector2((int)pos.x - (int)pos.x % 2, (int)pos.y - (int)pos.y % 2);
+                        var tl = bl + Vector2.up;
+                        var tr = tl + Vector2.right;
+                        var br = bl + Vector2.right;
+
+                        var tiles = new[] { bl, tl, tr, br };
+
+                        foreach (var tilePos in tiles)
+                        {
+                            GetTile(tilePos).PurchaseTile(PlayerController.Instance.GroundSprite);
+                        }
+                        
+                        foreach (var tilePos in tiles)
+                        {
+                            UpdateSurroundingTiles(GetTile(tilePos));
+                        }
+                        
                         break;
                 }
             }
@@ -205,7 +330,8 @@ namespace Code.Scripts.GridSystem
             var selectedTilePos = _tiles.FirstOrDefault(tile => tile.Value == selectedTile).Key;
             var directions = new[]
             {
-                Vector2.up, Vector2.down, Vector2.left, Vector2.right
+                Vector2.up, Vector2.down, Vector2.left, Vector2.right, Vector2.up + Vector2.left, Vector2.up + Vector2.right,
+                Vector2.down + Vector2.left, Vector2.down + Vector2.right
             };
 
             foreach (var direction in directions)
@@ -213,8 +339,7 @@ namespace Code.Scripts.GridSystem
                 var surroundingPos = selectedTilePos + direction;
                 var surroundingTile = GetTile(surroundingPos);
                 if (surroundingTile == null || surroundingTile.IsPurchased) continue;
-
-                surroundingTile.MakePurchasable();
+                surroundingTile.MakePurchasable(GetConnectingSprite(surroundingPos));
             }
         }
 

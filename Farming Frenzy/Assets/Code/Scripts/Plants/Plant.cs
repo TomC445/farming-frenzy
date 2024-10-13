@@ -140,11 +140,16 @@ namespace Code.Scripts.Plants
 
         private void UpdateState()
         {
-            _healRate = LegumePower.CalculateGrowthModifier(_aoeCollider);
-            _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(_aoeCollider) : 1.0f;
-
             if (Time.time >= _nextHealTime)
             {
+                // For efficiency, only recalculate these every 2s
+                _healRate = LegumePower.CalculateGrowthModifier(_aoeCollider);
+                _fruitingRate = -1f; // Both of the next two are always 1.0f + something, so we account for that
+                _fruitingRate += PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(_aoeCollider) : 1.0f;
+                _fruitingRate += BananaPower.CalculateFruitingModifier(_aoeCollider);
+                
+                print($"My fruit rate is {_fruitingRate}");
+                
                 _nextHealTime = Time.time + 2.0f;
                 _health = Math.Min(MaxHealth, _health + 2.0f * _healRate);
             }

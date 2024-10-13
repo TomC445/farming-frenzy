@@ -20,6 +20,7 @@ namespace Code.Scripts.GridSystem
         [CanBeNull] private Obstacle _currentObstacle;
         [CanBeNull] private string _currentObstacleType;
         private bool _hasSetAoesVisible;
+        private float _lastRebuild;
 
         public void Start()
         {
@@ -64,6 +65,7 @@ namespace Code.Scripts.GridSystem
 
         private void RebuildTooltip()
         {
+            _lastRebuild = Time.time;
             if (_currentObstacle) BuildObstacleTooltip(_currentObstacle, _currentObstacleType);
             else if (_currentTile) BuildTileTooltip(_currentTile);
             else if (_currentPlant) BuildPlantTooltip(_currentPlant);
@@ -73,6 +75,7 @@ namespace Code.Scripts.GridSystem
         {
             AddCornModifier(thing);
             AddLegumeModifier(thing);
+            AddBananaModifier(thing);
         }
 
         private void AddLegumeModifier(Collider2D thing)
@@ -96,7 +99,7 @@ namespace Code.Scripts.GridSystem
             var cornPercent = (int) Math.Round(cornModifier * 100.0f);
             if (cornPercent > 100)
             {
-                _root.Q<Label>("corn_modifier").text = $"Corn fruits <b>+{cornPercent - 100}% faster here</b>";
+                _root.Q<Label>("corn_modifier").text = $"Corn fruits an extra <b>+{cornPercent - 100}% faster here</b>";
                 _root.Q<Label>("corn_modifier").style.display = DisplayStyle.Flex;
             }
             else
@@ -105,6 +108,20 @@ namespace Code.Scripts.GridSystem
             }
         }
 
+        private void AddBananaModifier(Collider2D thing)
+        {
+            var modifier = BananaPower.CalculateFruitingModifier(thing);
+            var percent = (int) Math.Round(modifier * 100.0f);
+            if (percent > 100)
+            {
+                _root.Q<Label>("banana_modifier").text = $"Plants fruit <b>+{percent - 100}% faster here</b>";
+                _root.Q<Label>("banana_modifier").style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                _root.Q<Label>("banana_modifier").style.display = DisplayStyle.None;
+            }
+        }
 
         private void BuildTileTooltip([NotNull] GridTile tile)
         {
@@ -118,7 +135,6 @@ namespace Code.Scripts.GridSystem
                 BuildGrassTooltip(tile);
             }
 
-            _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
             _root.Q<Label>("power").style.display = DisplayStyle.None;
         }
 
@@ -148,8 +164,6 @@ namespace Code.Scripts.GridSystem
             AddTileModifiers(obstacle.Collider);
             _root.Q<Label>("name").text = type;
             _root.Q<Label>("status").text = $"Click to buy and remove. Cost: {FarmingFrenzyColors.PriceRichText(obstacle.Cost)}";
-            _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
-            _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None; // TODO legumes
             _root.Q<Label>("power").style.display = DisplayStyle.None;
         }
 
@@ -166,7 +180,6 @@ namespace Code.Scripts.GridSystem
             AddTileModifiers(plant.Collider);
             _root.Q<Label>("name").text = plant.PlantName;
             _root.Q<Label>("status").text = plant.StatusRichText;
-            _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
             _root.Q<Label>("power").style.display = DisplayStyle.None;
         }
 
@@ -199,7 +212,11 @@ namespace Code.Scripts.GridSystem
                 _hasSetAoesVisible = true;
             }
 
-            RebuildTooltip();
+            if (Time.time - _lastRebuild > 1.0f)
+            {
+                RebuildTooltip();
+            }
+
             UpdatePosition();
             _root.visible = true;
         }

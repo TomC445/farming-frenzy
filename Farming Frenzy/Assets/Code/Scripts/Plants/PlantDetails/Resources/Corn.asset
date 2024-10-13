@@ -28,7 +28,7 @@ MonoBehaviour:
   _dryoutRate: 0
   _maturationCycle: 7
   _fruitingCycle: 12
-  flavorText: 
+  flavorText: Great planted together;<br>avoid planting alone!
   power: 3
   _tier: 1
   _price: 20

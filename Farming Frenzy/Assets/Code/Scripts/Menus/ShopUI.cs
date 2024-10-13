@@ -74,13 +74,22 @@ namespace Code.Scripts.Menus
             var tooltipPrice = tooltip.Q<Label>("cost");
             tooltipPrice.text = $"${data._price}";
             tooltip.Q<Label>("yield").text = $"${data._goldGenerated}";
-            tooltip.Q<Label>("flavour").text = data.flavorText;
+
+            var flavour = tooltip.Q<Label>("flavour");
+            if (!string.IsNullOrEmpty(data.flavorText))
+            {
+                flavour.text = data.flavorText;
+            }
+            else
+            {
+                flavour.style.display = DisplayStyle.None;
+            }
 
             var powerLabel = tooltip.Q<Label>("power");
             powerLabel.enableRichText = true;
 
-            var powerText = data.power.Text() ?? "";
-            powerLabel.text = powerText.Length > 0 ? $"<u>{powerText}</u>" : "";
+            var powerText = data.power.Text();
+            powerLabel.text = !string.IsNullOrEmpty(powerText) ? $"<u>{powerText}</u>" : "";
 
             var growth = tooltip.Q<Label>("growth");
             growth.text = data.GrowthRateBand.Text();
