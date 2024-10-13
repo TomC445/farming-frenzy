@@ -184,7 +184,8 @@ namespace Code.Scripts.GridSystem
                         break;
 
                     // Try purchase the tile
-                    case false when PlayerController.Instance.TryPurchase(tile.Cost):
+                    case false when PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Shovel && 
+                                    PlayerController.Instance.TryPurchase(tile.Cost):
                         AudioManager.Instance.PlaySFX("digMaybe");
                         tile.PurchaseTile(PlayerController.Instance.GroundSprite);
                         UpdateSurroundingTiles(tile);

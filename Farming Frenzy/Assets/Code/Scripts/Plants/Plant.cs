@@ -24,7 +24,7 @@ namespace Code.Scripts.Plants
         private bool _readyToHarvest;
         public BoxCollider2D Collider { get; private set; }
         private BoxCollider2D _aoeCollider;
-        private float _growthRate;
+        private float _healRate;
         private float _fruitingRate;
         private float _health;
         private float _nextHealTime;
@@ -35,7 +35,7 @@ namespace Code.Scripts.Plants
             {
                 return _state switch
                 {
-                    GrowthState.Seedling => Math.Max(0, (int)((_data._maturationCycle - _secsSinceGrowth) / _growthRate)),
+                    GrowthState.Seedling => Math.Max(0, (int) (_data._maturationCycle - _secsSinceGrowth)),
                     GrowthState.Mature => _data._cannotHarvest ? -1 : Math.Max(0, (int)((_data._fruitingCycle - _secsSinceGrowth) / _fruitingRate)),
                     _ => 0
                 };
@@ -132,19 +132,19 @@ namespace Code.Scripts.Plants
 
         private void UpdateState()
         {
-            _growthRate = LegumePower.CalculateGrowthModifier(_aoeCollider);
+            _healRate = LegumePower.CalculateGrowthModifier(_aoeCollider);
             _fruitingRate = PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(_aoeCollider) : 1.0f;
 
             if (Time.time >= _nextHealTime)
             {
                 _nextHealTime = Time.time + 2.0f;
-                _health = Math.Min(MaxHealth, _health + 2.0f * _growthRate);
+                _health = Math.Min(MaxHealth, _health + 2.0f * _healRate);
             }
 
             switch (_state)
             {
                 case GrowthState.Seedling:
-                    _secsSinceGrowth += Time.deltaTime * _growthRate;
+                    _secsSinceGrowth += Time.deltaTime;
 
                     if (_secsSinceGrowth >= _data._maturationCycle)
                     {
@@ -214,6 +214,7 @@ namespace Code.Scripts.Plants
         private void DigPlant()
         {
             AudioManager.Instance.PlaySFX("digMaybe");
+            PlayerController.Instance.IncreaseMoney(_data._price / 2);
             Kill();
         }
 

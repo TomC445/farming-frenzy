@@ -23,7 +23,6 @@ namespace Code.Scripts.Player
         [Header("Hotbar Icons")]
         [SerializeField] private Image _defaultCursorBackground;
         [SerializeField] private Image _shovelCursorBackground;
-        [SerializeField] private Image _sprayBottleCursorBackground;
         [SerializeField] private Image _scytheCursorBackground;
         [Header("Effects")]
         [SerializeField] private ParticleSystem _sprayBottleParticleSystem;
@@ -127,6 +126,8 @@ namespace Code.Scripts.Player
             _contextualCursor = null;
             _lastContextualCursor = null;
 
+            _currentPlant?.power.AoeState()?.SetPlanting(false);
+
             if (currentPlant != null)
             {
                 _currentPlant = PlantManager.Instance.GetPlantData(currentPlant);
@@ -135,7 +136,6 @@ namespace Code.Scripts.Player
             else
             {
                 _currentPlant = null;
-                _currentPlant?.power.AoeState()?.SetPlanting(false);
             }
 
             _seedBagTexture = seedBag;
@@ -149,7 +149,6 @@ namespace Code.Scripts.Player
         {
             _defaultCursorBackground.color = _defaultCursorBackgroundColor;
             _shovelCursorBackground.color = _defaultCursorBackgroundColor;
-            _sprayBottleCursorBackground.color = _defaultCursorBackgroundColor;
             _scytheCursorBackground.color = _defaultCursorBackgroundColor;
         }
 
@@ -158,10 +157,9 @@ namespace Code.Scripts.Player
             var elt = _currentlyPicked switch
             {
                 CursorState.Default => _defaultCursorBackground,
-                CursorState.Spray => _sprayBottleCursorBackground,
                 CursorState.Shovel => _shovelCursorBackground,
                 CursorState.Scythe => _scytheCursorBackground,
-                CursorState.Planting => null,
+                CursorState.Planting or CursorState.Spray => null,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -201,12 +199,9 @@ namespace Code.Scripts.Player
                     SetPickedCursor(CursorState.Default, null, null);
                 } else if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
-                    SetPickedCursor(CursorState.Spray, null, null);
-                } else if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
                     SetPickedCursor(CursorState.Shovel, null, null);
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
                     SetPickedCursor(CursorState.Scythe, null, null);
                 }

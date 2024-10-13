@@ -24,8 +24,8 @@ namespace Code.Scripts.Managers
             }
         }
 
-        public PlantAoeState CornPowerAoe = new();
-        public PlantAoeState LegumePowerAoe = new();
+        public readonly PlantAoeState CornPowerAoe = new();
+        public readonly PlantAoeState LegumePowerAoe = new();
         #endregion
 
         #region Methods

@@ -44,7 +44,7 @@ namespace Code.Scripts.Plants.Powers
 
             public static string Text(this PowerKind kind) => kind switch
             {
-                PowerKind.Clover => $"Nearby plants heal and grow\n{CloverPower.EffectPercent}% " +
+                PowerKind.Clover => $"Nearby plants heal \n{CloverPower.EffectPercent}% " +
                                     $"faster (up to {LegumePower.MaxEffectPercent}%)",
                 PowerKind.Corn => "Other corn plants in a row\nor column with this one\nfruit" +
                                   $" {CornPower.EffectPercent}% faster (up to {CornPower.MaxEffectPercent}%)",
@@ -61,7 +61,7 @@ namespace Code.Scripts.Plants.Powers
                     case PowerKind.Clover:
                         return PlantManager.Instance.LegumePowerAoe;
                     case PowerKind.Corn:
-                        return PlantManager.Instance.LegumePowerAoe;
+                        return PlantManager.Instance.CornPowerAoe;
                     case PowerKind.None:
                     case PowerKind.Nettle:
                         break;

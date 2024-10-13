@@ -81,7 +81,7 @@ namespace Code.Scripts.GridSystem
             var growthPercent = (int) Math.Round(growthModifier * 100.0f);
             if (growthPercent > 100)
             {
-                _root.Q<Label>("legume_modifier").text = $"Growth speed: <b>+{growthPercent - 100}%</b>";
+                _root.Q<Label>("legume_modifier").text = $"Healing speed: <b>+{growthPercent - 100}%</b>";
                 _root.Q<Label>("legume_modifier").style.display = DisplayStyle.Flex;
             }
             else

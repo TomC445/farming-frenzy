@@ -71,7 +71,6 @@ namespace Code.Scripts.GridSystem
 
             if (CanBePurchased && !IsPurchased)
             {
-                PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
                 _tiletext.SetActive(true);
             }
 
