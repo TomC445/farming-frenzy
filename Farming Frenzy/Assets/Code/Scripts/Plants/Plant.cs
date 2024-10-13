@@ -28,6 +28,7 @@ namespace Code.Scripts.Plants
         private float _health;
         private float _nextHealTime;
         private float MaxHealth => _data._health;
+        private GameObject _healthBar;
         private int SecsToNextStage
         {
             get
@@ -100,13 +101,14 @@ namespace Code.Scripts.Plants
             }
         }
 
-        public void InitPlant(PlantData pdata, GridTile tile)
+        public void InitPlant(PlantData pdata, GridTile tile, GameObject healthBar)
         {
             _data = pdata;
             _state = GrowthState.Seedling;
             _secsSinceGrowth = 0.0f;
             Collider = GetComponent<BoxCollider2D>();
             _health = pdata._health;
+            _healthBar = healthBar;
             if (_data._isTree)
             {
                 Collider.size = new Vector2(3, 2);
