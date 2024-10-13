@@ -15,23 +15,21 @@ MonoBehaviour:
   _maturationSprite:
   - {fileID: -8216661362464132121, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   - {fileID: 473276348246646460, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
-  - {fileID: -6567478624175301841, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _growthSprite:
+  - {fileID: -6567478624175301841, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   - {fileID: 7713437065039133689, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _harvestedSprite: {fileID: -4244828190509259554, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _cursorSprite: {fileID: 7713437065039133689, guid: bb1a0d93a4fd7df47ae8f37d3208d323, type: 3}
   _isTree: 0
   _cannotHarvest: 0
-  _maturationRate: 1
-  _fruitingRate: 1
   _goldGenerationFactor: 1
   _dryoutRate: 0
-  _maturationCycle: 6
-  _fruitingCycle: 6
-  flavorText: 
-  power: 1
+  _maturationCycle: 10
+  _fruitingCycle: 12
+  flavorText: "Premium\u2122 version of the clover"
+  power: 5
   _tier: 3
-  _price: 20
-  _goldGenerated: 5
-  _health: 30
+  _price: 25
+  _goldGenerated: 2
+  _health: 10
   _indestructible: 0

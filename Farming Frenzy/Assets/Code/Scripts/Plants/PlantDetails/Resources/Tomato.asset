@@ -26,7 +26,7 @@ MonoBehaviour:
   _dryoutRate: 0
   _maturationCycle: 6
   _fruitingCycle: 7
-  flavorText: 
+  flavorText: A versatile early-game crop
   power: 1
   _tier: 1
   _price: 14

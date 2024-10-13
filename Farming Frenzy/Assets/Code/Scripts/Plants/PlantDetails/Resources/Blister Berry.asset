@@ -24,7 +24,7 @@ MonoBehaviour:
   _dryoutRate: 0
   _maturationCycle: 0
   _fruitingCycle: -1
-  flavorText: 
+  flavorText: Stop goats in their tracks<br>with these berries!
   power: 4
   _tier: 1
   _price: 5

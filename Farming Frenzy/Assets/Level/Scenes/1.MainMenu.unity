@@ -2120,6 +2120,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 538426d1a4a3eac4d9efdec27e015397, type: 3}
   - {fileID: 8300000, guid: f39f3c6d74ff8d74788ebf07ddc6592a, type: 3}
   - {fileID: 8300000, guid: a70a0297fa3be96979d8409936025780, type: 3}
+  - {fileID: 8300000, guid: d75694b525671a749bc71030192c71da, type: 3}
   _musicSource: {fileID: 215684463}
   _sfxSource: {fileID: 215684462}
   audioMixer: {fileID: 24100000, guid: 1aa7a43ee54e76f41bb3d0f2c8027585, type: 2}
