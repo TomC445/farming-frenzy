@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 44d335482f6d966479d25c45c1877ca3
+guid: 9e8d9befb2f9e9ba78c139bfa87e1fbf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5197768154329562723
-    second: arrowwhite_0
+      213: 5507788441337631681
+    second: goat_defense_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: arrowwhite_0
+      name: goat_defense_0
       rect:
         serializedVersion: 2
-        x: 24
-        y: 75
-        width: 464
-        height: 310
+        x: 0
+        y: 0
+        width: 1571
+        height: 884
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 36eb6afe89e222840800000000000000
-      internalID: 5197768154329562723
+      spriteID: 1c39ee7e7689f6c40800000000000000
+      internalID: 5507788441337631681
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      arrowwhite_0: 5197768154329562723
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

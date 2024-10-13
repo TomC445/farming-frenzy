@@ -22,12 +22,12 @@ MonoBehaviour:
   _cannotHarvest: 1
   _goldGenerationFactor: 0
   _dryoutRate: 0
-  _maturationCycle: 15
+  _maturationCycle: 0
   _fruitingCycle: -1
-  flavorText: 
-  power: 1
+  flavorText: Like the stinging berry,<br>but far tankier
+  power: 4
   _tier: 3
   _price: 20
   _goldGenerated: 0
-  _health: 150
+  _health: 32
   _indestructible: 0

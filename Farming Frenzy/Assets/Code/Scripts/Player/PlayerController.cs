@@ -42,7 +42,7 @@ namespace Code.Scripts.Player
         private CursorState _currentlyPicked = CursorState.Default;
         [CanBeNull] private PlantData _currentPlant;
         [CanBeNull] private Texture2D _seedBagTexture;
-        public CursorState CurrentlyActiveCursor => _contextualCursor ?? _currentlyPicked;
+        public CursorState CurrentlyActiveCursor => GameManager.Instance.Paused ? CursorState.Default : _contextualCursor ?? _currentlyPicked;
         public bool IsContextualActive => _contextualCursor != null;
 
         private Color _defaultCursorBackgroundColor;
@@ -77,6 +77,14 @@ namespace Code.Scripts.Player
             _money -= amount;
             OnMoneyChange?.Invoke(_money);
             _coinParticles.Play();
+        }
+
+        public void SetPausedCursor()
+        {
+            lock (this)
+            {
+                Cursor.SetCursor(_defaultCursor, Vector2.zero, CursorMode.Auto);
+            }
         }
 
         public bool TryPurchase(int amount)

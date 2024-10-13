@@ -97,7 +97,18 @@ namespace Code.Scripts.Plants
                     HarvestPlant();
                     break;
                 case PlayerController.CursorState.Shovel when !isContextual: // Prevent accidental digging
-                    DigPlant();
+                    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    var hit = Physics2D.GetRayIntersection(ray, 1500f);
+
+                    if (hit.transform.gameObject == gameObject)
+                    {
+                        DigPlant();
+                    }
+                    else
+                    {
+                        _isMouseOverPlant = false;
+                    }
+
                     break;
                 case PlayerController.CursorState.Default:
                 case PlayerController.CursorState.Spray:
