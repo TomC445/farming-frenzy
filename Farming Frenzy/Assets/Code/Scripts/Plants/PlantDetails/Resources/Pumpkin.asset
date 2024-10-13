@@ -31,5 +31,5 @@ MonoBehaviour:
   _tier: 3
   _price: 50
   _goldGenerated: 9
-  _health: 65
+  _health: 25
   _indestructible: 0
