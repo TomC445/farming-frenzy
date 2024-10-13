@@ -8,6 +8,7 @@ using Code.Scripts.Plants.Powers.PowerExtension;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Code.Scripts.Plants
 {
@@ -26,9 +27,11 @@ namespace Code.Scripts.Plants
         private float _growthRate;
         private float _fruitingRate;
         private float _health;
+        private float _maxHealth;
         private float _nextHealTime;
         private float MaxHealth => _data._health;
         private GameObject _healthBar;
+        private Slider hBarController;
         private int SecsToNextStage
         {
             get
@@ -108,7 +111,10 @@ namespace Code.Scripts.Plants
             _secsSinceGrowth = 0.0f;
             Collider = GetComponent<BoxCollider2D>();
             _health = pdata._health;
-            _healthBar = healthBar;
+            _maxHealth = _health;
+            _healthBar = healthBar.transform.Find("Canvas").Find("Slider").gameObject;
+            hBarController = healthBar.transform.Find("Canvas").Find("Slider").gameObject.GetComponent<Slider>();
+            _healthBar.SetActive(false);
             if (_data._isTree)
             {
                 Collider.size = new Vector2(3, 2);
@@ -238,8 +244,11 @@ namespace Code.Scripts.Plants
 
         public bool TakeDamage(float amount)
         {
+            _healthBar.SetActive(true);
             _health -= amount;
             print($"{PlantName} took {amount} damage! HP = {_health}");
+            hBarController.value -= _health/_maxHealth;
+            
             if (_health > 0) return false;
 
             Kill();

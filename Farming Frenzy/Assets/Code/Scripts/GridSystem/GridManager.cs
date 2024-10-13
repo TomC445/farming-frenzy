@@ -61,10 +61,6 @@ namespace Code.Scripts.GridSystem
         #endregion
 
         #region Methods
-        private void Start()
-        { 
-            Restart();
-        }
 
         public void Restart() {
             _excludedTilesNames = _excludedTiles.Select(x => x.name).ToList();
@@ -253,10 +249,10 @@ namespace Code.Scripts.GridSystem
             var plantHealthBar = Instantiate(_healthBar, new Vector2(0,0),Quaternion.identity, plant.transform);
             Canvas hbCanvas = plantHealthBar.transform.Find("Canvas").gameObject.GetComponent<Canvas>();
             hbCanvas.worldCamera = _gameCamera;
-            hbCanvas.transform.position = new Vector2(plant.transform.position.x*1000,plant.transform.position.y*1000 + 500);
+            hbCanvas.transform.position = new Vector2(plant.transform.position.x*1000,plant.transform.position.y*1000 - 530);
             plantHealthBar.transform.localScale = new Vector2(0.001f,0.001f);
             var plantComponent = plant.GetComponent<Plant>();
-            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName), tile, _healthBar);
+            plantComponent.InitPlant(PlantManager.Instance.GetPlantData(_plantName), tile, plantHealthBar);
             _tooltipManager.SubscribePlantEvents(plantComponent);
         }
 

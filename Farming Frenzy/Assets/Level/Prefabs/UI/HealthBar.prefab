@@ -294,7 +294,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8843306363139858950}
   - component: {fileID: 1397355983187549263}
-  - component: {fileID: 5604066380619274242}
+  - component: {fileID: 1620349582985624246}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -374,7 +374,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5604066380619274242
+--- !u!114 &1620349582985624246
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -386,6 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9561d7d27a724540a03433a665a676f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fillImage: {fileID: 6647814569921618697}
 --- !u!1 &7378670063805423557
 GameObject:
   m_ObjectHideFlags: 0
