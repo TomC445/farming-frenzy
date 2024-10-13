@@ -149,7 +149,7 @@ namespace Code.Scripts.GridSystem
             _root.Q<Label>("name").text = type;
             _root.Q<Label>("status").text = $"Click to buy and remove. Cost: {FarmingFrenzyColors.PriceRichText(obstacle.Cost)}";
             _root.Q<Label>("water_modifier").style.display = DisplayStyle.None; // TODO water
-            _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None; // TODO legumes
+            _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None;
             _root.Q<Label>("power").style.display = DisplayStyle.None;
         }
 

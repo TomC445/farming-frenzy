@@ -45,11 +45,11 @@ public class PlantData : ScriptableObject
     {
         // Just some example values
         get {
-            if (_fruitingCycle <= 3)
+            if (_fruitingCycle <= 10)
             {
                 return GrowthRate.Fast;
             }
-            return _maturationCycle <= 7 ? GrowthRate.Medium : GrowthRate.Slow;
+            return _maturationCycle <= 15 ? GrowthRate.Medium : GrowthRate.Slow;
         }
     }
 }
