@@ -65,7 +65,8 @@ namespace Code.Scripts.Managers
             EnemySpawnManager.Instance.Restart();
             IsTimerRunning = true;
             _timeLeft = _dayTime * 7;
-            _quotaText.text = $"{_quota}G";
+            // TODO standardise $ vs G
+            _quotaText.text = $"You Owe: <b><u>{_quota-_currentQuotaPayment}G</u></b>";
             _goats = 0;
             _quotaClose = false;
             _quotaBaseCol = _quotaButtonImg.color;
@@ -243,7 +244,7 @@ namespace Code.Scripts.Managers
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
             _quotaPaymentLeft = _quota-_currentQuotaPayment;
-            _quotaText.text = $"{_quota-_currentQuotaPayment}G";
+            _quotaText.text = $"You Owe: <b><u>{_quota-_currentQuotaPayment}G</u></b>";
         }
 
         private void CheckGameOver()
@@ -281,7 +282,7 @@ namespace Code.Scripts.Managers
             _quotaButtonImg.color = _quotaBaseCol;
             _playFirstClockSound = false;
             _playSecondClockSound = true;
-            _quotaText.text = $"{_quota-_currentQuotaPayment}G";
+            _quotaText.text = $"You Owe: <b><u>{_quota-_currentQuotaPayment}G</u></b>";
         }
         #endregion
     }
