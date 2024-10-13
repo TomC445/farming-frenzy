@@ -41,10 +41,10 @@ namespace Code.Scripts.Menus
                 "Tomato", "Corn", "Clover", "Blister Berry",
                 
                 // Tier 2
-                "Marigold", "Pumpkin", "Banana", // "Scarecrow",
-                
+                "Pumpkin", "Banana", // "Scarecrow", "Marigold",
+
                 // Tier 3
-                "Beans", "Shrub Rose", "Tall Grass", "Apple Tree" // , "Sprinkler",
+                "Beans", "Shrub Rose" //, "Tall Grass", "Apple Tree", "Sprinkler",
             };
 
             foreach (var plant in plants)

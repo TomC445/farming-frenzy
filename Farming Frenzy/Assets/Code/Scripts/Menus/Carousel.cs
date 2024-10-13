@@ -1,36 +1,39 @@
 using UnityEngine;
 
-public class Carousel : MonoBehaviour
+namespace Code.Scripts.Menus
 {
-    #region Editor Fields
-    [SerializeField] private GameObject[] _helpPages;
-    #endregion
-
-    #region Properties
-    private int _activePage = 0;
-    #endregion
-
-    #region Methods
-    public void ToggleNext()
+    public class Carousel : MonoBehaviour
     {
-        _activePage = (_activePage+1)%_helpPages.Length;
-        ToggleActivePage();
-    }
+        #region Editor Fields
+        [SerializeField] private GameObject[] _helpPages;
+        #endregion
 
-    public void TogglePrev()
-    {
-        _activePage = (_activePage - 1 + _helpPages.Length) % _helpPages.Length;
-        ToggleActivePage();
-    }
+        #region Properties
+        private int _activePage = 0;
+        #endregion
 
-    public void ToggleActivePage()
-    {
-        foreach (var page in _helpPages)
+        #region Methods
+        public void ToggleNext()
         {
-            page.SetActive(false);
+            _activePage = (_activePage+1)%_helpPages.Length;
+            ToggleActivePage();
         }
-        _helpPages[_activePage].SetActive(true);
 
+        public void TogglePrev()
+        {
+            _activePage = (_activePage - 1 + _helpPages.Length) % _helpPages.Length;
+            ToggleActivePage();
+        }
+
+        private void ToggleActivePage()
+        {
+            foreach (var page in _helpPages)
+            {
+                page.SetActive(false);
+            }
+            _helpPages[_activePage].SetActive(true);
+
+        }
+        #endregion
     }
-    #endregion
 }
