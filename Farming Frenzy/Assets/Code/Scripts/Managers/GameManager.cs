@@ -19,6 +19,7 @@ namespace Code.Scripts.Managers
         [SerializeField] private GameObject _pauseMenu;
         [SerializeField] private GameObject _shopMenu;
         [SerializeField] private GameObject _gameOverMenu;
+        [SerializeField] private TextMeshProUGUI _score;
         [SerializeField] private TextMeshProUGUI _timerText;
         [SerializeField] private TextMeshProUGUI _dayText;
         [SerializeField] private TextMeshProUGUI _weekText;
@@ -188,6 +189,7 @@ namespace Code.Scripts.Managers
                     AudioManager.Instance.ToggleSFX();
                     AudioManager.Instance.PlaySFX("gameOver");
                     AudioManager.Instance.ToggleMusic();
+                    _score.text = $"You got to <u>week {Mathf.CeilToInt(_dayCount / 7.0f)}</u>";
                     _gameOverMenu.SetActive(true);
                     return;
                 }
