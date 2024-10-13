@@ -24,7 +24,7 @@ MonoBehaviour:
   _dryoutRate: 0
   _maturationCycle: 3
   _fruitingCycle: -1
-  flavorText: 
+  flavorText: Heals plants from goat attacks!
   power: 2
   _tier: 1
   _price: 10
