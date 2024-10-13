@@ -31,7 +31,6 @@ namespace Code.Scripts.GridSystem
         private Color _startColor;
 
         public delegate void TileClicked(GridTile tile);
-
         public delegate void TileHoverIn(GridTile tile);
         public delegate void TileHoverOut(GridTile tile);
         public event TileClicked OnTileClicked;
@@ -72,9 +71,9 @@ namespace Code.Scripts.GridSystem
 
             if (CanBePurchased && !IsPurchased)
             {
-                PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
                 _tiletext.SetActive(true);
             }
+
             _highlight.SetActive(true);
             OnTileHoverIn?.Invoke(this);
         }
@@ -114,10 +113,9 @@ namespace Code.Scripts.GridSystem
             CanBePurchased = true;
         }
 
-        public void MakePurchasable(Color colour)
+        public void MakePurchasable()
         {
             _renderer.color = _purchasableColor;
-            
             CanBePurchased = true;
         }
 
@@ -145,8 +143,13 @@ namespace Code.Scripts.GridSystem
 
         private void Update()
         {
-            if (_isMouseOver && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
+            // Only start hovering if they weren't dragging across already
+            if (_isMouseOver && CanBePurchased && !IsPurchased && !Input.GetMouseButton(0))
             {
+                PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
+            }
+
+            if (_isMouseOver && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) {
                 OnTileClicked?.Invoke(this);
             }
         }
