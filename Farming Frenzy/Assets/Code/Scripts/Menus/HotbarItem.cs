@@ -11,7 +11,7 @@ namespace Code.Scripts.Menus
 
         public void OnClick()
         {
-            PlayerController.Instance.SetPickedCursor(_cursor, null);
+            PlayerController.Instance.SetPickedCursor(_cursor, null, null);
         }
     }
 }

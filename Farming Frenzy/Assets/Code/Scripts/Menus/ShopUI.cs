@@ -91,7 +91,7 @@ namespace Code.Scripts.Menus
             fruiting.style.color = data.FruitingRateBand.Color();
 
             // Add tooltip to item, and item to list
-            ui.AddManipulator(new ShopItemTooltipManipulator(_tooltipManipulator, tooltip));
+            ui.AddManipulator(new ShopItemTooltipManipulator(_tooltipManipulator, tooltip, data.power));
             _root.Q("shop_list").Add(ui);
 
             var overlay = ui.Q<VisualElement>("overlay");

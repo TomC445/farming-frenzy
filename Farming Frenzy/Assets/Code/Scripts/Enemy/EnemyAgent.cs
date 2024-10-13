@@ -182,6 +182,7 @@ namespace Code.Scripts.Enemy
                 _target = closest;
                 _agent.SetDestination(closest.position);
                 _audioManager.PlaySFX("goatScared");
+                PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Spray);
             }
         }
 
@@ -202,7 +203,10 @@ namespace Code.Scripts.Enemy
 
         private void OnMouseEnter()
         {
-            PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Spray);
+            if (CanAttack)
+            {
+                PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Spray);
+            }
         }
 
         private void OnMouseExit()
@@ -212,20 +216,21 @@ namespace Code.Scripts.Enemy
 
         private void OnMouseDown()
         {
-            if(PlayerController.Instance.CurrentlyActiveCursor == PlayerController.CursorState.Spray)
-            {
-                TrySpray();
-            }
+            TrySpray();
         }
 
         public void TrySpray()
         {
+            if(PlayerController.Instance.CurrentlyActiveCursor != PlayerController.CursorState.Spray) return;
+
             print($"I am goat; _health = {_health}; _state = {_currentState}; _target = {_target?.gameObject}; stopped = {_agent.isStopped}");
 
             if (!CanAttack) return;
-            if (!PlayerController.Instance.TryPurchase(3)) return;
+            // TODO make a "-${SprayPurchaseAmount}" floating text
+            if (!PlayerController.Instance.TryPurchase(PlayerController.Instance.SprayPurchaseAmount)) return;
+            
+            PlayerController.Instance.SprayParticles();
 
-            // TODO make a "-$2" floating text
             TakeDamage(5);
         }
         #endregion

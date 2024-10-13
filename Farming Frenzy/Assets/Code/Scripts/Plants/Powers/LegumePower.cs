@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Scripts.Managers;
+using Code.Scripts.Player;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,25 +10,29 @@ namespace Code.Scripts.Plants.Powers
 {
     public abstract class LegumePower : Power
     {
-        private CircleCollider2D _aoe;
         protected abstract float Radius { get; }
         protected abstract float EffectStrength { get; }
-
         public const int MaxEffectPercent = 50;
+        private SpriteRenderer _spriteRenderer;
 
         private void Start()
         {
-            _aoe = gameObject.GetComponent<CircleCollider2D>();
-            _aoe.radius = Radius;
+            GetComponent<CircleCollider2D>().radius = 0.5f;
+            transform.localScale = new Vector3(Radius, Radius, 1.0f);
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _spriteRenderer.sortingOrder = 1000;
+            _spriteRenderer.enabled = PlantManager.Instance.LegumePowerAoe.Visible;
+            PlantManager.Instance.LegumePowerAoe.OnVisibilityChange += VisibilityChange;
         }
 
-        private void OnDrawGizmos()
+        private void VisibilityChange(bool visible)
         {
-            if (!_aoe) return;
-
-            var rotationMatrix = Matrix4x4.TRS(_aoe.transform.position, _aoe.transform.rotation, _aoe.transform.lossyScale);
-            Gizmos.matrix = rotationMatrix;
-            Gizmos.DrawWireSphere(_aoe.offset, _aoe.radius);
+            _spriteRenderer.enabled = visible;
+        }
+        
+        private void OnDestroy()
+        {
+            PlantManager.Instance.LegumePowerAoe.OnVisibilityChange -= VisibilityChange;
         }
 
         /// <summary>
