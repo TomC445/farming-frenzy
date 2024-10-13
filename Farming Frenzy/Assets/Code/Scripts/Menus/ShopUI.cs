@@ -22,6 +22,11 @@ namespace Code.Scripts.Menus
 
         private void Start()
         {
+            InitShop();
+        }
+
+        public void InitShop()
+        {
             _root = ((UIDocument)gameObject.GetComponent(typeof(UIDocument))).rootVisualElement;
             _itemTemplate = Resources.Load<VisualTreeAsset>("Shop_item");
             _itemTooltipTemplate = Resources.Load<VisualTreeAsset>("Shop_item_tooltip");

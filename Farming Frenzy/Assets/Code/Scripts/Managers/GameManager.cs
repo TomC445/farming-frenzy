@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using Code.Scripts.Menus;
 
 namespace Code.Scripts.Managers
 {
@@ -16,6 +17,7 @@ namespace Code.Scripts.Managers
         #region Editor Fields
         [Header("Menus")]
         [SerializeField] private GameObject _pauseMenu;
+        [SerializeField] private GameObject _shopMenu;
         [SerializeField] private GameObject _gameOverMenu;
         [SerializeField] private TextMeshProUGUI _timerText;
         [SerializeField] private TextMeshProUGUI _dayText;
@@ -23,6 +25,7 @@ namespace Code.Scripts.Managers
         [SerializeField] private TextMeshProUGUI _quotaText;
         [SerializeField] private Image _clockHand;
         [SerializeField] private Animator _dayNightAnimator;
+        
         [Header("Game Options")]
         [SerializeField] private int _quota;
         [SerializeField] private int _quotaIncreaseRate;
@@ -58,7 +61,7 @@ namespace Code.Scripts.Managers
         #region Methods
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
             {
                 if (!_isPaused) { PauseGame(); }
                 else { ResumeGame(); }
@@ -134,6 +137,7 @@ namespace Code.Scripts.Managers
         private void PauseGame()
         {
             _pauseMenu.gameObject.SetActive(true);
+            _shopMenu.gameObject.SetActive(false);
             Time.timeScale = 0f;
             _isPaused = true;
         }
@@ -141,6 +145,8 @@ namespace Code.Scripts.Managers
         public void ResumeGame()
         {
             _pauseMenu.gameObject.SetActive(false);
+            _shopMenu.gameObject.SetActive(true);
+            _shopMenu.GetComponent<ShopUI>().InitShop();
             Time.timeScale = 1f;
             _isPaused = false;
         }
