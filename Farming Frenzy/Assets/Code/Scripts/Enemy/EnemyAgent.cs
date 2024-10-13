@@ -208,7 +208,7 @@ namespace Code.Scripts.Enemy
         {
             _health -= amount;
             _healthBarVisible.SetActive(true);
-            _healthBarController.value -= _health/_maxHealth;
+            _healthBarController.value = _health/_maxHealth;
             print($"Goat took {amount} damage! HP = {_health}");
 
             if (_health >= 0) return false;
