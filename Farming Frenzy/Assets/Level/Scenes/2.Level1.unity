@@ -17179,7 +17179,7 @@ MonoBehaviour:
   m_MinValue: 0.001
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -21120,7 +21120,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 383959665}
         m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
-        m_MethodName: LoadLevel
+        m_MethodName: RestartLevel
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21505,7 +21505,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Time
+  m_text: 'Time Left '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e2d0491c19e2084b8f5a5b969f11c53, type: 2}
   m_sharedMaterial: {fileID: 7940338667784848850, guid: 6e2d0491c19e2084b8f5a5b969f11c53, type: 2}
@@ -21905,6 +21905,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f65b702a7358f954689de8dcfae60f9d, type: 3}
   - {fileID: 8300000, guid: a70a0297fa3be96979d8409936025780, type: 3}
   - {fileID: 8300000, guid: d75694b525671a749bc71030192c71da, type: 3}
+  - {fileID: 8300000, guid: 94d99ab613e865a4481d75130731409b, type: 3}
+  - {fileID: 8300000, guid: 8de1457fc86ab8c41a4228d5893b1b8a, type: 3}
   _musicSource: {fileID: 1896792630}
   _sfxSource: {fileID: 1896792629}
   audioMixer: {fileID: 24100000, guid: 1aa7a43ee54e76f41bb3d0f2c8027585, type: 2}
@@ -23837,10 +23839,11 @@ MonoBehaviour:
   _quotaText: {fileID: 745221304}
   _clockHand: {fileID: 757862153}
   _dayNightAnimator: {fileID: 697990103}
+  _quotaButtonImg: {fileID: 2058461274}
   _quota: 100
   _quotaIncreaseRate: 2
   _timerRate: 20
-  _dayTime: 20
+  _dayTime: 5
   _enemyDifficulty: 1
   _enemySpawnFrequency: 1
   _goats: 0

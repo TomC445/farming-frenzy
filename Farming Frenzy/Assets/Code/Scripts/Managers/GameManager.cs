@@ -26,6 +26,7 @@ namespace Code.Scripts.Managers
         [SerializeField] private TextMeshProUGUI _quotaText;
         [SerializeField] private Image _clockHand;
         [SerializeField] private Animator _dayNightAnimator;
+        [SerializeField] private Image _quotaButtonImg;
         
         [Header("Game Options")]
         [SerializeField] private int _quota;
@@ -40,6 +41,13 @@ namespace Code.Scripts.Managers
         public static GameManager Instance;
         public bool Paused { get; private set; }
         private float _time;
+        private float _timeLeft;
+        private float _toggleStartTime;
+        private bool _quotaClose;
+        private Color32 _quotaBaseCol;
+        private int _quotaPaymentLeft;
+        private bool _playFirstClockSound;
+        private bool _playSecondClockSound;
         private int _dayCount;
         private int _weekCount;
         private int _currentQuotaPayment;
@@ -56,8 +64,14 @@ namespace Code.Scripts.Managers
             GridManager.Instance.Restart();
             EnemySpawnManager.Instance.Restart();
             IsTimerRunning = true;
+            _timeLeft = _dayTime * 7;
             _quotaText.text = $"{_quota}G";
             _goats = 0;
+            _quotaClose = false;
+            _quotaBaseCol = _quotaButtonImg.color;
+            _quotaPaymentLeft = _quota;
+            _playFirstClockSound = false;
+            _playSecondClockSound = false;
         }
 
         private void Awake()
@@ -83,6 +97,10 @@ namespace Code.Scripts.Managers
 
             if (!IsTimerRunning) return;
             _time += Time.deltaTime;
+            _timeLeft -= Time.deltaTime;
+
+
+            UpdateQuotaClose();
             UpdateTimerDisplay();
             UpdateGoatCount();
             UpdateDate();
@@ -90,9 +108,53 @@ namespace Code.Scripts.Managers
 
         private void UpdateTimerDisplay()
         {
-            float minutes = Mathf.FloorToInt(_time / 60);
-            float seconds = Mathf.FloorToInt(_time % 60);
+            float minutes = Mathf.FloorToInt(_timeLeft / 60);
+            float seconds = Mathf.FloorToInt(_timeLeft % 60);
             _timerText.text = $"{minutes:00}:{seconds:00}";
+        }
+
+        private void UpdateQuotaClose() {
+            if (!_quotaClose && (_timeLeft <= 12 && _quotaPaymentLeft > 0))
+            {
+                _quotaClose = true;           
+                _quotaButtonImg.color = Color.red;          
+                _toggleStartTime = Time.time;   
+            }
+
+            if (_quotaClose && _quotaPaymentLeft > 0)
+            {
+                if(_timeLeft <= 6)
+                {
+                    if(!_playSecondClockSound) {
+                        AudioManager.Instance.PlaySFX("clockFast");
+                        _playSecondClockSound = true;
+                    }
+                    if (Mathf.FloorToInt((Time.time - _toggleStartTime)/0.5f) % 2 == 0)
+                    {
+                        _quotaButtonImg.color = _quotaBaseCol;
+                    }
+                    else
+                    {
+                        _quotaButtonImg.color = Color.red;
+                    }
+                } else {
+                    if(_timeLeft <= 10 && !_playFirstClockSound) {
+                        AudioManager.Instance.PlaySFX("clockSlow");
+                        _playFirstClockSound = true;
+                    }
+
+                    if (Mathf.FloorToInt(Time.time - _toggleStartTime) % 2 == 0)
+                    {
+                        _quotaButtonImg.color = _quotaBaseCol;
+                    }
+                    else
+                    {
+                        _quotaButtonImg.color = Color.red;
+                    }
+                }
+            }
+
+            if(_quotaPaymentLeft <= 0) _quotaButtonImg.color = _quotaBaseCol;
         }
 
         private void UpdateDate()
@@ -180,6 +242,7 @@ namespace Code.Scripts.Managers
 
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
+            _quotaPaymentLeft = _quota-_currentQuotaPayment;
             _quotaText.text = $"{_quota-_currentQuotaPayment}G";
         }
 
@@ -211,7 +274,13 @@ namespace Code.Scripts.Managers
 
             // Setup next quota
             _quota *= _quotaIncreaseRate;
+            _quotaPaymentLeft = _quota;
             _currentQuotaPayment = 0;
+            _timeLeft = _dayTime*7;
+            _quotaClose = false;
+            _quotaButtonImg.color = _quotaBaseCol;
+            _playFirstClockSound = false;
+            _playSecondClockSound = true;
             _quotaText.text = $"{_quota-_currentQuotaPayment}G";
         }
         #endregion

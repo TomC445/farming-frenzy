@@ -17,6 +17,13 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(LoadLevelAsync(levelName));
     }
 
+    public void RestartLevel(string levelName)
+    {
+        AudioManager.Instance.RestartMusic();
+        Time.timeScale = 1.0f;
+        StartCoroutine(LoadLevelAsync(levelName));
+    }
+
     private IEnumerator LoadLevelAsync(string levelName)
     {
         AsyncOperation loadLevel = SceneManager.LoadSceneAsync(levelName);
