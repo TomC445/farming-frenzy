@@ -13,6 +13,7 @@ namespace Code.Scripts.GridSystem
     public class GridManager : MonoBehaviour
     {
         #region Editor Fields
+        [SerializeField] private Camera _gameCamera;
         [Header("Grid Options")]
         [SerializeField] private GridTile _tilePrefab;
         [SerializeField] private Tilemap _backgroundGrid;
@@ -30,6 +31,7 @@ namespace Code.Scripts.GridSystem
         [Header("Plants")]
         [SerializeField] private GameObject _plant;
         [SerializeField] private string _plantName;
+        [SerializeField] private GameObject _healthBar;
         #endregion
 
         #region Properties
@@ -61,10 +63,6 @@ namespace Code.Scripts.GridSystem
         #endregion
 
         #region Methods
-        private void Start()
-        { 
-            Restart();
-        }
 
         public void Restart() {
             _excludedTilesNames = _excludedTiles.Select(x => x.name).ToList();
@@ -253,8 +251,13 @@ namespace Code.Scripts.GridSystem
             var pos = tile.transform.position;
             pos.z -= 1;
             var plant = Instantiate(_plant, pos, Quaternion.identity, _plantsTransform);
+            var plantHealthBar = Instantiate(_healthBar, new Vector2(0,0),Quaternion.identity, plant.transform);
+            Canvas hbCanvas = plantHealthBar.transform.Find("Canvas").gameObject.GetComponent<Canvas>();
+            hbCanvas.worldCamera = _gameCamera;
+            hbCanvas.transform.position = new Vector2(plant.transform.position.x*1000,plant.transform.position.y*1000 - 530);
+            plantHealthBar.transform.localScale = new Vector2(0.001f,0.001f);
             var plantComponent = plant.GetComponent<Plant>();
-            plantComponent.InitPlant(data, tile);
+            plantComponent.InitPlant(data, tile, plantHealthBar);
             _tooltipManager.SubscribePlantEvents(plantComponent);
         }
 

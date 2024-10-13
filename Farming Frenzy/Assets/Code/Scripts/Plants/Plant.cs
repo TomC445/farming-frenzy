@@ -8,6 +8,7 @@ using Code.Scripts.Plants.Powers.PowerExtension;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Code.Scripts.Plants
 {
@@ -27,8 +28,11 @@ namespace Code.Scripts.Plants
         private float _healRate;
         private float _fruitingRate;
         private float _health;
+        private float _maxHealth;
         private float _nextHealTime;
         private float MaxHealth => _data._health;
+        private GameObject _healthBar;
+        private Slider hBarController;
         private int SecsToNextStage
         {
             get
@@ -103,7 +107,7 @@ namespace Code.Scripts.Plants
             }
         }
 
-        public void InitPlant(PlantData pdata, GridTile tile)
+        public void InitPlant(PlantData pdata, GridTile tile, GameObject healthBar)
         {
             lock (tile)
             {
@@ -113,6 +117,10 @@ namespace Code.Scripts.Plants
                 Collider = GetComponent<BoxCollider2D>();
                 _aoeCollider = transform.GetChild(0).GetComponent<BoxCollider2D>();
                 _health = pdata._health;
+                 _maxHealth = _health;
+                _healthBar = healthBar.transform.Find("Canvas").Find("Slider").gameObject;
+                hBarController = healthBar.transform.Find("Canvas").Find("Slider").gameObject.GetComponent<Slider>();
+                _healthBar.SetActive(false);
                 if (_data._isTree)
                 {
                     Collider.size = new Vector2(3, 2);
@@ -120,7 +128,7 @@ namespace Code.Scripts.Plants
                     _aoeCollider.size *= new Vector2(3, 2);
                     _aoeCollider.offset *= new Vector2(0, 0.5f);
                 }
-
+       
                 _tile = tile;
                 _tile.HasPlant = true;
                 print($"Just placed a {PlantName} on {_tile.name} (hasPlant = {_tile.HasPlant})");
@@ -251,8 +259,11 @@ namespace Code.Scripts.Plants
 
         public bool TakeDamage(float amount)
         {
+            _healthBar.SetActive(true);
             _health -= amount;
             print($"{PlantName} took {amount} damage! HP = {_health}");
+            hBarController.value -= _health/_maxHealth;
+            
             if (_health > 0) return false;
 
             Kill();

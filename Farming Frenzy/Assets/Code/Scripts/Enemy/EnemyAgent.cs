@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Debug = System.Diagnostics.Debug;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 namespace Code.Scripts.Enemy
 {
@@ -22,6 +23,9 @@ namespace Code.Scripts.Enemy
         #region Editor Fields
         [SerializeField] private float _health = 3;
         [SerializeField] private float _maxHealth = 3;
+        [SerializeField] private GameObject _healthBar;
+        [SerializeField] private Slider _healthBarController;
+        [SerializeField] private GameObject _healthBarVisible;
         #endregion
 
         #region Properties
@@ -45,6 +49,7 @@ namespace Code.Scripts.Enemy
         private bool playSFX;
         private bool firstUpdate;
         private GameManager _gameManager;
+        private Canvas hbCanvas;
 
         #endregion
 
@@ -67,6 +72,11 @@ namespace Code.Scripts.Enemy
             _health = _maxHealth;
             _rigidbody = GetComponentInChildren<Rigidbody2D>();
             _renderer = GetComponent<Renderer>();
+
+            hbCanvas = _healthBar.transform.Find("Canvas").gameObject.GetComponent<Canvas>();
+            hbCanvas.transform.position = new Vector2(gameObject.transform.position.x*1000,gameObject.transform.position.y*1000 + 530);
+            _healthBar.transform.localScale = new Vector2(0.001f,0.001f);
+            _healthBarVisible.SetActive(false);
         }
 
 
@@ -108,6 +118,9 @@ namespace Code.Scripts.Enemy
                     _timer = 0f;
                 }
             }
+
+            hbCanvas.transform.position = gameObject.transform.position + new Vector3(0,0.85f,0);
+            _healthBar.transform.localScale = new Vector2(0.001f,0.001f);
 
             lock (this)
             {
@@ -183,6 +196,7 @@ namespace Code.Scripts.Enemy
                 _agent.SetDestination(closest.position);
                 _audioManager.PlaySFX("goatScared");
                 PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Spray);
+                _healthBarVisible.SetActive(false);
             }
         }
 
@@ -193,6 +207,8 @@ namespace Code.Scripts.Enemy
         private bool TakeDamage(int amount)
         {
             _health -= amount;
+            _healthBarVisible.SetActive(true);
+            _healthBarController.value -= _health/_maxHealth;
             print($"Goat took {amount} damage! HP = {_health}");
 
             if (_health >= 0) return false;
@@ -231,6 +247,10 @@ namespace Code.Scripts.Enemy
             
             PlayerController.Instance.SprayParticles();
 
+            if (!PlayerController.Instance.TryPurchase(3)) return;
+
+            _audioManager.PlaySFX("spray");
+            // TODO make a "-$2" floating text
             TakeDamage(5);
         }
         #endregion
