@@ -241,6 +241,7 @@ namespace Code.Scripts.Enemy
             if (!CanAttack) return;
             if (!PlayerController.Instance.TryPurchase(3)) return;
 
+            _audioManager.PlaySFX("spray");
             // TODO make a "-$2" floating text
             TakeDamage(5);
         }
