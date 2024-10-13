@@ -37,7 +37,8 @@ namespace Code.Scripts.Managers
         #endregion
 
         #region Properties
-        private bool _isPaused;
+        public static GameManager Instance;
+        public bool Paused { get; private set; }
         private float _time;
         private int _dayCount;
         private int _weekCount;
@@ -59,12 +60,24 @@ namespace Code.Scripts.Managers
             _goats = 0;
         }
 
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         #region Methods
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
             {
-                if (!_isPaused) { PauseGame(); }
+                if (!Paused) { PauseGame(); }
                 else { ResumeGame(); }
             }
 
@@ -140,7 +153,8 @@ namespace Code.Scripts.Managers
             _pauseMenu.gameObject.SetActive(true);
             _shopMenu.gameObject.SetActive(false);
             Time.timeScale = 0f;
-            _isPaused = true;
+            Paused = true;
+            PlayerController.Instance.SetPausedCursor();
         }
 
         public void ResumeGame()
@@ -149,7 +163,7 @@ namespace Code.Scripts.Managers
             _shopMenu.gameObject.SetActive(true);
             _shopMenu.GetComponent<ShopUI>().InitShop();
             Time.timeScale = 1f;
-            _isPaused = false;
+            Paused = false;
         }
 
         public void PayQuota(int amount)
