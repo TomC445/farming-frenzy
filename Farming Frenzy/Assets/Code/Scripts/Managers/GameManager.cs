@@ -115,7 +115,7 @@ namespace Code.Scripts.Managers
         }
 
         private void UpdateQuotaClose() {
-            if (!_quotaClose && (_timeLeft <= 12 && _quotaPaymentLeft > 0))
+            if (!_quotaClose && (_timeLeft <= _dayTime*3 + 2 && _quotaPaymentLeft > 0))
             {
                 _quotaClose = true;           
                 _quotaButtonImg.color = Color.red;          

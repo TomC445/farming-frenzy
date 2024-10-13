@@ -28,7 +28,6 @@ namespace Code.Scripts.Plants
         private float _healRate;
         private float _fruitingRate;
         private float _health;
-        private float _maxHealth;
         private float _nextHealTime;
         private float MaxHealth => _data._health;
         private GameObject _healthBar;
@@ -128,7 +127,6 @@ namespace Code.Scripts.Plants
                 Collider = GetComponent<BoxCollider2D>();
                 _aoeCollider = transform.GetChild(0).GetComponent<BoxCollider2D>();
                 _health = pdata._health;
-                 _maxHealth = _health;
                 _healthBar = healthBar.transform.Find("Canvas").Find("Slider").gameObject;
                 hBarController = healthBar.transform.Find("Canvas").Find("Slider").gameObject.GetComponent<Slider>();
                 _healthBar.SetActive(false);
@@ -162,7 +160,12 @@ namespace Code.Scripts.Plants
                 print($"My fruit rate is {_fruitingRate}");
                 
                 _nextHealTime = Time.time + 2.0f;
+
                 _health = Math.Min(MaxHealth, _health + 2.0f * _healRate);
+                hBarController.value = _health/MaxHealth;
+                if(hBarController.value == hBarController.maxValue) {
+                     _healthBar.SetActive(false);
+                }
             }
 
             switch (_state)
@@ -278,7 +281,7 @@ namespace Code.Scripts.Plants
             _healthBar.SetActive(true);
             _health -= amount;
             print($"{PlantName} took {amount} damage! HP = {_health}");
-            hBarController.value -= _health/_maxHealth;
+            hBarController.value = _health/MaxHealth;
             
             if (_health > 0) return false;
 
