@@ -37,6 +37,11 @@ public class AudioManager : MonoBehaviour
     }
     #endregion
 
+    void Start()
+    {
+        SetInitialMusicVolume();
+    }
+
     #region Methods
     public void PlayMusic(string name)
     {
@@ -82,7 +87,7 @@ public class AudioManager : MonoBehaviour
     }
 
     public void SetInitialMusicVolume() {
-        RestartMusic();
+        //RestartMusic();
         _musicSource.mute = false;
         _sfxSource.mute = false;
         _sfxSource.Stop();

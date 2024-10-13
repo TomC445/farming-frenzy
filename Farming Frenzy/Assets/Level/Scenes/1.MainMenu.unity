@@ -2121,6 +2121,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f39f3c6d74ff8d74788ebf07ddc6592a, type: 3}
   - {fileID: 8300000, guid: a70a0297fa3be96979d8409936025780, type: 3}
   - {fileID: 8300000, guid: d75694b525671a749bc71030192c71da, type: 3}
+  - {fileID: 8300000, guid: 94d99ab613e865a4481d75130731409b, type: 3}
+  - {fileID: 8300000, guid: 8de1457fc86ab8c41a4228d5893b1b8a, type: 3}
   _musicSource: {fileID: 215684463}
   _sfxSource: {fileID: 215684462}
   audioMixer: {fileID: 24100000, guid: 1aa7a43ee54e76f41bb3d0f2c8027585, type: 2}
@@ -6401,7 +6403,7 @@ MonoBehaviour:
   m_MinValue: 0.001
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
