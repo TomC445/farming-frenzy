@@ -1,6 +1,4 @@
-using System;
 using Code.Scripts.Player;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,7 +10,6 @@ namespace Code.Scripts.GridSystem
         [Header("Tile Settings")]
         [SerializeField] private Color _baseColour;
         [SerializeField] private Color _offsetColour;
-        [SerializeField] private Color _purchasableColor;
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private GameObject _highlight;
         [SerializeField] private int _cost;
@@ -113,9 +110,10 @@ namespace Code.Scripts.GridSystem
             CanBePurchased = true;
         }
 
-        public void MakePurchasable()
+        public void MakePurchasable(Sprite tile)
         {
-            _renderer.color = _purchasableColor;
+            _renderer.color = Color.white;
+            _renderer.sprite = tile;
             CanBePurchased = true;
         }
 

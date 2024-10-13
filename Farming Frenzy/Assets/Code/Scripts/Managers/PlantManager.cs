@@ -11,6 +11,7 @@ namespace Code.Scripts.Managers
 
         #region Singleton
         public static PlantManager Instance;
+
         private void Awake()
         {
             if (Instance == null)
@@ -26,6 +27,7 @@ namespace Code.Scripts.Managers
 
         public readonly PlantAoeState CornPowerAoe = new();
         public readonly PlantAoeState LegumePowerAoe = new();
+        public readonly PlantAoeState BananaPowerAoe = new();
         #endregion
 
         #region Methods

@@ -15,7 +15,8 @@ namespace Code.Scripts.Plants.Powers
         Clover = 2,
         Corn = 3,
         Nettle = 4,
-        Bean = 5
+        Bean = 5,
+        Banana = 6
     }
 
     namespace PowerExtension
@@ -26,6 +27,7 @@ namespace Code.Scripts.Plants.Powers
             private static readonly Object BeanPowerPrefab = Resources.Load("Bean Power");
             private static readonly Object CornPowerPrefab = Resources.Load("Corn Power");
             private static readonly Object NettlePowerPrefab = Resources.Load("Nettle Power");
+            private static readonly Object BananaPowerPrefab = Resources.Load("Banana Power");
 
             public static void AddTo(this PowerKind kind, GameObject gameObject)
             {
@@ -39,6 +41,7 @@ namespace Code.Scripts.Plants.Powers
                     PowerKind.Bean => BeanPowerPrefab,
                     PowerKind.Corn => CornPowerPrefab,
                     PowerKind.Nettle => NettlePowerPrefab,
+                    PowerKind.Banana => BananaPowerPrefab,
                     PowerKind.None => null,
                     _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
                 };
@@ -57,6 +60,8 @@ namespace Code.Scripts.Plants.Powers
                                     $"faster (up to {LegumePower.MaxEffectPercent}%)",
                 PowerKind.Corn => "Other corn plants in a row\nor column with this one\nfruit" +
                                   $" {CornPower.EffectPercent}% faster (up to {CornPower.MaxEffectPercent}%)",
+                PowerKind.Banana =>$"Nearby plants fruit \n{BananaPower.EffectPercent}% " +
+                                   $"faster (up to {BananaPower.MaxEffectPercent}%)",
                 PowerKind.Nettle => "Animals take damage when\nthey eat this plant",
                 PowerKind.None => "",
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
@@ -72,6 +77,8 @@ namespace Code.Scripts.Plants.Powers
                         return PlantManager.Instance.LegumePowerAoe;
                     case PowerKind.Corn:
                         return PlantManager.Instance.CornPowerAoe;
+                    case PowerKind.Banana:
+                        return PlantManager.Instance.BananaPowerAoe;
                     case PowerKind.None:
                     case PowerKind.Nettle:
                         break;
