@@ -18,6 +18,9 @@ public class AudioManager : MonoBehaviour
     private Slider _masterSlider;
     private Slider _bgmSlider;
     private Slider _sfxSlider;
+    private float _masterValue;
+    private float _bgmValue;
+    private float _sfxValue;
     #endregion
 
     #region Properties
@@ -44,6 +47,9 @@ public class AudioManager : MonoBehaviour
     void Start()
     {
         SetInitialMusicVolume();
+        _masterValue = -1;
+        _bgmValue = -1;
+        _sfxValue = -1;
     }
 
     void Update()
@@ -53,6 +59,9 @@ public class AudioManager : MonoBehaviour
             _masterSlider = sliders[0].GetComponent<Slider>();
             _bgmSlider = sliders[1].GetComponent<Slider>();
             _sfxSlider = sliders[2].GetComponent<Slider>();
+            if(_masterValue != -1) _masterSlider.value = _masterValue;
+            if(_bgmValue != -1) _bgmSlider.value = _bgmValue;
+            if(_sfxValue != -1) _sfxSlider.value = _sfxValue;
             SetSliders();
         }
     }
@@ -125,14 +134,17 @@ public class AudioManager : MonoBehaviour
 
      public void SetMasterVolume(float level) {
         audioMixer.SetFloat("MasterVolume",Mathf.Log10(level)*20f);
+        _masterValue = level;
     }
 
     public void SetSoundFXVolume(float level) {
         audioMixer.SetFloat("SoundFXVolume",Mathf.Log10(level)*20f);
+        _sfxValue = level;
     }
 
     public void SetMusicVolume(float level) {
         audioMixer.SetFloat("MusicVolume",Mathf.Log10(level)*20f);
+        _bgmValue = level;
     }
     #endregion
 
