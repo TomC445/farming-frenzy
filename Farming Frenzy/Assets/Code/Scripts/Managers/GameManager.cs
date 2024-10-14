@@ -135,9 +135,7 @@ namespace Code.Scripts.Managers
             var id = Quaternion.identity;
             var pos = Input.mousePosition;
             pos.z = 0;
-
-            print(pos);
-
+    
             var floatingText = Instantiate(_floatingTextPrefab, pos, id, _canvas.transform);
             floatingText.GetComponent<FloatingText>().SetText(text, pos);
         }
@@ -205,13 +203,13 @@ namespace Code.Scripts.Managers
 
                 // Spawn only once every $period days
                 var rightDayForSpawn = _dayCount % _enemySpawnFrequency == 0;
+                var monOrTues = _dayCount % 7 is 0 or 1; // Give mon & tues off
 
-                // TODO this could only be in easy-med mode ?
                 // Only spawn on Thursday and Saturday in Week 1 to reduce load on player
                 var gracePeriod = _dayCount <= 7;
                 var reducedSpawnDay = gracePeriod && _dayCount is not (3 or 5);
 
-                if(rightDayForSpawn && !reducedSpawnDay)
+                if(rightDayForSpawn && !reducedSpawnDay && !monOrTues)
                 {
                     var week = Mathf.CeilToInt(_dayCount / 7.0f);
                     var numEnemies = Math.Max(1, Mathf.RoundToInt((float) Math.Pow(week - 1, 2)));
@@ -273,7 +271,6 @@ namespace Code.Scripts.Managers
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
                 var maxCanBuy = Math.Min(_quota - _currentQuotaPayment, PlayerController.Instance.Money);
-                print($"yes keydown, max can buy is {maxCanBuy}");
                 amount = maxCanBuy;
             }
 

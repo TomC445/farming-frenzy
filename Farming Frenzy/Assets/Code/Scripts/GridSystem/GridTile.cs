@@ -142,12 +142,6 @@ namespace Code.Scripts.GridSystem
             CanBePurchased = true;
         }
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = new Color(1, 0, 0, 0.5f);
-            Gizmos.DrawWireCube(transform.position, new Vector3(1, 1, 1));
-        }
-
         public void LockTile()
         {
             Collider.enabled = false;

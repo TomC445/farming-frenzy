@@ -28,7 +28,7 @@ MonoBehaviour:
   _fruitingCycle: 12
   flavorText: A high-cost, high-producing crop
   power: 1
-  _tier: 3
+  _tier: 2
   _price: 50
   _goldGenerated: 9
   _health: 25

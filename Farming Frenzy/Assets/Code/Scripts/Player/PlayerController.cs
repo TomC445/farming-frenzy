@@ -1,5 +1,6 @@
 using System;
 using Code.Scripts.Managers;
+using Code.Scripts.Menus;
 using Code.Scripts.Plants.Powers.PowerExtension;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -131,26 +132,35 @@ namespace Code.Scripts.Player
 
         public void SetPickedCursor(CursorState picked, [CanBeNull] string currentPlant, [CanBeNull] Texture2D seedBag)
         {
-            _currentlyPicked = picked;
-            _contextualCursor = null;
-            _lastContextualCursor = null;
-
-            _currentPlant?.power.AoeState()?.SetPlanting(false);
-
-            if (currentPlant != null)
+            lock (this)
             {
-                _currentPlant = PlantManager.Instance.GetPlantData(currentPlant);
-                _currentPlant?.power.AoeState()?.SetPlanting(true);
-            }
-            else
-            {
-                _currentPlant = null;
-            }
+                _currentlyPicked = picked;
+                _contextualCursor = null;
+                _lastContextualCursor = null;
 
-            _seedBagTexture = seedBag;
-            if (_seedBagTexture)
-            {
-                Cursor.SetCursor(_seedBagTexture, Vector2.zero, CursorMode.Auto);
+                _currentPlant?.power.AoeState()?.SetPlanting(false);
+
+                if (currentPlant != null)
+                {
+                    _currentPlant = PlantManager.Instance.GetPlantData(currentPlant);
+                    _currentPlant?.power.AoeState()?.SetPlanting(true);
+                }
+                else
+                {
+                    _currentPlant = null;
+                }
+                
+                if (ShopUI.Instance.lastSelectedItem != null)
+                {
+                    ShopUI.Instance.lastSelectedItem.style.backgroundColor = FarmingFrenzyColors.ShopItemBackground;
+                    ShopUI.Instance.lastSelectedItem = null;
+                }
+    
+                _seedBagTexture = seedBag;
+                if (_seedBagTexture)
+                {
+                    Cursor.SetCursor(_seedBagTexture, Vector2.zero, CursorMode.Auto);
+                }
             }
         }
 

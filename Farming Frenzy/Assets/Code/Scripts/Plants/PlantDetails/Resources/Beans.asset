@@ -28,7 +28,7 @@ MonoBehaviour:
   _fruitingCycle: 12
   flavorText: "Premium\u2122 version of the clover"
   power: 5
-  _tier: 3
+  _tier: 2
   _price: 25
   _goldGenerated: 2
   _health: 10
