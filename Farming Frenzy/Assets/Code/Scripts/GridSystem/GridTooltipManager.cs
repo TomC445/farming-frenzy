@@ -142,7 +142,7 @@ namespace Code.Scripts.GridSystem
         {
             _root.Q<Label>("name").text = "Grass";
             _root.Q<Label>("status").text =
-                $"Click to buy and till. Cost: {FarmingFrenzyColors.PriceRichText(tile.Cost)}";
+                $"Click to buy and till. Cost: {FarmingFrenzyColors.PriceRichText(tile.Cost * 4)}";
         }
 
         private void BuildFarmlandTooltip([NotNull] GridTile _)

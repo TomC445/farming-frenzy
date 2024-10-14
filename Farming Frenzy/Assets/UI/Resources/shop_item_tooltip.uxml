@@ -10,7 +10,7 @@
                     <ui:Label text="Growth:" style="-unity-text-align: middle-left;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="value_1" style="flex-grow: 0;">
-                    <ui:Label text="$XXX" name="cost" style="color: rgb(241, 107, 82);" />
+                    <ui:Label text="XXXG" name="cost" style="color: rgb(241, 107, 82);" />
                     <ui:Label text="&gt;&gt;&gt;" name="growth" style="color: rgb(251, 246, 75); -unity-font-style: bold;" />
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -21,7 +21,7 @@
                     <ui:Label text="Fruiting:" style="color: rgb(255, 255, 255);" />
                 </ui:VisualElement>
                 <ui:VisualElement name="value_2" style="flex-grow: 1;">
-                    <ui:Label text="$XXX" name="yield" style="color: rgb(188, 163, 31);" />
+                    <ui:Label text="XXXG" name="yield" style="color: rgb(188, 163, 31);" />
                     <ui:Label text="&gt;&gt;&gt;" name="fruiting" style="-unity-font-style: bold;" />
                 </ui:VisualElement>
             </ui:VisualElement>

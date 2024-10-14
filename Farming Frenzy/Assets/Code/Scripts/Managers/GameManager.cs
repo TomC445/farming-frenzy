@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using Code.Scripts.Menus;
+using Object = UnityEngine.Object;
 
 namespace Code.Scripts.Managers
 {
@@ -15,7 +16,9 @@ namespace Code.Scripts.Managers
         private static readonly int NightTime = Animator.StringToHash("NightTime");
 
         #region Editor Fields
+
         [Header("Menus")]
+        [SerializeField] private Canvas _canvas;
         [SerializeField] private GameObject _pauseMenu;
         [SerializeField] private GameObject _shopMenu;
         [SerializeField] private GameObject _gameOverMenu;
@@ -24,9 +27,12 @@ namespace Code.Scripts.Managers
         [SerializeField] private TextMeshProUGUI _dayText;
         [SerializeField] private TextMeshProUGUI _weekText;
         [SerializeField] private TextMeshProUGUI _quotaText;
+        [SerializeField] private TextMeshProUGUI _quotaPayText;
+        [SerializeField] private GameObject _quotaButton;
         [SerializeField] private Image _clockHand;
         [SerializeField] private Animator _dayNightAnimator;
         [SerializeField] private Image _quotaButtonImg;
+        [SerializeField] private GameObject _floatingTextPrefab;
         
         [Header("Game Options")]
         [SerializeField] private int _quota;
@@ -52,7 +58,9 @@ namespace Code.Scripts.Managers
         private int _weekCount;
         private int _currentQuotaPayment;
         private bool _animationStarted;
+        private float _lastFloatingText;
         private bool IsTimerRunning { get; set; }
+        private int QuotaPayPerClick => _quota / 10;
 
         public int _goats;
         private readonly string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
@@ -66,13 +74,14 @@ namespace Code.Scripts.Managers
             IsTimerRunning = true;
             _timeLeft = _dayTime * 7;
             // TODO standardise $ vs G
-            _quotaText.text = $"You Owe: <b><u>{_quota-_currentQuotaPayment}G</u></b>";
+            SetupQuotaText();
             _goats = 0;
             _quotaClose = false;
             _quotaBaseCol = _quotaButtonImg.color;
             _quotaPaymentLeft = _quota;
             _playFirstClockSound = false;
             _playSecondClockSound = false;
+            ShopUI.Instance.SetHidden(false);
         }
 
         private void Awake()
@@ -114,8 +123,27 @@ namespace Code.Scripts.Managers
             _timerText.text = $"{minutes:00}:{seconds:00}";
         }
 
+        public void ShowFloatingText(string text)
+        {
+            if (_lastFloatingText != 0 && Time.time - _lastFloatingText < 0.5f)
+            {
+                return;
+            }
+
+            _lastFloatingText = Time.time;
+
+            var id = Quaternion.identity;
+            var pos = Input.mousePosition;
+            pos.z = 0;
+
+            print(pos);
+
+            var floatingText = Instantiate(_floatingTextPrefab, pos, id, _canvas.transform);
+            floatingText.GetComponent<FloatingText>().SetText(text, pos);
+        }
+
         private void UpdateQuotaClose() {
-            if (!_quotaClose && (_timeLeft <= _dayTime*3 + 2 && _quotaPaymentLeft > 0))
+            if (!_quotaClose && _timeLeft <= _dayTime * 3 + 2 && _quotaPaymentLeft > 0)
             {
                 _quotaClose = true;           
                 _quotaButtonImg.color = Color.red;          
@@ -186,8 +214,7 @@ namespace Code.Scripts.Managers
                 if(rightDayForSpawn && !reducedSpawnDay)
                 {
                     var week = Mathf.CeilToInt(_dayCount / 7.0f);
-                    var numEnemies = Random.Range(_enemyDifficulty, _enemyDifficulty + 1) * Mathf.RoundToInt((float) Math.Pow(week, 2));
-                    //AudioManager.Instance.IncreaseGoats(numEnemies);
+                    var numEnemies = Math.Max(1, Mathf.RoundToInt((float) Math.Pow(week - 1, 2)));
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                 }
 
@@ -229,9 +256,19 @@ namespace Code.Scripts.Managers
             Paused = false;
         }
 
-        public void PayQuota(int amount)
+        private void SetupQuotaText()
+        {
+            _quotaText.text = $"You Owe: <b><u>{_quota - _currentQuotaPayment}G</u></b>";
+            var canPay = Math.Min(_quota - _currentQuotaPayment, QuotaPayPerClick);
+            _quotaPayText.text = $"Pay {canPay}G\n(Shift-click to pay max)";
+        }
+
+        public void PayQuota()
         {
             if (_currentQuotaPayment >= _quota) return;
+
+            var amount = QuotaPayPerClick;
+            
             var diff = _quota - _currentQuotaPayment;
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
@@ -244,9 +281,11 @@ namespace Code.Scripts.Managers
             if (amount == 0 || !PlayerController.Instance.TryPurchase(amount)) return;
 
             AudioManager.Instance.PlaySFX("kaching");
+            _quotaButton.GetComponent<Animator>().Play("QuotaClick");
+
             _currentQuotaPayment += amount;
             _quotaPaymentLeft = _quota - _currentQuotaPayment;
-            _quotaText.text = $"You Owe: <b><u>{_quota - _currentQuotaPayment}G</u></b>";
+            SetupQuotaText();
         }
 
         private void CheckGameOver()
@@ -271,6 +310,8 @@ namespace Code.Scripts.Managers
                     AudioManager.Instance.ToggleMusic();
                     _score.text = $"You got to <u>week {Mathf.CeilToInt(_dayCount / 7.0f)}</u>";
                     _gameOverMenu.SetActive(true);
+                    ShopUI.Instance.SetHidden(true);
+                    PlayerController.Instance.SetPickedCursor(PlayerController.CursorState.Default, null, null);
                     return;
                 }
             }
@@ -284,7 +325,7 @@ namespace Code.Scripts.Managers
             _quotaButtonImg.color = _quotaBaseCol;
             _playFirstClockSound = false;
             _playSecondClockSound = true;
-            _quotaText.text = $"You Owe: <b><u>{_quota-_currentQuotaPayment}G</u></b>";
+            SetupQuotaText();
         }
         #endregion
     }

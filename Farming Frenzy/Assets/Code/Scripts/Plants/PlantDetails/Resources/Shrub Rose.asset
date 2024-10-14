@@ -24,7 +24,7 @@ MonoBehaviour:
   _dryoutRate: 0
   _maturationCycle: 0
   _fruitingCycle: -1
-  flavorText: Like the stinging berry,<br>but far tankier
+  flavorText: Like the blister berry,<br>but far sturdier
   power: 4
   _tier: 3
   _price: 20

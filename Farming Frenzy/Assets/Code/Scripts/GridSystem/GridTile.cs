@@ -1,3 +1,4 @@
+using System;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -108,13 +109,43 @@ namespace Code.Scripts.GridSystem
             _tiletext.SetActive(false);
             IsPurchased = true;
             CanBePurchased = true;
+
+            // Scale the 2x2 highlight back to 1x1
+            _highlight.transform.localPosition = Vector3.zero;
+            _highlight.transform.localScale = Vector3.one;
         }
 
         public void MakePurchasable(Sprite tile)
         {
             _renderer.color = Color.white;
             _renderer.sprite = tile;
+    
+            if (!CanBePurchased)
+            {
+                // Make the highlight & 40gp text cover all the other tiles in this 2x2 block
+                var pos = new Vector2((int) transform.position.x, (int) transform.position.y);
+                var bl = new Vector2((int)pos.x - (int)pos.x % 2, (int)pos.y - (int)pos.y % 2);
+
+                var toBl = bl - pos;
+                var xShift = (int) -toBl.x; // 1 or 0
+                var yShift = (int) -toBl.y; // 1 or 0
+            
+                toBl += new Vector2(1, 1); // Correct pos of highlight to centre for BL
+
+                var newPos = toBl / 2.0f + xShift * Vector2.left / 2.0f + yShift * Vector2.down / 2.0f;
+                _highlight.transform.localPosition = newPos;
+                _highlight.transform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
+                _tiletext.transform.localPosition = newPos;
+                _tiletext.transform.localScale = new Vector3(2.0f, 2.0f, 1.0f);
+            }
+    
             CanBePurchased = true;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = new Color(1, 0, 0, 0.5f);
+            Gizmos.DrawWireCube(transform.position, new Vector3(1, 1, 1));
         }
 
         public void LockTile()

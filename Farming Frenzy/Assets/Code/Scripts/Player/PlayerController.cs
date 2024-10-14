@@ -94,6 +94,7 @@ namespace Code.Scripts.Player
             return true;
         }
 
+
         public void IncreaseMoney(int amount)
         {
             _money += amount;

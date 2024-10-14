@@ -25,6 +25,11 @@ namespace Code.Scripts.Menus
             InitShop();
         }
 
+        public void SetHidden(bool hidden)
+        {
+            _root.style.display = hidden ? DisplayStyle.None : DisplayStyle.Flex;
+        }
+
         public void InitShop()
         {
             _root = ((UIDocument)gameObject.GetComponent(typeof(UIDocument))).rootVisualElement;
@@ -65,7 +70,7 @@ namespace Code.Scripts.Menus
             ui.Q<Label>("plant_name").text = data.name;
 
             var shopEntryPrice = ui.Q<Label>("price");
-            shopEntryPrice.text = $"${data._price}";
+            shopEntryPrice.text = $"{data._price}G";
 
             ui.RegisterCallback<ClickEvent>(_ =>
             {
@@ -77,8 +82,8 @@ namespace Code.Scripts.Menus
             VisualElement tooltip = _itemTooltipTemplate.Instantiate();
             tooltip.Q<Label>("plant_name").text = data.name;
             var tooltipPrice = tooltip.Q<Label>("cost");
-            tooltipPrice.text = $"${data._price}";
-            tooltip.Q<Label>("yield").text = $"${data._goldGenerated}";
+            tooltipPrice.text = $"{data._price}G";
+            tooltip.Q<Label>("yield").text = $"{data._goldGenerated}G";
 
             var flavour = tooltip.Q<Label>("flavour");
             if (!string.IsNullOrEmpty(data.flavorText))

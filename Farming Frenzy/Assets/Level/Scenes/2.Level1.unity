@@ -784,25 +784,13 @@ MonoBehaviour:
       - m_Target: {fileID: 2076072451}
         m_TargetAssemblyTypeName: Code.Scripts.Managers.GameManager, Assembly-CSharp
         m_MethodName: PayQuota
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 10
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 516907877}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: Play
-        m_Mode: 5
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: QuotaClick
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &82416618
@@ -6556,7 +6544,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &240561147
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8647,7 +8635,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: ca9ee569112d1f64a87ddb64a60bc6fb, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: ea8c438a3ffb06142abb7e1ea36b708b, type: 3}
-  m_SortingOrder: 5
+  m_SortingOrder: 4
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
@@ -9486,7 +9474,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6939532537703411968, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 183.33337
       objectReference: {fileID: 0}
     - target: {fileID: 6939532537703411968, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10176,7 +10164,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &671297832
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11042,6 +11030,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1784166926916036344, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 92.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784166926916036344, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 2485439184916186890, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -11086,9 +11082,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpawnPos top farleft
       objectReference: {fileID: 0}
+    - target: {fileID: 3407742692878091086, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 35.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3407742692878091086, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
     - target: {fileID: 7165644971396952127, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
       propertyPath: m_Name
       value: SpawnPos bottom right
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289602679793936635, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 34.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289602679793936635, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 61.8
       objectReference: {fileID: 0}
     - target: {fileID: 7841672081320226222, guid: 53225168ad3e1884f8f9beabb9e6aae0, type: 3}
       propertyPath: m_Name
@@ -11660,10 +11672,10 @@ RectTransform:
   - {fileID: 697990100}
   - {fileID: 1950695499}
   - {fileID: 509353601}
-  - {fileID: 931209419}
   - {fileID: 1500048620}
   - {fileID: 1357035518}
   - {fileID: 883202662}
+  - {fileID: 931209419}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -13442,7 +13454,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &986279349
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19693,6 +19705,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6ec6183444669da42912472c1417c3c1, type: 3}
   - {fileID: 21300000, guid: 05f09165fffc6276a8cf96e9f93e4388, type: 3}
   - {fileID: 21300000, guid: ebd2369760c83410584e96b734a7db20, type: 3}
+  - {fileID: -574154845, guid: fbe97388bbd0efd429abe88df1b592f6, type: 3}
   _trees: {fileID: 554150539}
   _rocks: {fileID: 60141673}
   _plant: {fileID: 581491179377338265, guid: 53d6a981d86211b4a9ca73cb7ddb628a, type: 3}
@@ -20299,7 +20312,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -723.86914, y: 367.12506}
+  m_AnchoredPosition: {x: -723.86914, y: 367.12512}
   m_SizeDelta: {x: 426.0437, y: 288.4062}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1713256143
@@ -22186,7 +22199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _groundSprite: {fileID: 1127701438, guid: fbe97388bbd0efd429abe88df1b592f6, type: 3}
   _money: 90
-  SprayPurchaseAmount: 5
+  SprayPurchaseAmount: 7
   _defaultCursor: {fileID: 2800000, guid: 63145efc7cad540428652679b417402a, type: 3}
   _wateringCanCursor: {fileID: 0}
   _shovelCursor: {fileID: 2800000, guid: b8a8d73aaec3cb89c86f4f4a1176a032, type: 3}
@@ -23692,6 +23705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6311947098618504cae929d1b702d12e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvas: {fileID: 819718128}
   _pauseMenu: {fileID: 883202661}
   _shopMenu: {fileID: 509353600}
   _gameOverMenu: {fileID: 931209418}
@@ -23700,9 +23714,12 @@ MonoBehaviour:
   _dayText: {fileID: 840322525}
   _weekText: {fileID: 970710198}
   _quotaText: {fileID: 674283065}
+  _quotaPayText: {fileID: 2595270}
+  _quotaButton: {fileID: 516907875}
   _clockHand: {fileID: 757862153}
   _dayNightAnimator: {fileID: 697990103}
   _quotaButtonImg: {fileID: 2058461274}
+  _floatingTextPrefab: {fileID: 7044524255995285942, guid: 5bb772986ba87219e83c41ba410f0301, type: 3}
   _quota: 100
   _quotaIncreaseRate: 2
   _timerRate: 20
@@ -24407,7 +24424,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6939532537703411968, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -183.33333
       objectReference: {fileID: 0}
     - target: {fileID: 6939532537703411968, guid: 601de24069e67f74f884c866332acd17, type: 3}
       propertyPath: m_LocalPosition.y
