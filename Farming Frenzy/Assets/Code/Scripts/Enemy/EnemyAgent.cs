@@ -21,7 +21,7 @@ namespace Code.Scripts.Enemy
         private static readonly int Movement = Animator.StringToHash("Movement");
 
         #region Editor Fields
-        [SerializeField] private int _health;
+        [SerializeField] private float _health;
         [SerializeField] private int _maxHealth;
         [SerializeField] private GameObject _healthBar;
         [SerializeField] private Slider _healthBarController;
@@ -204,11 +204,11 @@ namespace Code.Scripts.Enemy
         /// </summary>
         /// <param name="amount"></param>
         /// <returns>True if the animal is now running away</returns>
-        private bool TakeDamage(int amount)
+        private bool TakeDamage(float amount)
         {
             _health = Math.Max(0, _health - amount);
             _healthBarVisible.SetActive(true);
-            _healthBarController.value = _health / (float) _maxHealth;
+            _healthBarController.value = _health / _maxHealth;
             print($"Goat took {amount} damage! HP = {_health}");
 
             if (_health > 0) return false;

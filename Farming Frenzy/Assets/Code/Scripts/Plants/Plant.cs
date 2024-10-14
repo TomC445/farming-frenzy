@@ -8,6 +8,7 @@ using Code.Scripts.Plants.Powers.PowerExtension;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Code.Scripts.Plants
@@ -24,7 +25,7 @@ namespace Code.Scripts.Plants
         private int _growthSpriteIndex;
         private bool _readyToHarvest;
         public BoxCollider2D Collider { get; private set; }
-        private BoxCollider2D _aoeCollider;
+        public BoxCollider2D aoeCollider;
         private float _healRate;
         private float _fruitingRate;
         private float _health;
@@ -124,7 +125,7 @@ namespace Code.Scripts.Plants
                 _state = GrowthState.Seedling;
                 _secsSinceGrowth = 0.0f;
                 Collider = GetComponent<BoxCollider2D>();
-                _aoeCollider = transform.GetChild(0).GetComponent<BoxCollider2D>();
+                aoeCollider = transform.GetChild(0).GetComponent<BoxCollider2D>();
                 _health = pdata._health;
                 _healthBar = healthBar.transform.Find("Canvas").Find("Slider").gameObject;
                 hBarController = healthBar.transform.Find("Canvas").Find("Slider").gameObject.GetComponent<Slider>();
@@ -133,8 +134,8 @@ namespace Code.Scripts.Plants
                 {
                     Collider.size = new Vector2(3, 2);
                     Collider.offset = new Vector2(0, 0.5f);
-                    _aoeCollider.size *= new Vector2(3, 2);
-                    _aoeCollider.offset *= new Vector2(0, 0.5f);
+                    aoeCollider.size *= new Vector2(3, 2);
+                    aoeCollider.offset *= new Vector2(0, 0.5f);
                 }
        
                 _tile = tile;
@@ -151,10 +152,10 @@ namespace Code.Scripts.Plants
             if (Time.time >= _nextHealTime)
             {
                 // For efficiency, only recalculate these every 2s
-                _healRate = LegumePower.CalculateGrowthModifier(_aoeCollider);
+                _healRate = LegumePower.CalculateGrowthModifier(aoeCollider);
                 _fruitingRate = -1f; // Both of the next two are always 1.0f + something, so we account for that
-                _fruitingRate += PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(_aoeCollider) : 1.0f;
-                _fruitingRate += BananaPower.CalculateFruitingModifier(_aoeCollider);
+                _fruitingRate += PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(aoeCollider) : 1.0f;
+                _fruitingRate += BananaPower.CalculateFruitingModifier(aoeCollider);
     
                 _nextHealTime = Time.time + 2.0f;
 

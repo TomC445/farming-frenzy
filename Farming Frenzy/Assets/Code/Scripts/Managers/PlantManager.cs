@@ -28,6 +28,7 @@ namespace Code.Scripts.Managers
         public readonly PlantAoeState CornPowerAoe = new();
         public readonly PlantAoeState LegumePowerAoe = new();
         public readonly PlantAoeState BananaPowerAoe = new();
+        public readonly PlantAoeState ChiliPowerAoe = new();
         #endregion
 
         #region Methods

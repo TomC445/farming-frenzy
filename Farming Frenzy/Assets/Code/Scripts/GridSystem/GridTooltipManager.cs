@@ -76,6 +76,7 @@ namespace Code.Scripts.GridSystem
             AddCornModifier(thing);
             AddLegumeModifier(thing);
             AddBananaModifier(thing);
+            AddChiliModifier(thing);
         }
 
         private void AddLegumeModifier(Collider2D thing)
@@ -92,7 +93,22 @@ namespace Code.Scripts.GridSystem
                 _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None;
             }
         }
-        
+
+        private void AddChiliModifier(Collider2D thing)
+        {
+            var damageMod = ChiliPower.CalculateDamageModifier(thing);
+            var dmgPct = (int) Math.Round(damageMod * 100.0f);
+            if (dmgPct > 100)
+            {
+                _root.Q<Label>("chili_modifier").text = $"Defensive plant damage: <b>+{dmgPct - 100}%</b>";
+                _root.Q<Label>("chili_modifier").style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                _root.Q<Label>("chili_modifier").style.display = DisplayStyle.None;
+            }
+        }
+
         private void AddCornModifier(Collider2D thing)
         {
             var cornModifier = CornPower.CalculateCornFruitingModifier(thing);

@@ -51,7 +51,7 @@ namespace Code.Scripts.Menus
                 "Pumpkin", "Banana", "Beans", "Shrub Rose", // "Scarecrow", "Marigold",
 
                 // Tier 3
-                "Cauli",
+                "Cauli", "Chili",
             };
 
             foreach (var plant in plants)

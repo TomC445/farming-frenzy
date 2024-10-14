@@ -16,7 +16,8 @@ namespace Code.Scripts.Plants.Powers
         Corn = 3,
         Nettle = 4,
         Bean = 5,
-        Banana = 6
+        Banana = 6,
+        Chili = 7
     }
 
     namespace PowerExtension
@@ -28,6 +29,7 @@ namespace Code.Scripts.Plants.Powers
             private static readonly Object CornPowerPrefab = Resources.Load("Corn Power");
             private static readonly Object NettlePowerPrefab = Resources.Load("Nettle Power");
             private static readonly Object BananaPowerPrefab = Resources.Load("Banana Power");
+            private static readonly Object ChiliPowerPrefab = Resources.Load("Chili Power");
 
             public static void AddTo(this PowerKind kind, GameObject gameObject)
             {
@@ -42,6 +44,7 @@ namespace Code.Scripts.Plants.Powers
                     PowerKind.Corn => CornPowerPrefab,
                     PowerKind.Nettle => NettlePowerPrefab,
                     PowerKind.Banana => BananaPowerPrefab,
+                    PowerKind.Chili => ChiliPowerPrefab,
                     PowerKind.None => null,
                     _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
                 };
@@ -63,6 +66,7 @@ namespace Code.Scripts.Plants.Powers
                 PowerKind.Banana =>$"Nearby plants fruit \n{BananaPower.EffectPercent}% " +
                                    $"faster (up to {BananaPower.MaxEffectPercent}%)",
                 PowerKind.Nettle => "Animals take damage when\nthey eat this plant",
+                PowerKind.Chili => $"Defensive plants do +{ChiliPower.EffectPercent}%\ndamage (up to {ChiliPower.MaxEffectPercent}%)",
                 PowerKind.None => "",
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
@@ -79,6 +83,8 @@ namespace Code.Scripts.Plants.Powers
                         return PlantManager.Instance.CornPowerAoe;
                     case PowerKind.Banana:
                         return PlantManager.Instance.BananaPowerAoe;
+                    case PowerKind.Chili:
+                        return PlantManager.Instance.ChiliPowerAoe;
                     case PowerKind.None:
                     case PowerKind.Nettle:
                         break;
