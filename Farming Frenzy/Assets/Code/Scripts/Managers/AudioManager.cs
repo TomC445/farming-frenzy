@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
+    private Slider _masterSlider;
+    private Slider _bgmSlider;
+    private Slider _sfxSlider;
     #endregion
 
     #region Properties
@@ -42,7 +46,24 @@ public class AudioManager : MonoBehaviour
         SetInitialMusicVolume();
     }
 
+    void Update()
+    {
+        GameObject[] sliders = GameObject.FindGameObjectsWithTag("slider");
+        if(sliders.Length > 0) {
+            _masterSlider = sliders[0].GetComponent<Slider>();
+            _bgmSlider = sliders[1].GetComponent<Slider>();
+            _sfxSlider = sliders[2].GetComponent<Slider>();
+            SetSliders();
+        }
+    }
+
+
     #region Methods
+    public void SetSliders() {
+        _masterSlider.onValueChanged.AddListener(SetMasterVolume);
+        _bgmSlider.onValueChanged.AddListener(SetMusicVolume);
+        _sfxSlider.onValueChanged.AddListener(SetSoundFXVolume);
+    }
     public void PlayMusic(string name)
     {
         var sound = Array.Find(_musicSounds, x => x.name == name);
