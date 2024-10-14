@@ -60,7 +60,6 @@ namespace Code.Scripts.Enemy
             _gameManager = GameObject.Find("[GameManager]").GetComponent<GameManager>();
             firstUpdate = false;
             _timeToNextPlay = Random.Range(2,9);
-            _audioManager.PlayRandomGoatNoise();
             _plantTransform = GameObject.Find("Plants").transform;
             _spawnPoints = GameObject.Find("EnemySpawnPositions").transform;
             _agent = GetComponent<NavMeshAgent>();

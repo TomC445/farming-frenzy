@@ -20,7 +20,10 @@ namespace Code.Scripts.Managers
         [Header("Menus")]
         [SerializeField] private Canvas _canvas;
         [SerializeField] private GameObject _pauseMenu;
+        [SerializeField] private GameObject _pauseBaseMenu;
         [SerializeField] private GameObject _shopMenu;
+        [SerializeField] private GameObject _helpMenu;
+
         [SerializeField] private GameObject _gameOverMenu;
         [SerializeField] private TextMeshProUGUI _score;
         [SerializeField] private TextMeshProUGUI _timerText;
@@ -82,6 +85,13 @@ namespace Code.Scripts.Managers
             _playFirstClockSound = false;
             _playSecondClockSound = false;
             ShopUI.Instance.SetHidden(false);
+            //Start up tutorial on first play
+            if(AudioManager.Instance.gameStart) {
+                print("Tut opened");
+                PauseGame();
+                OpenTutorial();
+            }
+            AudioManager.Instance.gameStart = false;
         }
 
         private void Awake()
@@ -214,6 +224,9 @@ namespace Code.Scripts.Managers
                     var week = Mathf.CeilToInt(_dayCount / 7.0f);
                     var numEnemies = Math.Max(1, Mathf.RoundToInt((float) Math.Pow(week - 1, 2)));
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
+                    for(int i = 0; i < Math.Min(numEnemies, 5); i++) {
+                        AudioManager.Instance.PlayRandomGoatNoise();
+                    }
                 }
 
                 if (_dayCount % 7 == 0)
@@ -245,10 +258,18 @@ namespace Code.Scripts.Managers
             PlayerController.Instance.SetPausedCursor();
         }
 
+        private void OpenTutorial()
+        {
+            _pauseBaseMenu.gameObject.SetActive(false);
+            _helpMenu.gameObject.SetActive(true);
+        }
+
         public void ResumeGame()
         {
             _pauseMenu.gameObject.SetActive(false);
             _shopMenu.gameObject.SetActive(true);
+            _pauseBaseMenu.gameObject.SetActive(true);
+            _helpMenu.gameObject.SetActive(false);
             _shopMenu.GetComponent<ShopUI>().InitShop();
             Time.timeScale = 1f;
             Paused = false;

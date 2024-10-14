@@ -21,6 +21,14 @@ public class AudioManager : MonoBehaviour
     private float _masterValue;
     private float _bgmValue;
     private float _sfxValue;
+
+    private float _timer = 0;
+
+    private string[] limitSounds;
+    private float[] limitSoundsCounters;
+    private bool playSfx = true;
+    [HideInInspector]
+    public bool gameStart = false;
     #endregion
 
     #region Properties
@@ -50,6 +58,9 @@ public class AudioManager : MonoBehaviour
         _masterValue = -1;
         _bgmValue = -1;
         _sfxValue = -1;
+        limitSounds = new string[] {"picking","digMaybe"};
+        limitSoundsCounters = new float[] {0,0};
+        gameStart = true;
     }
 
     void Update()
@@ -64,6 +75,8 @@ public class AudioManager : MonoBehaviour
             if(_sfxValue != -1) _sfxSlider.value = _sfxValue;
             SetSliders();
         }
+
+        TrackSFX();
     }
 
 
@@ -72,6 +85,22 @@ public class AudioManager : MonoBehaviour
         _masterSlider.onValueChanged.AddListener(SetMasterVolume);
         _bgmSlider.onValueChanged.AddListener(SetMusicVolume);
         _sfxSlider.onValueChanged.AddListener(SetSoundFXVolume);
+    }
+
+    private void TrackSFX() {
+        _timer += Time.deltaTime;
+        if(_timer >= 1.0f) {
+            bool found = false;
+            for(int i = 0; i < limitSoundsCounters.Length; i++) {
+                if(limitSoundsCounters[i] > 5) {
+                    playSfx = false;
+                    found = true;
+                }
+                limitSoundsCounters[i] = 0;
+            }
+            if(!found) playSfx = true;
+            _timer = 0f;
+        }
     }
     public void PlayMusic(string name)
     {
@@ -91,12 +120,18 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(string name)
     {
+
+        if (Array.IndexOf(limitSounds, name) != -1)
+        {
+            limitSoundsCounters[Array.IndexOf(limitSounds, name)] += 1;
+        }
         var sound = Array.Find(_sfxSounds, x => x.name == name);
         if (sound == null)
         {
             Debug.LogError("Sound Not Found");
             return;
         }
+        if(!playSfx && Array.IndexOf(limitSounds, name) != -1) return;
         _sfxSource.PlayOneShot(sound);
     }
 
