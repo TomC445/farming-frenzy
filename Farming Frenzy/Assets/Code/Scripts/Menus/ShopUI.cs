@@ -4,6 +4,7 @@ using Code.GrowthRateExtension;
 using Code.Scripts.GridSystem;
 using Code.Scripts.Plants.Powers.PowerExtension;
 using Code.Scripts.Player;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -19,10 +20,16 @@ namespace Code.Scripts.Menus
 
         private static ShopUI _instance;
         public static ShopUI Instance => _instance ??= GameObject.Find("Shop").GetComponent<ShopUI>();
+        [CanBeNull] public VisualElement lastSelectedItem;
 
         private void Start()
         {
             InitShop();
+        }
+
+        public void SetHidden(bool hidden)
+        {
+            _root.style.display = hidden ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         public void InitShop()
@@ -41,10 +48,10 @@ namespace Code.Scripts.Menus
                 "Tomato", "Corn", "Clover", "Blister Berry",
                 
                 // Tier 2
-                "Pumpkin", "Banana", // "Scarecrow", "Marigold",
+                "Pumpkin", "Banana", "Beans", "Shrub Rose", // "Scarecrow", "Marigold",
 
                 // Tier 3
-                "Beans", "Shrub Rose" //, "Tall Grass", "Apple Tree", "Sprinkler",
+                "Cauli",
             };
 
             foreach (var plant in plants)
@@ -65,20 +72,28 @@ namespace Code.Scripts.Menus
             ui.Q<Label>("plant_name").text = data.name;
 
             var shopEntryPrice = ui.Q<Label>("price");
-            shopEntryPrice.text = $"${data._price}";
+            shopEntryPrice.text = $"{data._price}G";
 
             ui.RegisterCallback<ClickEvent>(_ =>
             {
                 GridManager.Instance.SetActivePlant(data.name);
+
+                if (lastSelectedItem != null)
+                {
+                    lastSelectedItem.style.backgroundColor = FarmingFrenzyColors.ShopItemBackground;
+                }
+    
                 print($"Clicked on a {data.name}");
+                lastSelectedItem = ui;
+                ui.style.backgroundColor = FarmingFrenzyColors.HighlightGreen;
             });
 
             // Set up tooltip
             VisualElement tooltip = _itemTooltipTemplate.Instantiate();
             tooltip.Q<Label>("plant_name").text = data.name;
             var tooltipPrice = tooltip.Q<Label>("cost");
-            tooltipPrice.text = $"${data._price}";
-            tooltip.Q<Label>("yield").text = $"${data._goldGenerated}";
+            tooltipPrice.text = $"{data._price}G";
+            tooltip.Q<Label>("yield").text = $"{data._goldGenerated}G";
 
             var flavour = tooltip.Q<Label>("flavour");
             if (!string.IsNullOrEmpty(data.flavorText))

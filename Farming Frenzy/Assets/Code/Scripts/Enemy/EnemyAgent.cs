@@ -21,8 +21,8 @@ namespace Code.Scripts.Enemy
         private static readonly int Movement = Animator.StringToHash("Movement");
 
         #region Editor Fields
-        [SerializeField] private float _health = 3;
-        [SerializeField] private float _maxHealth = 3;
+        [SerializeField] private int _health;
+        [SerializeField] private int _maxHealth;
         [SerializeField] private GameObject _healthBar;
         [SerializeField] private Slider _healthBarController;
         [SerializeField] private GameObject _healthBarVisible;
@@ -41,7 +41,7 @@ namespace Code.Scripts.Enemy
         [CanBeNull] private Coroutine _eatingCoroutine;
         private Renderer _renderer;
 
-        public bool CanAttack => _currentState != State.Scared && _health >= 0;
+        public bool CanAttack => _currentState != State.Scared && _health > 0;
         private const float Damage = 5;
         private float _timeToNextPlay;
         private float _timer;
@@ -206,12 +206,12 @@ namespace Code.Scripts.Enemy
         /// <returns>True if the animal is now running away</returns>
         private bool TakeDamage(int amount)
         {
-            _health -= amount;
+            _health = Math.Max(0, _health - amount);
             _healthBarVisible.SetActive(true);
-            _healthBarController.value = _health/_maxHealth;
+            _healthBarController.value = _health / (float) _maxHealth;
             print($"Goat took {amount} damage! HP = {_health}");
 
-            if (_health >= 0) return false;
+            if (_health > 0) return false;
 
             RunAway();
             return true;
@@ -242,16 +242,17 @@ namespace Code.Scripts.Enemy
             print($"I am goat; _health = {_health}; _state = {_currentState}; _target = {_target?.gameObject}; stopped = {_agent.isStopped}");
 
             if (!CanAttack) return;
-            // TODO make a "-${SprayPurchaseAmount}" floating text
-            if (!PlayerController.Instance.TryPurchase(PlayerController.Instance.SprayPurchaseAmount)) return;
-            
+            if (!PlayerController.Instance.TryPurchase(PlayerController.Instance.SprayPurchaseAmount))
+            {
+                GameManager.Instance.ShowFloatingText("Not enough gold");
+                return;
+            }
+
+            GameManager.Instance.ShowFloatingText($"-{PlayerController.Instance.SprayPurchaseAmount}G");
             PlayerController.Instance.SprayParticles();
 
-            if (!PlayerController.Instance.TryPurchase(3)) return;
-
             _audioManager.PlaySFX("spray");
-            // TODO make a "-$2" floating text
-            TakeDamage(5);
+            TakeDamage(_maxHealth);
         }
         #endregion
 

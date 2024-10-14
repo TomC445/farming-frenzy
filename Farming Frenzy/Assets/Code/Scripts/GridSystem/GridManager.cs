@@ -121,9 +121,7 @@ namespace Code.Scripts.GridSystem
             _groundTiles = new List<GridTile>();
             _obstructedTiles = new List<GridTile>();
             _tiles = new Dictionary<Vector2, GridTile>();
-            
-            print("Called generate grid");
-            
+
             for (var x = 0; x < width; ++x)
             {
                 for (var y = 0; y < height; ++y)

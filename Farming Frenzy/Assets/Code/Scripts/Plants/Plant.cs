@@ -89,6 +89,15 @@ namespace Code.Scripts.Plants
             }
 
             if (!Input.GetMouseButton(0)) return;
+            
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var hit = Physics2D.GetRayIntersection(ray, 1500f);
+
+            if (hit.transform.gameObject != gameObject)
+            {
+                _isMouseOverPlant = false;
+                return;
+            }
 
             switch (cursor)
             {
@@ -96,17 +105,7 @@ namespace Code.Scripts.Plants
                     HarvestPlant();
                     break;
                 case PlayerController.CursorState.Shovel when !isContextual: // Prevent accidental digging
-                    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    var hit = Physics2D.GetRayIntersection(ray, 1500f);
-
-                    if (hit.transform.gameObject == gameObject)
-                    {
-                        DigPlant();
-                    }
-                    else
-                    {
-                        _isMouseOverPlant = false;
-                    }
+                    DigPlant();
 
                     break;
                 case PlayerController.CursorState.Default:
@@ -156,9 +155,7 @@ namespace Code.Scripts.Plants
                 _fruitingRate = -1f; // Both of the next two are always 1.0f + something, so we account for that
                 _fruitingRate += PlantName == "Corn" ? CornPower.CalculateCornFruitingModifier(_aoeCollider) : 1.0f;
                 _fruitingRate += BananaPower.CalculateFruitingModifier(_aoeCollider);
-                
-                print($"My fruit rate is {_fruitingRate}");
-                
+    
                 _nextHealTime = Time.time + 2.0f;
 
                 _health = Math.Min(MaxHealth, _health + 2.0f * _healRate);
