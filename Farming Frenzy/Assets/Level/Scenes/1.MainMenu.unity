@@ -6329,7 +6329,7 @@ GameObject:
   - component: {fileID: 790867025}
   m_Layer: 5
   m_Name: BGMVolume
-  m_TagString: Untagged
+  m_TagString: slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12920,7 +12920,7 @@ GameObject:
   - component: {fileID: 1847169319}
   m_Layer: 5
   m_Name: MasterVolume
-  m_TagString: Untagged
+  m_TagString: slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36455,7 +36455,7 @@ GameObject:
   - component: {fileID: 2056660159}
   m_Layer: 5
   m_Name: SFXVolume
-  m_TagString: Untagged
+  m_TagString: slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
