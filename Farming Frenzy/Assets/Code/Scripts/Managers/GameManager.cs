@@ -232,6 +232,7 @@ namespace Code.Scripts.Managers
         public void PayQuota(int amount)
         {
             if (_currentQuotaPayment >= _quota) return;
+            var diff = _quota - _currentQuotaPayment;
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
                 var maxCanBuy = Math.Min(_quota - _currentQuotaPayment, PlayerController.Instance.Money);
@@ -239,12 +240,13 @@ namespace Code.Scripts.Managers
                 amount = maxCanBuy;
             }
 
+            amount = Math.Min(amount, diff);
             if (amount == 0 || !PlayerController.Instance.TryPurchase(amount)) return;
 
             AudioManager.Instance.PlaySFX("kaching");
             _currentQuotaPayment += amount;
-            _quotaPaymentLeft = _quota-_currentQuotaPayment;
-            _quotaText.text = $"You Owe: <b><u>{_quota-_currentQuotaPayment}G</u></b>";
+            _quotaPaymentLeft = _quota - _currentQuotaPayment;
+            _quotaText.text = $"You Owe: <b><u>{_quota - _currentQuotaPayment}G</u></b>";
         }
 
         private void CheckGameOver()
