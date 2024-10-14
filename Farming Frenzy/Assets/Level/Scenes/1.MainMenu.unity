@@ -1908,7 +1908,7 @@ AudioSource:
   m_GameObject: {fileID: 215684461}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1534433449243677265, guid: 1aa7a43ee54e76f41bb3d0f2c8027585, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -36453,6 +36453,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2056660158}
   - component: {fileID: 2056660159}
+  - component: {fileID: 2056660160}
   m_Layer: 5
   m_Name: SFXVolume
   m_TagString: slider
@@ -36545,6 +36546,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2056660160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056660157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b872d1e829a344499e8149fc6a7071, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2063444277
 PrefabInstance:
   m_ObjectHideFlags: 0

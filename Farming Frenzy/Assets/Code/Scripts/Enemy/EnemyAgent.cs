@@ -194,9 +194,10 @@ namespace Code.Scripts.Enemy
             
                 _target = closest;
                 _agent.SetDestination(closest.position);
-                _audioManager.PlaySFX("goatScared");
+                if(playSFX) _audioManager.PlaySFX("goatScared");
                 PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Spray);
                 _healthBarVisible.SetActive(false);
+                _gameManager._goats -= 1;
             }
         }
 
