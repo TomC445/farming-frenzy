@@ -20726,8 +20726,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.99180603, y: -132.04532}
-  m_SizeDelta: {x: 1427.7216, y: 784.072}
+  m_AnchoredPosition: {x: -18.37001, y: -140.31}
+  m_SizeDelta: {x: 1574.83, y: 899.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1729782514
 MonoBehaviour:
@@ -24196,6 +24196,7 @@ MonoBehaviour:
   _pauseBaseMenu: {fileID: 850253139}
   _shopMenu: {fileID: 509353600}
   _helpMenu: {fileID: 48309627}
+  _optionsMenu: {fileID: 1612758103}
   _gameOverMenu: {fileID: 931209418}
   _score: {fileID: 128282695}
   _timerText: {fileID: 1470863982}

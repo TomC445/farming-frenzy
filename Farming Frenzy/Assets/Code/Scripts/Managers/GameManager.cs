@@ -23,6 +23,7 @@ namespace Code.Scripts.Managers
         [SerializeField] private GameObject _pauseBaseMenu;
         [SerializeField] private GameObject _shopMenu;
         [SerializeField] private GameObject _helpMenu;
+        [SerializeField] private GameObject _optionsMenu;
 
         [SerializeField] private GameObject _gameOverMenu;
         [SerializeField] private TextMeshProUGUI _score;
@@ -67,6 +68,7 @@ namespace Code.Scripts.Managers
 
         public int _goats;
         private readonly string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+
         #endregion
 
         private void Start()
@@ -261,6 +263,7 @@ namespace Code.Scripts.Managers
         {
             _pauseBaseMenu.gameObject.SetActive(false);
             _helpMenu.gameObject.SetActive(true);
+            _shopMenu.gameObject.SetActive(false);
         }
 
         public void ResumeGame()
@@ -273,7 +276,8 @@ namespace Code.Scripts.Managers
             {
                 _shopMenu.GetComponent<ShopUI>().InitShop();
             }
-            
+
+            _optionsMenu.gameObject.SetActive(false);
             _pauseBaseMenu.gameObject.SetActive(true);
             _helpMenu.gameObject.SetActive(false);
 
