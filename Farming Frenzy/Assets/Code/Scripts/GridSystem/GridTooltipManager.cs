@@ -28,6 +28,7 @@ namespace Code.Scripts.GridSystem
         {
             _root = gameObject.GetComponent<UIDocument>().rootVisualElement;
             _root.visible = false;
+            _startedHoverTime = float.PositiveInfinity;
             _tooltip = _root.Q<VisualElement>("tooltip");
             _root.RegisterCallback<MouseMoveEvent>(_ => UpdatePosition());
         }
@@ -39,9 +40,9 @@ namespace Code.Scripts.GridSystem
                 _prevSizeY = _canvas.renderingDisplaySize.y;
                 foreach (var elt in _tooltip.Children())
                 {
-                    elt.style.fontSize = 20 / (1080 / _canvas.renderingDisplaySize.y); // TODO not cascading but does work
+                    elt.style.fontSize = 25 / (1080 / _canvas.renderingDisplaySize.y);
                 }
-                _tooltip.Q<Label>("name").style.fontSize = 25 / (1080 / _canvas.renderingDisplaySize.y);
+                _tooltip.Q<Label>("name").style.fontSize = 28 / (1080 / _canvas.renderingDisplaySize.y);
             }
 
             _tooltip.style.top = _canvas.renderingDisplaySize.y - Input.mousePosition.y + 25;
@@ -53,7 +54,7 @@ namespace Code.Scripts.GridSystem
             spawnedTile.OnTileHoverIn += HandleTileHoverIn;
             spawnedTile.OnTileHoverOut += _ => HandleHoverOut();
             // This is OK to just do directly as if we purchase it, we must be mousing over
-            spawnedTile.OnTileClicked += BuildFarmlandTooltip;
+            spawnedTile.OnTileClicked += _ => RebuildTooltip();
         }
         
         public void SubscribeObstacleEvents(Obstacle obstacle, string type)

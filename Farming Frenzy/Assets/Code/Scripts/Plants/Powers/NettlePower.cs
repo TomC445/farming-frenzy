@@ -10,13 +10,11 @@ namespace Code.Scripts.Plants.Powers
         public override float Damage => _damageMultiplier * BaseDamage;
         private Collider2D _plantCollider;
 
-        private void Start()
+        private void Awake()
         {
             _lastUpdate = Time.time;
             _plantCollider = transform.parent.gameObject.GetComponent<Plant>().aoeCollider;
         }
-
-        // TODO check aoe collider working right
 
         private void Update()
         {

@@ -1,4 +1,3 @@
-using System;
 using Code.Scripts.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -26,7 +25,6 @@ namespace Code.Scripts.GridSystem
         public bool IsLocked { get; private set; }
         public int Cost => _cost;
         public bool HasPlant;
-        private Color _startColor;
 
         public delegate void TileClicked(GridTile tile);
         public delegate void TileHoverIn(GridTile tile);
@@ -38,10 +36,6 @@ namespace Code.Scripts.GridSystem
         #endregion
 
         #region Methods
-        private void Start()
-        {
-            _startColor = _renderer.color;
-        }
 
         /// <summary>
         /// Awake is called when the script instance is being loaded.
@@ -76,7 +70,7 @@ namespace Code.Scripts.GridSystem
             OnTileHoverIn?.Invoke(this);
         }
 
-        private void OnMouseExit()
+        private void MouseOut()
         {
             _isMouseOver = false;
 
@@ -89,6 +83,11 @@ namespace Code.Scripts.GridSystem
             _tiletext.SetActive(false);
             _highlight.SetActive(false);
             OnTileHoverOut?.Invoke(this);
+        }
+
+        private void OnMouseExit()
+        {
+            MouseOut();
         }
 
         private void OnMouseDown()
@@ -175,6 +174,11 @@ namespace Code.Scripts.GridSystem
             if (_isMouseOver && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) {
                 OnTileClicked?.Invoke(this);
             }
+
+            if (!_tiletext.activeSelf && !_isMouseOver) return;
+            var ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
+            var hit = Physics2D.GetRayIntersection(ray, 1500f);
+            if (hit.transform?.gameObject != gameObject) MouseOut();
         }
 
         #endregion

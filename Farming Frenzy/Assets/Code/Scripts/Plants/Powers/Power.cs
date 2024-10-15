@@ -94,6 +94,25 @@ namespace Code.Scripts.Plants.Powers
 
                 return null;
             }
+
+            public static GameObject PlaceAoeIndicator(this PowerKind kind)
+            {
+                var indicator = new GameObject();
+                kind.AddTo(indicator);
+
+                foreach (Transform child in indicator.transform)
+                {
+                    foreach (var component in child.GetComponents<Component>())
+                    {
+                        if (component is Transform or SpriteRenderer) continue;
+                        Debug.Log("This component is a", component);
+                        Object.Destroy(component);
+                    }
+                }
+
+
+                return indicator;
+            }
         }
     }
 }

@@ -15,12 +15,16 @@ namespace Code.Scripts.Plants.Powers
         public const int MaxEffectPercent = 50;
         private SpriteRenderer _spriteRenderer;
 
-        private void Start()
+        private void Awake()
         {
             GetComponent<CircleCollider2D>().radius = 0.5f;
             transform.localScale = new Vector3(Radius - 0.1f, Radius - 0.1f, 1.0f);
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _spriteRenderer.sortingOrder = 1000; // EBA7CD
+        }
+
+        private void Start()
+        {
             _spriteRenderer.enabled = PlantManager.Instance.LegumePowerAoe.Visible;
             PlantManager.Instance.LegumePowerAoe.OnVisibilityChange += VisibilityChange;
         }

@@ -15,12 +15,16 @@ namespace Code.Scripts.Plants.Powers
         
         private SpriteRenderer _spriteRenderer;
 
-        private void Start()
+        private void Awake()
         {
             GetComponent<CircleCollider2D>().radius = 0.5f;
             transform.localScale = new Vector3(Radius - 0.1f, Radius - 0.1f, 1.0f);
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _spriteRenderer.sortingOrder = 1000;
+        }
+
+        private void Start()
+        {
             _spriteRenderer.enabled = PlantManager.Instance.BananaPowerAoe.Visible;
             PlantManager.Instance.BananaPowerAoe.OnVisibilityChange += VisibilityChange;
         }
@@ -28,6 +32,11 @@ namespace Code.Scripts.Plants.Powers
         private void VisibilityChange(bool visible)
         {
             _spriteRenderer.enabled = visible;
+        }
+
+        private void OnDestroy()
+        {
+            PlantManager.Instance.BananaPowerAoe.OnVisibilityChange -= VisibilityChange;
         }
 
         public static float CalculateFruitingModifier(Collider2D thing)

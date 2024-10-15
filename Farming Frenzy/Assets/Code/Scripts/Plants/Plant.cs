@@ -94,7 +94,7 @@ namespace Code.Scripts.Plants
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var hit = Physics2D.GetRayIntersection(ray, 1500f);
 
-            if (hit.transform.gameObject != gameObject)
+            if (hit.transform?.gameObject != gameObject)
             {
                 _isMouseOverPlant = false;
                 return;
