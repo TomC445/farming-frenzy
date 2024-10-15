@@ -10,8 +10,8 @@ namespace Code.Scripts.Plants.Powers
     public class ChiliPower : Power
     {
         private const float Radius = 6.0f;
-        public const int EffectPercent = 10;
-        public const int MaxEffectPercent = 50;
+        public const int EffectPercent = 100;
+        public const int MaxEffectPercent = 100;
 
         private SpriteRenderer _spriteRenderer;
 
