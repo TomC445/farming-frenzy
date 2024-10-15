@@ -28,7 +28,7 @@ MonoBehaviour:
   _dryoutRate: 0
   _maturationCycle: 6
   _fruitingCycle: 7
-  flavorText: Boosts nearby defensive plants
+  flavorText: Doubles nearby defensive<br>plant damage
   power: 7
   _tier: 3
   _price: 300

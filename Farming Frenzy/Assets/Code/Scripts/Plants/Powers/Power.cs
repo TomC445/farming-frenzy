@@ -66,7 +66,7 @@ namespace Code.Scripts.Plants.Powers
                 PowerKind.Banana =>$"Nearby plants fruit \n{BananaPower.EffectPercent}% " +
                                    $"faster (up to {BananaPower.MaxEffectPercent}%)",
                 PowerKind.Nettle => "Animals take damage when\nthey eat this plant",
-                PowerKind.Chili => $"Defensive plants do +{ChiliPower.EffectPercent}%\ndamage (up to {ChiliPower.MaxEffectPercent}%)",
+                PowerKind.Chili => $"Defensive plants do +{ChiliPower.EffectPercent}%\ndamage (does not stack)",
                 PowerKind.None => "",
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
