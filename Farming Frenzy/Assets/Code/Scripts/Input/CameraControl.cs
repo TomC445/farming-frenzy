@@ -2,7 +2,6 @@ using Code.Scripts.Menus;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
 public class CameraControl : MonoBehaviour
 {
@@ -39,6 +38,29 @@ public class CameraControl : MonoBehaviour
         {
             return;
         }
+
+        var speed = 0.03f * _attachedCamera.orthographicSize;
+
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            transform.Translate(Vector3.up * speed, Space.World);
+        }
+
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            transform.Translate(Vector3.left * speed, Space.World);
+        }
+
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            transform.Translate(Vector3.right * speed, Space.World);
+        }
+
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            transform.Translate(Vector3.down * speed, Space.World);
+        }
+        
         HandleDrag();
         HandleZoom();
         ClampCameraPosition();

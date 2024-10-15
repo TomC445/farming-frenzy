@@ -14,7 +14,7 @@ namespace Code.Scripts.Plants.Powers
         public const int MaxEffectPercent = 50;
         public SpriteRenderer[] Sprites;
 
-        private void Start()
+        private void Awake()
         {
             var colliders = gameObject.GetComponents<BoxCollider2D>();
             var verticalCollider = colliders[0];
@@ -27,11 +27,14 @@ namespace Code.Scripts.Plants.Powers
             var horizontalSprite = Sprites[1];
             verticalSprite.size = new Vector2(1.0f, Distance);
             verticalSprite.sortingOrder = 1001;
-            verticalSprite.enabled = PlantManager.Instance.CornPowerAoe.Visible;
             horizontalSprite.size = new Vector2(Distance, 1.0f);
             horizontalSprite.sortingOrder = 1001;
-            horizontalSprite.enabled = PlantManager.Instance.CornPowerAoe.Visible;
+        }
 
+        private void Start()
+        {
+            Sprites[0].enabled = PlantManager.Instance.CornPowerAoe.Visible;
+            Sprites[1].enabled = PlantManager.Instance.CornPowerAoe.Visible;
             PlantManager.Instance.CornPowerAoe.OnVisibilityChange += VisibilityChange;
         }
 
@@ -67,6 +70,5 @@ namespace Code.Scripts.Plants.Powers
 
             return 1.0f + Math.Min(MaxEffectPercent, numberCorn * EffectPercent) / 100.0f;
         }
-
     }
 }

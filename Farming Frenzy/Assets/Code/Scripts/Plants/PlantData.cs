@@ -10,6 +10,7 @@ public class PlantData : ScriptableObject
     public Sprite[] _growthSprite;
     public Sprite _harvestedSprite;
     public Sprite _cursorSprite;
+    public Sprite _roleIcon;
 
     [Header("Config")]
     public bool _isTree;

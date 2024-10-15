@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Code.Scripts.Plants.Powers;
+using Code.Scripts.Plants.Powers.PowerExtension;
 using UnityEngine;
 
 namespace Code.Scripts.Managers
@@ -7,6 +9,7 @@ namespace Code.Scripts.Managers
     {
         #region Editor Fields
         [SerializeField] private List<PlantData> _plantData;
+        [SerializeField] private Camera _camera;
         #endregion
 
         #region Singleton
@@ -18,6 +21,11 @@ namespace Code.Scripts.Managers
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
+                
+                CornPowerAoe = new PlantAoeState(PowerKind.Corn.PlaceAoeIndicator());
+                LegumePowerAoe = new PlantAoeState(PowerKind.Clover.PlaceAoeIndicator());
+                BananaPowerAoe = new PlantAoeState(PowerKind.Banana.PlaceAoeIndicator());
+                ChiliPowerAoe = new PlantAoeState(PowerKind.Chili.PlaceAoeIndicator());
             }
             else
             {
@@ -25,9 +33,10 @@ namespace Code.Scripts.Managers
             }
         }
 
-        public readonly PlantAoeState CornPowerAoe = new();
-        public readonly PlantAoeState LegumePowerAoe = new();
-        public readonly PlantAoeState BananaPowerAoe = new();
+        public PlantAoeState CornPowerAoe;
+        public PlantAoeState LegumePowerAoe;
+        public PlantAoeState BananaPowerAoe;
+        public PlantAoeState ChiliPowerAoe;
         #endregion
 
         #region Methods
@@ -35,6 +44,15 @@ namespace Code.Scripts.Managers
         {
             return _plantData.Find(plant => plant.name == plantName);
         }
+
+        private void Update()
+        {
+            CornPowerAoe.Tick(_camera);
+            LegumePowerAoe.Tick(_camera);
+            BananaPowerAoe.Tick(_camera);
+            ChiliPowerAoe.Tick(_camera);
+        }
+
         #endregion
     }
 }

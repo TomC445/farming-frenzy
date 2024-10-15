@@ -15,24 +15,37 @@ namespace Code.Scripts.GridSystem
         private VisualElement _root;
         private VisualElement _tooltip;
         private ShopUI _shopUI;
+        [SerializeField] private Canvas _canvas;
         [CanBeNull] private Plant _currentPlant;
         [CanBeNull] private GridTile _currentTile;
         [CanBeNull] private Obstacle _currentObstacle;
         [CanBeNull] private string _currentObstacleType;
         private bool _hasSetAoesVisible;
         private float _lastRebuild;
+        private float _prevSizeY;
 
         public void Start()
         {
             _root = gameObject.GetComponent<UIDocument>().rootVisualElement;
             _root.visible = false;
+            _startedHoverTime = float.PositiveInfinity;
             _tooltip = _root.Q<VisualElement>("tooltip");
             _root.RegisterCallback<MouseMoveEvent>(_ => UpdatePosition());
         }
 
         private void UpdatePosition()
         {
-            _tooltip.style.top = Screen.currentResolution.height - Input.mousePosition.y + 25;
+            if (!Mathf.Approximately(_prevSizeY, _canvas.renderingDisplaySize.y))
+            {
+                _prevSizeY = _canvas.renderingDisplaySize.y;
+                foreach (var elt in _tooltip.Children())
+                {
+                    elt.style.fontSize = 25 / (1080 / _canvas.renderingDisplaySize.y);
+                }
+                _tooltip.Q<Label>("name").style.fontSize = 28 / (1080 / _canvas.renderingDisplaySize.y);
+            }
+
+            _tooltip.style.top = _canvas.renderingDisplaySize.y - Input.mousePosition.y + 25;
             _tooltip.style.left = Math.Max(0, Input.mousePosition.x - _tooltip.resolvedStyle.width);
         }
 
@@ -41,7 +54,7 @@ namespace Code.Scripts.GridSystem
             spawnedTile.OnTileHoverIn += HandleTileHoverIn;
             spawnedTile.OnTileHoverOut += _ => HandleHoverOut();
             // This is OK to just do directly as if we purchase it, we must be mousing over
-            spawnedTile.OnTileClicked += BuildFarmlandTooltip;
+            spawnedTile.OnTileClicked += _ => RebuildTooltip();
         }
         
         public void SubscribeObstacleEvents(Obstacle obstacle, string type)
@@ -76,6 +89,7 @@ namespace Code.Scripts.GridSystem
             AddCornModifier(thing);
             AddLegumeModifier(thing);
             AddBananaModifier(thing);
+            AddChiliModifier(thing);
         }
 
         private void AddLegumeModifier(Collider2D thing)
@@ -92,7 +106,22 @@ namespace Code.Scripts.GridSystem
                 _root.Q<Label>("legume_modifier").style.display = DisplayStyle.None;
             }
         }
-        
+
+        private void AddChiliModifier(Collider2D thing)
+        {
+            var damageMod = ChiliPower.CalculateDamageModifier(thing);
+            var dmgPct = (int) Math.Round(damageMod * 100.0f);
+            if (dmgPct > 100)
+            {
+                _root.Q<Label>("chili_modifier").text = $"Defensive plant damage: <b>+{dmgPct - 100}%</b>";
+                _root.Q<Label>("chili_modifier").style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                _root.Q<Label>("chili_modifier").style.display = DisplayStyle.None;
+            }
+        }
+
         private void AddCornModifier(Collider2D thing)
         {
             var cornModifier = CornPower.CalculateCornFruitingModifier(thing);

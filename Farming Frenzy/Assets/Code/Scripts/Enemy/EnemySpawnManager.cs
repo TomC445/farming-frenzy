@@ -1,3 +1,4 @@
+using Code.Scripts.Enemy;
 using UnityEngine;
 
 public class EnemySpawnManager : MonoBehaviour
@@ -40,8 +41,9 @@ public class EnemySpawnManager : MonoBehaviour
         for (var i = 0; i < enemyNumber; i++)
         {
             var randomIndex = Random.Range(0, _spawnPositions.childCount);
-            var spawnPoint = _spawnPositions.GetChild(randomIndex).position;
-            Instantiate(_enemyPrefab, spawnPoint, Quaternion.identity);
+            var spawnPoint = _spawnPositions.GetChild(randomIndex);
+            var enemy = Instantiate(_enemyPrefab, spawnPoint.position, Quaternion.identity);
+            enemy.GetComponent<EnemyAgent>().SetSpawn(spawnPoint);
         }
     }
     #endregion

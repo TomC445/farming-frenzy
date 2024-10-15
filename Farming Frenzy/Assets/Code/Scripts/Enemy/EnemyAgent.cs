@@ -7,7 +7,6 @@ using Code.Scripts.Player;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
-using Debug = System.Diagnostics.Debug;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
 
@@ -21,7 +20,7 @@ namespace Code.Scripts.Enemy
         private static readonly int Movement = Animator.StringToHash("Movement");
 
         #region Editor Fields
-        [SerializeField] private int _health;
+        [SerializeField] private float _health;
         [SerializeField] private int _maxHealth;
         [SerializeField] private GameObject _healthBar;
         [SerializeField] private Slider _healthBarController;
@@ -33,9 +32,9 @@ namespace Code.Scripts.Enemy
         private NavMeshAgent _agent;
         private Animator _agentAnimator;
         [CanBeNull] private Transform _target;
+        private Transform _spawnPoint;
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rigidbody;
-        public Transform _spawnPoints;
         private enum State { Hungry, Eating, Scared}
         private State _currentState;
         [CanBeNull] private Coroutine _eatingCoroutine;
@@ -54,6 +53,12 @@ namespace Code.Scripts.Enemy
         #endregion
 
         #region Methods
+
+        public void SetSpawn(Transform spawnPoint)
+        {
+            _spawnPoint = spawnPoint;
+        }
+        
         private void Start()
         {
             _audioManager = AudioManager.Instance;
@@ -61,7 +66,6 @@ namespace Code.Scripts.Enemy
             firstUpdate = false;
             _timeToNextPlay = Random.Range(2,9);
             _plantTransform = GameObject.Find("Plants").transform;
-            _spawnPoints = GameObject.Find("EnemySpawnPositions").transform;
             _agent = GetComponent<NavMeshAgent>();
             _agentAnimator = GetComponent<Animator>();
             _agent.updateRotation = false;
@@ -178,21 +182,8 @@ namespace Code.Scripts.Enemy
                 _rigidbody.simulated = false;
                 CancelEating();
 
-                Transform closest = null;
-                var closestDist = float.PositiveInfinity;
-                foreach (Transform child in _spawnPoints)
-                {
-                    var dist = Vector3.Distance(transform.position, child.position);
-                    if (dist >= closestDist) continue;
-    
-                    closest = child;
-                    closestDist = dist;
-                }
-            
-                Debug.Assert(closest != null, nameof(closest) + " != null");
-            
-                _target = closest;
-                _agent.SetDestination(closest.position);
+                _target = _spawnPoint;
+                _agent.SetDestination(_target!.position);
                 if(playSFX) _audioManager.PlaySFX("goatScared");
                 PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Spray);
                 _healthBarVisible.SetActive(false);
@@ -204,11 +195,11 @@ namespace Code.Scripts.Enemy
         /// </summary>
         /// <param name="amount"></param>
         /// <returns>True if the animal is now running away</returns>
-        private bool TakeDamage(int amount)
+        private bool TakeDamage(float amount)
         {
             _health = Math.Max(0, _health - amount);
             _healthBarVisible.SetActive(true);
-            _healthBarController.value = _health / (float) _maxHealth;
+            _healthBarController.value = _health / _maxHealth;
             print($"Goat took {amount} damage! HP = {_health}");
 
             if (_health > 0) return false;

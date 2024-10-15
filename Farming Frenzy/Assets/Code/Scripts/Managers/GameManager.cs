@@ -23,6 +23,7 @@ namespace Code.Scripts.Managers
         [SerializeField] private GameObject _pauseBaseMenu;
         [SerializeField] private GameObject _shopMenu;
         [SerializeField] private GameObject _helpMenu;
+        [SerializeField] private GameObject _optionsMenu;
 
         [SerializeField] private GameObject _gameOverMenu;
         [SerializeField] private TextMeshProUGUI _score;
@@ -67,6 +68,7 @@ namespace Code.Scripts.Managers
 
         public int _goats;
         private readonly string[] _days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+
         #endregion
 
         private void Start()
@@ -143,7 +145,7 @@ namespace Code.Scripts.Managers
             _lastFloatingText = Time.time;
 
             var id = Quaternion.identity;
-            var pos = Input.mousePosition;
+            var pos = Input.mousePosition / _canvas.scaleFactor;
             pos.z = 0;
     
             var floatingText = Instantiate(_floatingTextPrefab, pos, id, _canvas.transform);
@@ -222,7 +224,7 @@ namespace Code.Scripts.Managers
                 if(rightDayForSpawn && !reducedSpawnDay && !monOrTues)
                 {
                     var week = Mathf.CeilToInt(_dayCount / 7.0f);
-                    var numEnemies = Math.Max(1, Mathf.RoundToInt((float) Math.Pow(week - 1, 2)));
+                    var numEnemies = Mathf.RoundToInt((1.0f + 2f / 5f) * Random.Range(1.0f, 2.0f) * Math.Max(1, (float) Math.Pow(week - 1, 2)));
                     EnemySpawnManager.Instance.SpawnEnemies(numEnemies);
                     for(int i = 0; i < Math.Min(numEnemies, 5); i++) {
                         AudioManager.Instance.PlayRandomGoatNoise();
@@ -252,7 +254,6 @@ namespace Code.Scripts.Managers
         private void PauseGame()
         {
             _pauseMenu.gameObject.SetActive(true);
-            _shopMenu.gameObject.SetActive(false);
             Time.timeScale = 0f;
             Paused = true;
             PlayerController.Instance.SetPausedCursor();
@@ -262,15 +263,24 @@ namespace Code.Scripts.Managers
         {
             _pauseBaseMenu.gameObject.SetActive(false);
             _helpMenu.gameObject.SetActive(true);
+            _shopMenu.gameObject.SetActive(false);
         }
 
         public void ResumeGame()
         {
             _pauseMenu.gameObject.SetActive(false);
+
+            var wasActive = _shopMenu.gameObject.activeSelf;
             _shopMenu.gameObject.SetActive(true);
+            if (!wasActive)
+            {
+                _shopMenu.GetComponent<ShopUI>().InitShop();
+            }
+
+            _optionsMenu.gameObject.SetActive(false);
             _pauseBaseMenu.gameObject.SetActive(true);
             _helpMenu.gameObject.SetActive(false);
-            _shopMenu.GetComponent<ShopUI>().InitShop();
+
             Time.timeScale = 1f;
             Paused = false;
         }

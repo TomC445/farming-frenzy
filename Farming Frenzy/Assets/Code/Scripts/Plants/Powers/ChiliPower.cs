@@ -7,12 +7,12 @@ using UnityEngine;
 
 namespace Code.Scripts.Plants.Powers
 {
-    public class BananaPower : Power
+    public class ChiliPower : Power
     {
-        private const float Radius = 10.0f;
+        private const float Radius = 6.0f;
         public const int EffectPercent = 10;
-        public const int MaxEffectPercent = 40;
-        
+        public const int MaxEffectPercent = 50;
+
         private SpriteRenderer _spriteRenderer;
 
         private void Awake()
@@ -25,31 +25,31 @@ namespace Code.Scripts.Plants.Powers
 
         private void Start()
         {
-            _spriteRenderer.enabled = PlantManager.Instance.BananaPowerAoe.Visible;
-            PlantManager.Instance.BananaPowerAoe.OnVisibilityChange += VisibilityChange;
+            _spriteRenderer.enabled = PlantManager.Instance.ChiliPowerAoe.Visible;
+            PlantManager.Instance.ChiliPowerAoe.OnVisibilityChange += VisibilityChange;
         }
 
         private void VisibilityChange(bool visible)
         {
             _spriteRenderer.enabled = visible;
         }
-
+        
         private void OnDestroy()
         {
-            PlantManager.Instance.BananaPowerAoe.OnVisibilityChange -= VisibilityChange;
+            PlantManager.Instance.ChiliPowerAoe.OnVisibilityChange -= VisibilityChange;
         }
 
-        public static float CalculateFruitingModifier(Collider2D thing)
+        public static float CalculateDamageModifier(Collider2D thing)
         {
             var collisions = new List<Collider2D>();
             thing.Overlap(collisions);
 
-            var numBanana = collisions
-                .Select(other => other.gameObject.GetComponent<BananaPower>())
+            var numChili = collisions
+                .Select(other => other.gameObject.GetComponent<ChiliPower>())
                 .NotNull()
                 .Count();
 
-            return 1.0f + Math.Min(MaxEffectPercent, numBanana * EffectPercent) / 100.0f;
+            return 1.0f + Math.Min(MaxEffectPercent, numChili * EffectPercent) / 100.0f;
         }
     }
 }
