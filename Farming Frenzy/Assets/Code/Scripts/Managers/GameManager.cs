@@ -143,7 +143,7 @@ namespace Code.Scripts.Managers
             _lastFloatingText = Time.time;
 
             var id = Quaternion.identity;
-            var pos = Input.mousePosition;
+            var pos = Input.mousePosition / _canvas.scaleFactor;
             pos.z = 0;
     
             var floatingText = Instantiate(_floatingTextPrefab, pos, id, _canvas.transform);

@@ -15,12 +15,14 @@ namespace Code.Scripts.GridSystem
         private VisualElement _root;
         private VisualElement _tooltip;
         private ShopUI _shopUI;
+        [SerializeField] private Canvas _canvas;
         [CanBeNull] private Plant _currentPlant;
         [CanBeNull] private GridTile _currentTile;
         [CanBeNull] private Obstacle _currentObstacle;
         [CanBeNull] private string _currentObstacleType;
         private bool _hasSetAoesVisible;
         private float _lastRebuild;
+        private float _prevSizeY;
 
         public void Start()
         {
@@ -32,7 +34,17 @@ namespace Code.Scripts.GridSystem
 
         private void UpdatePosition()
         {
-            _tooltip.style.top = Screen.currentResolution.height - Input.mousePosition.y + 25;
+            if (!Mathf.Approximately(_prevSizeY, _canvas.renderingDisplaySize.y))
+            {
+                _prevSizeY = _canvas.renderingDisplaySize.y;
+                foreach (var elt in _tooltip.Children())
+                {
+                    elt.style.fontSize = 20 / (1080 / _canvas.renderingDisplaySize.y); // TODO not cascading but does work
+                }
+                _tooltip.Q<Label>("name").style.fontSize = 25 / (1080 / _canvas.renderingDisplaySize.y);
+            }
+
+            _tooltip.style.top = _canvas.renderingDisplaySize.y - Input.mousePosition.y + 25;
             _tooltip.style.left = Math.Max(0, Input.mousePosition.x - _tooltip.resolvedStyle.width);
         }
 
