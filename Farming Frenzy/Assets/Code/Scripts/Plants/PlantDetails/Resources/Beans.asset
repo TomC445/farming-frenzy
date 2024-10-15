@@ -30,7 +30,7 @@ MonoBehaviour:
   flavorText: "Premium\u2122 version of the clover"
   power: 5
   _tier: 2
-  _price: 25
+  _price: 40
   _goldGenerated: 2
   _health: 10
   _indestructible: 0

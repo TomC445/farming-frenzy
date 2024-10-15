@@ -28,7 +28,7 @@ MonoBehaviour:
   flavorText: Heals plants from goat attacks!
   power: 2
   _tier: 1
-  _price: 10
+  _price: 5
   _goldGenerated: 0
   _health: 3
   _indestructible: 0

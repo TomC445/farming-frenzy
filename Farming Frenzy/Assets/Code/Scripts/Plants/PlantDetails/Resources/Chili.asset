@@ -31,7 +31,7 @@ MonoBehaviour:
   flavorText: Boosts nearby defensive plants
   power: 7
   _tier: 3
-  _price: 100
+  _price: 300
   _goldGenerated: 3
   _health: 30
   _indestructible: 0

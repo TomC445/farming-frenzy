@@ -28,7 +28,7 @@ MonoBehaviour:
   flavorText: Like the blister berry,<br>but far sturdier
   power: 4
   _tier: 2
-  _price: 20
+  _price: 25
   _goldGenerated: 0
   _health: 32
   _indestructible: 0

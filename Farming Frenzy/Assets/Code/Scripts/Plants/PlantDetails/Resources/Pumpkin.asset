@@ -30,7 +30,7 @@ MonoBehaviour:
   flavorText: A high-cost, high-producing crop
   power: 1
   _tier: 2
-  _price: 50
+  _price: 60
   _goldGenerated: 9
   _health: 25
   _indestructible: 0
