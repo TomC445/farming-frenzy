@@ -69,6 +69,7 @@ namespace Code.Scripts.Menus
             VisualElement ui = _itemTemplate.Instantiate();
             var sprite = data._growthSprite?.LastOrDefault() ?? defaultSprite;
             ui.Q("plant_icon").style.backgroundImage = new StyleBackground(sprite);
+            ui.Q("role_icon").style.backgroundImage = new StyleBackground(data._roleIcon);
             ui.Q<Label>("plant_name").text = data.name;
 
             var shopEntryPrice = ui.Q<Label>("price");
