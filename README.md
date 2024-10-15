@@ -29,3 +29,23 @@ Crops - https://opengameart.org/content/lpc-crops (bluecarrot16)
 Shield - https://opengameart.org/content/cc0-shield-icons 
 
 Remainder - Assorted artists
+
+### Audio Assets
+Music -  https://pixabay.com/music/search/country/?genre=video%2520games
+
+Rooster - https://freesound.org/people/BenjaminNelan/sounds/435507/ (CC0)
+
+Spray - https://freesound.org/people/jimbo555/sounds/630501/
+
+Clock - https://freesound.org/people/GameDevC/sounds/422835/
+
+Digging/Planting - https://freesound.org/people/Ali_6868/sounds/384362/
+
+Harvesting - https://freesound.org/people/qubodup/sounds/443000/
+
+Game over - https://freesound.org/people/deleted_user_877451/sounds/76376/
+
+Goats - https://freesound.org/people/Garuda1982/sounds/755876/
+
+All other sounds were self made.
+
