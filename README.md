@@ -31,7 +31,7 @@ Shield - https://opengameart.org/content/cc0-shield-icons
 Remainder - Assorted artists
 
 ### Audio Assets
-Music -  https://pixabay.com/music/search/country/?genre=video%2520games
+Music -  https://pixabay.com/music/modern-country-country-swing-night-108987/
 
 Rooster - https://freesound.org/people/BenjaminNelan/sounds/435507/ (CC0)
 
