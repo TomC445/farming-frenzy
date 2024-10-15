@@ -76,6 +76,7 @@ namespace Code.Scripts.Managers
             AudioManager.Instance.SetInitialMusicVolume();
             GridManager.Instance.Restart();
             EnemySpawnManager.Instance.Restart();
+            PlantManager.Instance._camera = Camera.main;
             IsTimerRunning = true;
             _timeLeft = _dayTime * 7;
             // TODO standardise $ vs G

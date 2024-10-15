@@ -19,6 +19,7 @@ namespace Code.Scripts.GridSystem
 
         public event ObstacleHoverIn OnObstacleHoverIn;
         public event ObstacleHoverOut OnObstacleHoverOut;
+        private bool _isMouseOver;
 
         #endregion
 
@@ -39,15 +40,32 @@ namespace Code.Scripts.GridSystem
             Destroy(gameObject);
         }
 
+        private void OnDestroy()
+        {
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
+        }
+
         private void OnMouseEnter()
         {
+            _isMouseOver = true;
             OnObstacleHoverIn?.Invoke(this);
             PlayerController.Instance.StartContextualCursor(PlayerController.CursorState.Shovel);
         }
 
         private void OnMouseExit()
         {
+            _isMouseOver = false;
             OnObstacleHoverOut?.Invoke(this);
+            PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
+        }
+
+        private void Update()
+        {
+            if (!_isMouseOver) return;
+            var ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
+            var hit = Physics2D.GetRayIntersection(ray, 1500f);
+            if (hit.transform?.gameObject == gameObject) return;
+            _isMouseOver = false;
             PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Shovel);
         }
 

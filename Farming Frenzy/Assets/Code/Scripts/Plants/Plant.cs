@@ -274,6 +274,14 @@ namespace Code.Scripts.Plants
             }
         }
 
+        private void OnDestroy()
+        {
+            if (_isMouseOverPlant)
+            {
+                PlayerController.Instance.EndContextualCursor(PlayerController.CursorState.Scythe);
+            }
+        }
+
         public bool TakeDamage(float amount)
         {
             _healthBar.SetActive(true);

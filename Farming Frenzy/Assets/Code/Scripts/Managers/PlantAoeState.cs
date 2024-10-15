@@ -1,3 +1,5 @@
+using Code.Scripts.Plants.Powers;
+using Code.Scripts.Plants.Powers.PowerExtension;
 using UnityEngine;
 
 namespace Code.Scripts.Managers
@@ -10,12 +12,12 @@ namespace Code.Scripts.Managers
         public bool Visible { get; private set; }
         private bool _isPlanting;
         private bool _isHovering;
-        private readonly GameObject _aoePlacementIndicator;
+        private readonly PowerKind _powerKind;
+        private GameObject _aoePlacementIndicator;
 
-        public PlantAoeState(GameObject indicator)
+        public PlantAoeState(PowerKind power)
         {
-            _aoePlacementIndicator = indicator;
-            _aoePlacementIndicator.SetActive(false);
+            _powerKind = power;
         }
 
         private void RecalculateVisibility()
@@ -29,20 +31,28 @@ namespace Code.Scripts.Managers
             }
         }
 
+        public void Start()
+        {
+            _aoePlacementIndicator = _powerKind.PlaceAoeIndicator();
+            _aoePlacementIndicator.SetActive(false);
+        }
+
         public void Tick(Camera camera)
         {
-            if (_isPlanting)
-            {
-                var pos = camera.ScreenToWorldPoint(Input.mousePosition);
-                pos.z = 1;
-                _aoePlacementIndicator.transform.position = pos;
-            }
+            if (!_isPlanting || !_aoePlacementIndicator) return;
+            var pos = camera.ScreenToWorldPoint(Input.mousePosition);
+            pos.z = 1;
+            _aoePlacementIndicator.transform.position = pos;
         }
 
         public void SetPlanting(bool isPlanting)
         {
             _isPlanting = isPlanting;
-            _aoePlacementIndicator.SetActive(isPlanting);
+            if (_aoePlacementIndicator)
+            {
+                _aoePlacementIndicator.SetActive(isPlanting);
+            }
+
             RecalculateVisibility();
         }
 
