@@ -12,7 +12,7 @@ namespace Code.Scripts.Menus
         public static Color TooExpensiveGold = new Color32(241, 107, 82, 255);
         public static Color DisabledOverlay = new(0, 0, 0, 0.5f);
         public static Color HighlightGreen = new Color32(28, 200, 11, 255);
-        public static Color ShopItemBackground = new Color32(0, 0, 0, 164);
+        public static Color ShopItemBackground = new Color32(0, 0, 0, 64);
 
         public static Color PriceColor(int price) =>
             PlayerController.Instance.Money >= price ? PurchasableGold : TooExpensiveGold;
